@@ -1,0 +1,20 @@
+{
+  "name": "ptcl-productflow-360",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/api"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace apps/web",
+    "build": "npm run build --workspace apps/web",
+    "start": "npm run start --workspace apps/web",
+    "typecheck": "npm run typecheck --workspace apps/web",
+    "test": "playwright test",
+    "api:build": "npm run build --workspace apps/api",
+    "api:dev": "npm run dev --workspace apps/api"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0"
+  }
+}
