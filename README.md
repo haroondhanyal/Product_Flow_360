@@ -30,7 +30,7 @@ Open any request (newly created requests open automatically), then choose or dro
 Open **Test management**, or **Manage linked test cases** from an RFC. Create a linked SIT, QA or UAT test case with an owner, priority, preconditions, steps and expected result. Review the draft, **Mark ready**, **Start test**, then save a **Passed**, **Failed** or **Blocked** result with actual-result notes and tester name. **Start retest** preserves every previous run. Failed or blocked tests can create a linked **BUG** directly; it inherits the RFC, owner, priority and latest actual result. Search and filter by RFC or status. Tests, bugs and run histories persist in localStorage.
 
 ### Projects and traceability
-**Workspace tools** includes a persistent project register for named delivery spaces and keys. Connected modules provide RFC → requirement/user story → test case → execution/evidence → linked bug traceability, plus local audit history and exports. This is a single-browser prototype: true per-project data isolation, user management, RBAC, server persistence and authorization require the planned API/database phase.
+**Workspace tools** includes a persistent project register for named delivery spaces and keys. Every RFC Documents panel has an **RFC workspace project** selector, so the RFC and its document set can be grouped under a project or left in All Projects. Connected modules provide RFC → requirement/user story → test case → execution/evidence → linked bug traceability, plus local audit history and exports. This is a single-browser prototype: true per-project data isolation, user management, RBAC, server persistence and authorization require the planned API/database phase.
 
 ### Themes and button colours
 In **Settings**, choose **PTCL Emerald**, **Ocean Blue**, **Slate Gray** or **Midnight**. You can also select Emerald, Blue, Purple, Amber or Rose for primary buttons. Both choices apply across the workspace, forms and dialogs and are restored on reload.
@@ -55,3 +55,5 @@ The suite covers the 50 MB boundary, rejection, persistence/download/removal, fi
 Other module links visibly identify planned functionality. Authentication, backend API, database, approval enforcement and enterprise integrations are not implemented. Sample lifecycle counts are illustrative.
 
 See [the phase-by-phase roadmap](docs/IMPLEMENTATION-PLAN.md) for the complete proposed Phase 0–16 approach. Frontend lives in `apps/web`; `apps/api` is reserved for the NestJS phase.
+
+See the [refined enhancement prompt](docs/ENHANCEMENT-PROMPT.md) and the [product description](docs/PRODUCT-DESCRIPTION.md) for stakeholder-ready text.

@@ -13,6 +13,8 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [dragging, setDragging] = useState(false);
+  const [projects, setProjects] = useState<{id:string;name:string;code:string}[]>([]);
+  const [projectId, setProjectId] = useState('');
   const input = useRef<HTMLInputElement>(null);
   const lock = useRef(false);
 
@@ -23,6 +25,20 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
       .finally(() => { if (current) setLoading(false); });
     return () => { current = false; };
   }, [requestId]);
+  useEffect(() => {
+    if (evidence) return;
+    try {
+      const available = JSON.parse(localStorage.getItem('pf360-projects') ?? '[]');
+      if (Array.isArray(available)) setProjects(available.filter(item => item && typeof item.id === 'string' && typeof item.name === 'string' && typeof item.code === 'string'));
+      const assignments = JSON.parse(localStorage.getItem('pf360-rfc-projects') ?? '{}');
+      if (assignments && typeof assignments[requestId] === 'string') setProjectId(assignments[requestId]);
+    } catch { setError('Project assignment could not be loaded.'); }
+  }, [requestId, evidence]);
+  function assignProject(next: string) {
+    setProjectId(next);
+    try { const assignments = JSON.parse(localStorage.getItem('pf360-rfc-projects') ?? '{}'); localStorage.setItem('pf360-rfc-projects', JSON.stringify({...assignments, [requestId]: next})); setMessage(next ? 'RFC assigned to its workspace project.' : 'RFC moved to All Projects.'); }
+    catch { setError('Project assignment could not be saved.'); }
+  }
 
   async function upload(files: File[]) {
     if (lock.current || loading || !files.length) return;
@@ -60,6 +76,7 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
 
   return <section className="rfc-documents" aria-label={title}>
     <div className="section-title"><h3>{title} <span className="count">{documents.length}</span></h3></div>
+    {!evidence && <label className="rfc-project-picker">Workspace project<select aria-label="RFC workspace project" value={projectId} onChange={event => assignProject(event.target.value)}><option value="">All Projects / unassigned</option>{projects.map(project => <option value={project.id} key={project.id}>{project.code} · {project.name}</option>)}</select><small>{projects.length ? 'This RFC and its documents are grouped under the selected project in this browser.' : 'Create a project in Workspace tools, then return here to assign this RFC.'}</small></label>}
     <div className={`document-dropzone ${dragging ? 'dragging' : ''}`}
       onDragOver={event => { event.preventDefault(); setDragging(true); }}
       onDragLeave={() => setDragging(false)}
