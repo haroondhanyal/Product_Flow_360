@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { RfcDocuments } from './rfc-documents';
 import { ArrowRight, CheckCircle2, ClipboardList, FlaskConical, Play, Plus, Search } from 'lucide-react';
 import { changeTestStatus, parseTestCases, recordTestRun, TEST_STAGES, TEST_STATUSES, TEST_STORAGE_KEY, type TestCase, type TestRun, type TestStage } from '../lib/test-cases';
+import { commitRecord, EMPTY_LIFECYCLE, LIFECYCLE_KEY, parseLifecycle, type WorkRecord } from '../lib/lifecycle';
 
 type LinkedRequest = { id: string; title: string };
 
@@ -88,6 +89,19 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
       if (persist(tests.map(test => test.id === updated.id ? updated : test))) setMessage('Execution result saved to run history.');
     } catch (error) { setError((error as Error).message); }
   }
+  function createBugFromFailure() {
+    if (!selected || !['Failed', 'Blocked'].includes(selected.status)) return;
+    const latestRun = selected.runs[0];
+    try {
+      const state = parseLifecycle(localStorage.getItem(LIFECYCLE_KEY) ?? JSON.stringify(EMPTY_LIFECYCLE));
+      const duplicate = state.records.find(record => record.kind === 'defects' && record.linkedId === selected.id && !['Closed', 'Rejected'].includes(record.status));
+      if (duplicate) throw new Error(`${duplicate.id} is already linked to this failed test.`);
+      const bug: WorkRecord = { id: `BUG-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, kind: 'defects', requestId: selected.requestId, title: `Failure: ${selected.title}`, owner: selected.owner, status: 'Open', type: 'Functional', description: latestRun?.actual || 'Failure reported from test execution.', notes: `Created directly from ${selected.id}.`, linkedId: selected.id, priority: selected.priority, expected: selected.expected, actual: latestRun?.actual || '', date: '', version: 0, updatedAt: '' };
+      const next = commitRecord(state, bug, `Bug created from failed test ${selected.id}`);
+      localStorage.setItem(LIFECYCLE_KEY, JSON.stringify(next));
+      setMessage(`${bug.id} created and linked to this failed test. Open Defects to triage it.`);
+    } catch (error) { setError(error instanceof Error ? error.message : 'Unable to create the linked bug.'); }
+  }
 
   const filtered = tests.filter(test => (!requestFilter || test.requestId === requestFilter) &&
     (!statusFilter || test.status === statusFilter) && `${test.id} ${test.title} ${test.owner}`.toLowerCase().includes(query.toLowerCase()));
@@ -120,6 +134,7 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
       <div className="test-copy"><h3>Steps</h3><p>{selected.steps}</p></div><div className="test-copy"><h3>Expected result</h3><p>{selected.expected}</p></div>
       {selected.status === 'Draft' && <button className="primary" onClick={() => transition('Ready')}><CheckCircle2 size={16} />Mark ready</button>}
       {['Ready', 'Passed', 'Failed', 'Blocked'].includes(selected.status) && <button className="primary" onClick={() => transition('In progress')}><Play size={16} />{selected.status === 'Ready' ? 'Start test' : 'Start retest'}</button>}
+      {['Failed', 'Blocked'].includes(selected.status) && <button className="text-button create-bug" onClick={createBugFromFailure}>Create linked bug</button>}
       {selected.status === 'In progress' && <form onSubmit={execute} className="execution-form"><h3>Record this execution</h3><div className="form-row"><label>Result<select name="result" aria-label="Result"><option>Passed</option><option>Failed</option><option>Blocked</option></select></label><label>Executed by<input name="tester" defaultValue={selected.owner} required maxLength={80} /></label></div><label>Actual result / evidence notes<textarea name="actual" required rows={3} maxLength={10000} placeholder="Record what happened, including any discrepancy or blocker." /></label><button className="primary" type="submit">Save execution result</button></form>}
       <RfcDocuments key={selected.id} requestId={`test:${selected.id}`} evidence title="Test evidence"/>
       <div className="run-history"><h3>Run history <span className="count">{selected.runs.length}</span></h3>{!selected.runs.length && <p>No completed runs yet.</p>}{selected.runs.map(run => <article key={run.id}><div><span className={`status test-status-${run.result.toLowerCase()}`}>{run.result}</span><span>{run.tester} · {new Date(run.at).toLocaleString()}</span></div><p>{run.actual}</p><RunEvidence testId={selected.id} runId={run.id}/></article>)}</div>

@@ -15,6 +15,7 @@ Typography uses a 14px base, 24–33px primary headings, 15–24px section/dialo
 - Test management: RFC linkage; SIT, QA and UAT stages; draft/readiness/execution states; actual-result notes; immutable prior run history during retests; search and filters. Saved locally; no server test execution or approval enforcement.
 - Appearance settings: Emerald, Ocean, Slate Gray and Midnight themes, plus five primary button colours, with browser-persisted selection.
 - RFC image attachments: PNG, JPG/JPEG, WebP and GIF support with in-browser preview; run evidence retains its image, video and spreadsheet support.
+- QA enhancements: persistent project register, direct failed-test-to-bug creation, and RFC → requirement/user story → test → bug links recorded in the local prototype audit trail.
 - Playwright coverage of uploads, persistence, local test flow and themes. This is initial regression coverage, not completion of enterprise hardening.
 
 ## Proposed remaining enterprise phases

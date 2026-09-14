@@ -32,7 +32,7 @@ test('document validation accepts supported signatures and rejects invalid input
   await expect(validateDocument(new File([new Uint8Array([0x50, 0x4b, 0x03, 0x04])], 'spec.docx'))).resolves.toBeUndefined();
   await expect(validateDocument(new File([], 'empty.pdf'))).rejects.toThrow('Empty');
   await expect(validateDocument(new File(['text'], 'renamed.pdf'))).rejects.toThrow('does not match');
-  await expect(validateDocument(new File(['%PDF-1.7'], 'spec.exe'))).rejects.toThrow('Choose a PDF');
+  await expect(validateDocument(new File(['%PDF-1.7'], 'spec.exe'))).rejects.toThrow('supported project document');
 });
 
 test('50 MB attachment persists, downloads intact, and can be removed; larger files are rejected', async ({ page }) => {
@@ -49,6 +49,7 @@ test('50 MB attachment persists, downloads intact, and can be removed; larger fi
   await page.getByRole('button', { name: 'Download exact-50mb.pdf' }).click();
   const download = await downloadPromise;
   expect(statSync((await download.path())!).size).toBe(MAX_DOCUMENT_BYTES);
+  page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: 'Remove exact-50mb.pdf' }).click();
   await expect(page.locator('.document-list li')).toHaveCount(0);
   await page.reload(); await expect(page.locator('.splash')).toBeHidden(); await openRFC(page);

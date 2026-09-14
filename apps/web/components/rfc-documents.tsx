@@ -48,6 +48,7 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
 
   async function remove(info: DocumentInfo) {
     if (lock.current) return;
+    if (!window.confirm(`Delete ${info.name}? This removes the saved browser copy and cannot be undone.`)) return;
     lock.current = true; setBusy(true); setError(''); setMessage('');
     try {
       await removeDocument(info.id);
@@ -65,7 +66,7 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
       onDrop={event => { event.preventDefault(); setDragging(false); void upload(Array.from(event.dataTransfer.files)); }}>
       <UploadCloud size={26} />
       <strong>{busy ? 'Saving document…' : evidence ? 'Drop screenshots, videos or documents here' : 'Drop your RFC documents or images here'}</strong>
-      <span>{evidence ? 'PNG, JPG, WebP, GIF · MP4, WebM, MOV · PDF, Word, Excel' : 'PDF, DOC, DOCX · PNG, JPG, WebP, GIF'} · Maximum 50 MB per file</span>
+      <span>{evidence ? 'PNG, JPG, WebP, GIF · MP4, WebM, MOV · PDF, Word, Excel, CSV, JSON, TXT' : 'PDF, Word, Excel, CSV · PNG, JPG, WebP, GIF · JSON, TXT, LOG'} · Maximum 50 MB per file</span>
       <button type="button" className="text-button" disabled={busy || loading} onClick={() => input.current?.click()}>Choose documents</button>
       <input ref={input} className="sr-only" tabIndex={-1} type="file" multiple accept={evidence ? EVIDENCE_ACCEPT : DOCUMENT_ACCEPT}
         aria-label={evidence ? `Upload ${title.toLowerCase()}` : 'Upload RFC documents'} disabled={busy || loading}
