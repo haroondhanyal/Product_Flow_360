@@ -58,6 +58,12 @@ Open **Test management**, or **Manage linked test cases** from an RFC. Create a 
 ### Projects and traceability
 **Workspace tools** includes a persistent project register for named delivery spaces and keys. Every RFC Documents panel has an **RFC workspace project** selector, so the RFC and its document set can be grouped under a project or left in All Projects. Connected modules provide RFC → requirement/user story → test case → execution/evidence → linked bug traceability, plus local audit history and exports. This is a single-browser prototype: true per-project data isolation, user management, RBAC, server persistence and authorization require the planned API/database phase.
 
+### Defect and UAT evidence
+Open a Defect to upload screenshots, images, videos and supporting documents in **Defect screenshots, video & evidence**. UAT test cases expose **UAT case screenshots, video & evidence** with the same upload, media preview, download and confirmed removal controls. Supported evidence includes PNG, JPG/JPEG, WebP, GIF, MP4, WebM, MOV, PDF, Word, Excel, CSV, JSON, TXT and LOG files up to 50 MB each.
+
+### Multiple workspaces
+In **Workspace tools**, create a new workspace and select it from the **Workspaces** panel. The choice persists in the browser, while server API records are protected by workspace boundaries. Existing browser-local prototype records remain shared until the screens are moved to the server API.
+
 ### Themes and button colours
 In **Settings**, choose from eight themes: **PTCL Emerald**, **Ocean Blue**, **Slate Gray**, **Midnight**, **Violet Focus**, **Ruby Signal**, **High Contrast Light** or **High Contrast Dark**. The two high-contrast options strengthen text, borders and focus visibility. You can also select Emerald, Blue, Purple, Amber or Rose for primary buttons. Both choices apply across the workspace, forms and dialogs and are restored on reload.
 
