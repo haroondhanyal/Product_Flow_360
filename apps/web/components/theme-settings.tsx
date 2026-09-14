@@ -8,6 +8,10 @@ const themes = [
   { id: 'ocean', name: 'Ocean Blue', description: 'Cool blues for a calm, clear view of your work.', icon: Waves },
   { id: 'gray', name: 'Slate Gray', description: 'A neutral, low-distraction workspace for dense delivery work.', icon: Circle },
   { id: 'dark', name: 'Midnight', description: 'A dark workspace with soft emerald accents.', icon: Moon },
+  { id: 'violet', name: 'Violet Focus', description: 'A refined violet palette for planning and review work.', icon: Circle },
+  { id: 'ruby', name: 'Ruby Signal', description: 'A warm, high-clarity palette for fast triage.', icon: Sun },
+  { id: 'contrast-light', name: 'High Contrast Light', description: 'Maximum light-mode contrast for readability and focus.', icon: Waves },
+  { id: 'contrast-dark', name: 'High Contrast Dark', description: 'Maximum dark-mode contrast with strong focus states.', icon: Moon },
 ] as const;
 export type Theme = typeof themes[number]['id'];
 const buttonColours = [{ id: 'green', name: 'Emerald', colour: '#087c59' }, { id: 'blue', name: 'Blue', colour: '#1769b5' }, { id: 'purple', name: 'Purple', colour: '#7758b8' }, { id: 'orange', name: 'Amber', colour: '#bd6a12' }, { id: 'rose', name: 'Rose', colour: '#b63d5e' }] as const;

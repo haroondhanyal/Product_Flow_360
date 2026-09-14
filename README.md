@@ -2,6 +2,18 @@
 
 A connected telecom product workspace. **PF360 — from idea to impact.**
 
+PTCL ProductFlow 360 connects projects, RFCs, user stories, tests, evidence and defects in one QA delivery workspace. Teams can assign RFCs to projects, upload and preview key documents or media, execute SIT/QA/UAT tests and trace failed runs directly into linked bugs. The current release is a browser-local prototype built for fast workflow validation.
+
+## Project description
+
+PTCL ProductFlow 360 is a connected product delivery workspace for managing the journey from a product idea to a verified release. It brings RFC management, user stories and requirements, test cases, evidence, defects, approvals and release readiness into one practical workflow for telecom and enterprise teams.
+
+Each workspace can contain multiple projects, such as CRM, Billing, Fly, Digital Channels or Mobile App initiatives. RFCs can be assigned to a project and become the central point for documents, requirements, linked tests and delivery history. Teams can upload Word, PDF, Excel, CSV, image and technical files against an RFC, preview supported media, download originals and remove local copies after confirmation. The interface uses clear hierarchy, restrained colour, status badges, priority indicators, responsive tables and selectable light, dark and slate-gray themes with configurable action colours.
+
+Test Management supports SIT, QA and UAT test cases. A case is linked to a specific RFC, can be associated with a requirement or user story through the existing Requirements workflow, and records preconditions, steps, expected outcomes, actual results and immutable retest history. Testers can attach screenshots, images, videos and supporting files to cases and individual runs. When a test fails or is blocked, the system can create a linked bug automatically. The defect retains the associated RFC, test case, priority, owner and failure evidence so that triage and retesting remain traceable.
+
+Workspace tools provide project registration, global search, automation-result import, exports and lifecycle audit history. The current release is a browser-local prototype: saved data lives in the user’s browser and is intended for workflow demonstration and validation. A production deployment will add FastAPI, PostgreSQL, authenticated users, role-based access, secure file storage, project-level authorization and shared activity history. The goal remains simple: one dependable view of every RFC, test, issue and decision from idea to impact.
+
 ## Run
 
 Use Node.js 24 LTS with npm.
@@ -33,7 +45,7 @@ Open **Test management**, or **Manage linked test cases** from an RFC. Create a 
 **Workspace tools** includes a persistent project register for named delivery spaces and keys. Every RFC Documents panel has an **RFC workspace project** selector, so the RFC and its document set can be grouped under a project or left in All Projects. Connected modules provide RFC → requirement/user story → test case → execution/evidence → linked bug traceability, plus local audit history and exports. This is a single-browser prototype: true per-project data isolation, user management, RBAC, server persistence and authorization require the planned API/database phase.
 
 ### Themes and button colours
-In **Settings**, choose **PTCL Emerald**, **Ocean Blue**, **Slate Gray** or **Midnight**. You can also select Emerald, Blue, Purple, Amber or Rose for primary buttons. Both choices apply across the workspace, forms and dialogs and are restored on reload.
+In **Settings**, choose from eight themes: **PTCL Emerald**, **Ocean Blue**, **Slate Gray**, **Midnight**, **Violet Focus**, **Ruby Signal**, **High Contrast Light** or **High Contrast Dark**. The two high-contrast options strengthen text, borders and focus visibility. You can also select Emerald, Blue, Purple, Amber or Rose for primary buttons. Both choices apply across the workspace, forms and dialogs and are restored on reload.
 
 ### Images
 RFCs accept PDF, Word, Excel, CSV, PNG, JPG/JPEG, WebP, GIF, JSON, TXT and LOG files up to 50 MB. Image attachments can be previewed in the RFC before download; run evidence additionally accepts supported video and spreadsheet formats.

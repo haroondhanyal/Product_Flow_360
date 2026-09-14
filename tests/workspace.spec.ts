@@ -126,6 +126,10 @@ test('themes persist across reload and work on mobile without horizontal page ov
   await page.getByRole('button', { name: 'Settings', exact: true }).click();
   await page.getByRole('button', { name: /Slate Gray/ }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'gray');
+  await page.getByRole('button', { name: /High Contrast Light/ }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'contrast-light');
+  await page.getByRole('button', { name: /High Contrast Dark/ }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'contrast-dark');
   await page.getByRole('button', { name: /Midnight/ }).click();
   await page.getByRole('button', { name: 'Overview', exact: true }).click();
   await page.screenshot({ path: 'test-results/midnight-desktop.png', fullPage: true });
