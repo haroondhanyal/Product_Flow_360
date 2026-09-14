@@ -31,6 +31,20 @@ npm run build
 npm start
 ```
 
+## API and database foundation
+
+The repository now includes a NestJS API, PostgreSQL schema migrations, JWT bearer sessions, workspace memberships, role checks and append-only audit events. Start the local database and provision the first user as follows:
+
+```sh
+cp .env.example .env
+docker compose up -d postgres
+npm run migrate --workspace apps/api
+npm run provision:user --workspace apps/api -- admin@example.com "PF360 Admin" "use-a-strong-password" "PTCL QA Workspace" "Super Admin"
+npm run api:dev
+```
+
+The API starts on `http://localhost:4000`; `GET /health` verifies PostgreSQL connectivity. `POST /auth/login` issues a 15-minute bearer token. Authenticated `/api/{entity-type}` routes support `project`, `rfc`, `user-story`, `requirement`, `test-case`, `test-run`, `bug`, `document`, `comment` and `link` records. Records are constrained to the caller’s workspace and the **Viewer** role is read-only. Use a real secret manager, HTTPS, PTCL identity integration and managed object storage before production; do not use the example database password or `.env` secrets outside local development.
+
 ## Implemented
 
 Phase 0 audit and Phase 1 foundation: responsive Next.js dashboard, original SVG app logo, branded startup splash, local Inter font, product portfolio, request creation, search, status filters, request details and status updates, and CSV export. Demo requests persist in browser localStorage. Reloading preserves changes; clearing site storage restores samples.
@@ -64,7 +78,7 @@ PF360_CHROME_PATH='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
 ```
 The suite covers the 50 MB boundary, rejection, persistence/download/removal, file types and storage errors, RFC-linked execution/retest history, theme and button-colour persistence, and mobile overflow.
 
-Other module links visibly identify planned functionality. Authentication, backend API, database, approval enforcement and enterprise integrations are not implemented. Sample lifecycle counts are illustrative.
+The current web UI still uses browser-local data while the API integration is introduced incrementally. The server foundation supplies database persistence, JWT/RBAC boundaries and audit records; PTCL SSO, production secrets, HTTPS ingress, object storage and organization-specific role policy need deployment-owner inputs. Sample lifecycle counts are illustrative.
 
 See [the phase-by-phase roadmap](docs/IMPLEMENTATION-PLAN.md) for the complete proposed Phase 0–16 approach. Frontend lives in `apps/web`; `apps/api` is reserved for the NestJS phase.
 

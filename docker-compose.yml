@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: pf360
+      POSTGRES_USER: pf360
+      POSTGRES_PASSWORD: change-this-password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pf360-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pf360 -d pf360"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  pf360-postgres:

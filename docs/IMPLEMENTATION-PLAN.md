@@ -18,6 +18,12 @@ Typography uses a 14px base, 24–33px primary headings, 15–24px section/dialo
 - QA enhancements: persistent project register, direct failed-test-to-bug creation, and RFC → requirement/user story → test → bug links recorded in the local prototype audit trail.
 - Playwright coverage of uploads, persistence, local test flow and themes. This is initial regression coverage, not completion of enterprise hardening.
 
+## Phase 2: server foundation implemented
+- NestJS API with PostgreSQL migration scripts and Docker Compose development database.
+- Scrypt-hashed user provisioning, 15-minute JWT bearer sessions, workspace membership roles and Viewer read-only enforcement.
+- Workspace-bound generic persistence for projects, RFCs, stories, requirements, tests, executions, bugs, documents, comments and links, with append-only audit events.
+- The existing frontend remains browser-local until its module-by-module API migration is complete. PTCL SSO, production secrets, HTTPS ingress, object storage and organization-specific role policy need deployment-owner inputs.
+
 ## Proposed remaining enterprise phases
 The PDF names Phase 0 through Phase 16 but does not specify the precise per-phase mapping. The following sequence is our proposed breakdown.
 
