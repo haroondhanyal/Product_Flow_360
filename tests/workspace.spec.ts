@@ -30,6 +30,7 @@ test('document validation accepts supported signatures and rejects invalid input
   await expect(validateDocument(new File(['%PDF-1.7\n%%EOF'], 'spec.PDF'))).resolves.toBeUndefined();
   await expect(validateDocument(new File([new Uint8Array([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1])], 'spec.doc'))).resolves.toBeUndefined();
   await expect(validateDocument(new File([new Uint8Array([0x50, 0x4b, 0x03, 0x04])], 'spec.docx'))).resolves.toBeUndefined();
+  await expect(validateDocument(new File([new Uint8Array([0, 0, 0, 24, 0x66, 0x74, 0x79, 0x70])], 'walkthrough.mp4'))).resolves.toBeUndefined();
   await expect(validateDocument(new File([], 'empty.pdf'))).rejects.toThrow('Empty');
   await expect(validateDocument(new File(['text'], 'renamed.pdf'))).rejects.toThrow('does not match');
   await expect(validateDocument(new File(['%PDF-1.7'], 'spec.exe'))).rejects.toThrow('supported project document');

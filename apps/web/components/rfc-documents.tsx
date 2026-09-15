@@ -82,8 +82,8 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
       onDragLeave={() => setDragging(false)}
       onDrop={event => { event.preventDefault(); setDragging(false); void upload(Array.from(event.dataTransfer.files)); }}>
       <UploadCloud size={26} />
-      <strong>{busy ? 'Saving document…' : evidence ? 'Drop screenshots, videos or documents here' : 'Drop your RFC documents or images here'}</strong>
-      <span>{evidence ? 'PNG, JPG, WebP, GIF · MP4, WebM, MOV · PDF, Word, Excel, CSV, JSON, TXT' : 'PDF, Word, Excel, CSV · PNG, JPG, WebP, GIF · JSON, TXT, LOG'} · Maximum 50 MB per file</span>
+      <strong>{busy ? 'Saving document…' : evidence ? 'Drop screenshots, videos or documents here' : 'Drop RFC documents, screenshots or videos here'}</strong>
+      <span>PNG, JPG, WebP, GIF · MP4, WebM, MOV · PDF, Word, Excel, CSV, JSON, TXT, LOG · Maximum 50 MB per file</span>
       <button type="button" className="text-button" disabled={busy || loading} onClick={() => input.current?.click()}>Choose documents</button>
       <input ref={input} className="sr-only" tabIndex={-1} type="file" multiple accept={evidence ? EVIDENCE_ACCEPT : DOCUMENT_ACCEPT}
         aria-label={evidence ? `Upload ${title.toLowerCase()}` : 'Upload RFC documents'} disabled={busy || loading}
@@ -95,7 +95,7 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
     <ul className="document-list">{documents.map(info => <li key={info.id}>
       <FileText size={21} />
       <div><strong>{info.name}</strong><small>{(info.size / 1024 / 1024).toFixed(2)} MB · {new Date(info.uploadedAt).toLocaleDateString()}</small></div>
-      {(evidence || evidenceMime(info.name)?.startsWith('image/')) && evidenceMime(info.name) && <button type="button" className="icon-button" aria-label={`Preview ${info.name}`} onClick={() => { setError(''); void previewDocument(info.id).then(blob => setPreview({url: URL.createObjectURL(blob), type: blob.type, name: info.name})).catch(error => setError(documentError(error))); }}><Eye size={17}/></button>}
+      {evidenceMime(info.name) && <button type="button" className="icon-button" aria-label={`Preview ${info.name}`} onClick={() => { setError(''); void previewDocument(info.id).then(blob => setPreview({url: URL.createObjectURL(blob), type: blob.type, name: info.name})).catch(error => setError(documentError(error))); }}><Eye size={17}/></button>}
       <button type="button" className="icon-button" aria-label={`Download ${info.name}`} disabled={busy}
         onClick={() => { setError(''); void downloadDocument(info.id).catch(error => setError(documentError(error))); }}><Download size={17} /></button>
       <button type="button" className="icon-button" aria-label={`Remove ${info.name}`} disabled={busy} onClick={() => void remove(info)}><Trash2 size={17} /></button>

@@ -1,6 +1,6 @@
 export const MAX_DOCUMENT_BYTES = 50 * 1024 * 1024;
 export const EVIDENCE_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov,.pdf,.doc,.docx,.xlsx,.xls,.csv,.json,.txt,.log';
-export const DOCUMENT_ACCEPT = '.pdf,.doc,.docx,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp,.gif,.json,.txt,.log,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,image/webp,image/gif';
+export const DOCUMENT_ACCEPT = '.pdf,.doc,.docx,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov,.json,.txt,.log,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime';
 
 export type DocumentInfo = {
   id: string;
@@ -13,9 +13,9 @@ type StoredDocument = DocumentInfo & { blob: Blob };
 
 export async function validateDocument(file: File): Promise<void> {
   const extension = file.name.split('.').pop()?.toLowerCase();
-  if (['png', 'jpg', 'jpeg', 'webp', 'gif', 'xlsx', 'xls', 'csv', 'json', 'txt', 'log'].includes(extension ?? '')) return validateEvidence(file);
+  if (['png', 'jpg', 'jpeg', 'webp', 'gif', 'mp4', 'webm', 'mov', 'xlsx', 'xls', 'csv', 'json', 'txt', 'log'].includes(extension ?? '')) return validateEvidence(file);
   if (!['pdf', 'doc', 'docx'].includes(extension ?? '')) {
-    throw new Error('Choose a supported project document: PDF, Word, Excel, CSV, image, JSON, TXT or LOG.');
+    throw new Error('Choose a supported project document: PDF, Word, Excel, CSV, image, video, JSON, TXT or LOG.');
   }
   if (file.size === 0) throw new Error('Empty documents cannot be attached.');
   if (file.size > MAX_DOCUMENT_BYTES) throw new Error('Each document must be 50 MB or smaller (52,428,800 bytes).');
