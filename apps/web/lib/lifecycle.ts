@@ -6,11 +6,12 @@ export type WorkKind = 'requirements' | 'defects' | 'uat' | 'configuration' | 'b
 export type WorkRecord = {
   id: string; kind: WorkKind; requestId: string; title: string; owner: string; status: string;
   type: string; description: string; notes: string; linkedId: string; priority: string;
-  expected: string; actual: string; date: string; version: number; updatedAt: string;
+  expected: string; actual: string; date: string; version: number; updatedAt: string; workspaceId?: string; workspaceName?: string;
 };
 export type AuditEntry = {id: string; recordId: string; action: string; at: string; owner: string; before: WorkRecord | null; after: WorkRecord};
 export type LifecycleState = {version: 1; records: WorkRecord[]; audit: AuditEntry[]};
 export const EMPTY_LIFECYCLE: LifecycleState = {version: 1, records: [], audit: []};
+export function activeWorkspaceLink(): Pick<WorkRecord, 'workspaceId' | 'workspaceName'> { try { const workspaceId = localStorage.getItem('pf360-active-workspace') ?? ''; const workspaces = JSON.parse(localStorage.getItem('pf360-workspaces') ?? '[]') as {id:string;name:string}[]; const workspaceName = workspaces.find(workspace => workspace.id === workspaceId)?.name; return workspaceName ? {workspaceId, workspaceName} : {}; } catch { return {}; } }
 export const MODULES: Record<WorkKind, {name: string; singular: string; description: string; types: readonly string[]; statuses: string[]}> = {
   requirements: {name: 'Requirements', singular: 'requirement', description: 'Connect ideas, requirements and delivery tasks to the RFC they support.', types: REQUIREMENT_TYPES, statuses: ['Draft', 'In review', 'Approved', 'Rejected']},
   defects: {name: 'Defects', singular: 'defect', description: 'Track failures from discovery through fix, retest and closure.', types: ['Functional', 'Billing', 'Performance', 'Integration', 'UI'], statuses: ['Open', 'In progress', 'Fixed', 'Retesting', 'Closed', 'Reopened']},

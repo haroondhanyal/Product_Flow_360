@@ -51,7 +51,7 @@ export async function validateEvidence(file: File): Promise<void> {
 }
 
 export function evidenceMime(name: string): string | undefined {
-  const types: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime' };
+  const types: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf', mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime' };
   return types[name.split('.').pop()?.toLowerCase() ?? ''];
 }
 

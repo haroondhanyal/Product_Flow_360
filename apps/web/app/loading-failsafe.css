@@ -1,0 +1,5 @@
+/* The app state still controls the normal splash. This only prevents an old
+   cached browser session from permanently covering a loaded screen. */
+.splash{animation:pf360-splash-failsafe 5s forwards}
+.splash.loaded{animation:none}
+@keyframes pf360-splash-failsafe{to{opacity:0;visibility:hidden;pointer-events:none}}

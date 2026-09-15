@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { RfcDocuments } from './rfc-documents';
 import { ArrowRight, CheckCircle2, ClipboardList, FlaskConical, Play, Plus, Search } from 'lucide-react';
 import { changeTestStatus, parseTestCases, recordTestRun, TEST_STAGES, TEST_STATUSES, TEST_STORAGE_KEY, type TestCase, type TestRun, type TestStage } from '../lib/test-cases';
-import { commitRecord, EMPTY_LIFECYCLE, LIFECYCLE_KEY, parseLifecycle, type WorkRecord } from '../lib/lifecycle';
+import { activeWorkspaceLink, commitRecord, EMPTY_LIFECYCLE, LIFECYCLE_KEY, parseLifecycle, type WorkRecord } from '../lib/lifecycle';
 
 type LinkedRequest = { id: string; title: string };
 
@@ -21,6 +21,7 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
   const [query, setQuery] = useState('');
   const [creating, setCreating] = useState(false);
   const [draftId, setDraftId] = useState('');
+  const editorRef = useRef<HTMLElement>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = tests.find(test => test.id === selectedId);
 
@@ -35,6 +36,7 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
     setLoaded(true);
   }, []);
   useEffect(() => { setRequestFilter(initialRequest); }, [initialRequest]);
+  useEffect(() => { if (creating) requestAnimationFrame(() => editorRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'})); }, [creating]);
 
   function persist(next: TestCase[]) {
     if (!loaded || readFailed) return false;
@@ -62,7 +64,7 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
       id: draftId || `TC-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, requestId: field('requestId'),
       title: field('title'), stage: field('stage') as TestStage, priority: field('priority'),
       owner: field('owner'), preconditions: field('preconditions'), steps: field('steps'),
-      expected: field('expected'), status: 'Draft', runs: [],
+      expected: field('expected'), status: 'Draft', runs: [], ...activeWorkspaceLink(),
     };
     if (persist([test, ...tests])) {
       setCreating(false); setDraftId(''); setSelectedId(test.id); setQuery(''); setStatusFilter('');
@@ -115,7 +117,7 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
     <div className="test-summary">{[{ label: 'Test cases', value: scoped.length, icon: ClipboardList }, { label: 'In progress', value: scoped.filter(test => test.status === 'In progress').length, icon: Play }, { label: 'Passed', value: scoped.filter(test => test.status === 'Passed').length, icon: CheckCircle2 }, { label: 'Failed / blocked', value: scoped.filter(test => ['Failed', 'Blocked'].includes(test.status)).length, icon: FlaskConical }].map(({ label, value, icon: Icon }) => <article key={label}><Icon size={18} /><span>{label}</span><strong>{value}</strong></article>)}</div>
     {error && <div className="inline-error" role="alert">{error}</div>}
     {message && <p className="success-message" role="status">{message}</p>}
-    {creating && <section className="test-editor feature-form"><div className="section-title"><h2>Create a test case</h2><button className="text-button" onClick={() => { setCreating(false); setDraftId(''); }}>Cancel</button></div><RfcDocuments key={draftId} requestId={`test:${draftId}`} evidence title="Evidence & attachments — upload screenshots, video or documents"/>
+    {creating && <section ref={editorRef} className="test-editor feature-form"><div className="section-title"><h2>Create a test case</h2><button className="text-button" onClick={() => { setCreating(false); setDraftId(''); }}>Cancel</button></div><RfcDocuments key={draftId} requestId={`test:${draftId}`} evidence title="Evidence for this test case — screenshots, video & documents"/>
       <form onSubmit={create}><div className="form-row"><label>Linked RFC<select name="requestId" defaultValue={requestFilter || requests[0]?.id} required>{requests.map(request => <option key={request.id} value={request.id}>{request.id} · {request.title}</option>)}</select></label><label>Test stage<select name="stage" aria-label="Test stage">{TEST_STAGES.map(stage => <option key={stage}>{stage}</option>)}</select></label></div>
         <label>Test case title<input name="title" autoFocus required maxLength={160} placeholder="e.g. Verify the upgraded speed profile" /></label>
         <div className="form-row"><label>Test owner<input name="owner" required maxLength={80} placeholder="Full name" /></label><label>Priority<select name="priority"><option>Medium</option><option>High</option><option>Low</option></select></label></div>

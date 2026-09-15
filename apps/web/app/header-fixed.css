@@ -1,0 +1,3 @@
+/* Keep navigation context and the active workspace visible while content scrolls. */
+header{position:sticky;top:0;z-index:35}
+.global-workspace-picker{position:fixed;z-index:45}

@@ -55,6 +55,7 @@ export function ThemeSettings({ theme, onChange, error }: { theme: Theme; onChan
       </button>)}
     </div>
     <div className="button-colours" role="group" aria-label="Primary button colour"><div><h3>Primary button colour</h3><p>Apply one accent colour to actions across the workspace.</p></div><div className="colour-options">{buttonColours.map(colour => <button key={colour.id} type="button" className={`colour-option ${buttonColour === colour.id ? 'chosen' : ''}`} aria-label={`${colour.name} button colour`} aria-pressed={buttonColour === colour.id} onClick={() => selectButtonColour(colour.id)}><i style={{ background: colour.colour }} />{buttonColour === colour.id && <Check size={14} />}</button>)}</div></div>
+    <section className="profile-settings"><div><h3>Profile & account</h3><p>Update your name, designation, department, email, mobile number and profile picture.</p></div><button className="text-button" type="button" onClick={() => window.dispatchEvent(new Event('pf360-open-profile'))}>Update profile</button></section>
     <p className="settings-note" role="status">{error || `${themes.find(item => item.id === theme)?.name} selected. Your preference is saved on this browser.`}</p>
   </section>;
 }

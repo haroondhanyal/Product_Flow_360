@@ -1,0 +1,1 @@
+.global-workspace-picker{position:fixed;top:12px;left:50%;right:auto;transform:translateX(-50%);width:270px;z-index:45}.global-workspace-menu{left:50%;right:auto;transform:translateX(-50%);width:320px}@media(max-width:900px){.global-workspace-picker{width:230px}}@media(max-width:650px){.global-workspace-picker{top:9px;left:50%;width:190px}.global-workspace-menu{width:280px}}

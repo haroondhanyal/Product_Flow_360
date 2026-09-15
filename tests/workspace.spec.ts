@@ -19,6 +19,10 @@ test.afterAll(() => { if (fixtures) rmSync(fixtures, { recursive: true, force: t
 
 async function openWorkspace(page: Page) {
   await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Login to ProductFlow 360' })).toBeVisible();
+  await page.getByLabel('Email').fill('admin@ptcl.com');
+  await page.locator('input[name="password"]').fill('PTCLAdmin!2026');
+  await page.getByRole('button', { name: 'Login to ProductFlow 360' }).click();
   await expect(page.locator('.splash')).toBeHidden();
 }
 async function openRFC(page: Page) {
