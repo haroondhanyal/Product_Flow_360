@@ -20,6 +20,7 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
   const [statusFilter, setStatusFilter] = useState('');
   const [query, setQuery] = useState('');
   const [creating, setCreating] = useState(false);
+  const [draftId, setDraftId] = useState('');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = tests.find(test => test.id === selectedId);
 
@@ -58,13 +59,13 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
       setError('Choose an existing RFC.'); return;
     }
     const test: TestCase = {
-      id: `TC-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, requestId: field('requestId'),
+      id: draftId || `TC-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, requestId: field('requestId'),
       title: field('title'), stage: field('stage') as TestStage, priority: field('priority'),
       owner: field('owner'), preconditions: field('preconditions'), steps: field('steps'),
       expected: field('expected'), status: 'Draft', runs: [],
     };
     if (persist([test, ...tests])) {
-      setCreating(false); setSelectedId(test.id); setQuery(''); setStatusFilter('');
+      setCreating(false); setDraftId(''); setSelectedId(test.id); setQuery(''); setStatusFilter('');
       setRequestFilter(test.requestId); setMessage('Test case created. Review the steps, then mark it ready.');
     }
   }
@@ -109,12 +110,12 @@ export function TestManagement({ requests, initialRequest = '', onOpenRequest }:
 
   return <div className="test-management">
     <div className="test-intro"><div><span className="eyebrow">QUALITY AT EVERY GATE</span><h2>From requirements to confidence.</h2><p>Link a test to an RFC, define the expected outcome, and record every run.</p></div>
-      <button className="primary" disabled={!loaded || readFailed || !requests.length} onClick={() => { setCreating(true); setSelectedId(null); setMessage(''); }}><Plus size={17} />New test case</button></div>
+      <button className="primary" disabled={!loaded || readFailed || !requests.length} onClick={() => { setDraftId(`TC-${crypto.randomUUID().slice(0, 8).toUpperCase()}`); setCreating(true); setSelectedId(null); setMessage(''); }}><Plus size={17} />New test case</button></div>
     <ol className="test-flow" aria-label="Test case workflow">{['Link RFC', 'Define test', 'Mark ready', 'Execute', 'Record & retest'].map((step, index) => <li key={step}><span>{index + 1}</span>{step}{index < 4 && <ArrowRight size={15} />}</li>)}</ol>
     <div className="test-summary">{[{ label: 'Test cases', value: scoped.length, icon: ClipboardList }, { label: 'In progress', value: scoped.filter(test => test.status === 'In progress').length, icon: Play }, { label: 'Passed', value: scoped.filter(test => test.status === 'Passed').length, icon: CheckCircle2 }, { label: 'Failed / blocked', value: scoped.filter(test => ['Failed', 'Blocked'].includes(test.status)).length, icon: FlaskConical }].map(({ label, value, icon: Icon }) => <article key={label}><Icon size={18} /><span>{label}</span><strong>{value}</strong></article>)}</div>
     {error && <div className="inline-error" role="alert">{error}</div>}
     {message && <p className="success-message" role="status">{message}</p>}
-    {creating && <section className="test-editor feature-form"><div className="section-title"><h2>Create a test case</h2><button className="text-button" onClick={() => setCreating(false)}>Cancel</button></div>
+    {creating && <section className="test-editor feature-form"><div className="section-title"><h2>Create a test case</h2><button className="text-button" onClick={() => { setCreating(false); setDraftId(''); }}>Cancel</button></div><RfcDocuments key={draftId} requestId={`test:${draftId}`} evidence title="Evidence & attachments — upload screenshots, video or documents"/>
       <form onSubmit={create}><div className="form-row"><label>Linked RFC<select name="requestId" defaultValue={requestFilter || requests[0]?.id} required>{requests.map(request => <option key={request.id} value={request.id}>{request.id} · {request.title}</option>)}</select></label><label>Test stage<select name="stage" aria-label="Test stage">{TEST_STAGES.map(stage => <option key={stage}>{stage}</option>)}</select></label></div>
         <label>Test case title<input name="title" autoFocus required maxLength={160} placeholder="e.g. Verify the upgraded speed profile" /></label>
         <div className="form-row"><label>Test owner<input name="owner" required maxLength={80} placeholder="Full name" /></label><label>Priority<select name="priority"><option>Medium</option><option>High</option><option>Low</option></select></label></div>

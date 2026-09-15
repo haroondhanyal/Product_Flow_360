@@ -15,6 +15,7 @@ export function LifecycleBoard({kind, requests, onOpenRequest}: {kind: WorkKind;
   const [error, setError] = useState(''), [message, setMessage] = useState('');
   const [query, setQuery] = useState(''), [requestFilter, setRequestFilter] = useState('');
   const [selectedId, setSelectedId] = useState(''), [editing, setEditing] = useState<WorkRecord | 'new' | null>(null);
+  const [draftId, setDraftId] = useState('');
   const module = MODULES[kind];
   const selected = state.records.find(record => record.id === selectedId);
   useEffect(() => {
@@ -43,14 +44,14 @@ export function LifecycleBoard({kind, requests, onOpenRequest}: {kind: WorkKind;
     if (!field('title') || !field('owner') || !field('description')) { setError('Title, owner and description are required.'); return; }
     if (!requests.some(request => request.id === field('requestId'))) { setError('Choose an existing RFC.'); return; }
     const old = editing && editing !== 'new' ? editing : null;
-    const record: WorkRecord = {id: old?.id ?? `${kind.slice(0,3).toUpperCase()}-${crypto.randomUUID().slice(0,8).toUpperCase()}`, kind, requestId: field('requestId'), title: field('title'), owner: field('owner'), type: field('type'), status: old?.status ?? module.statuses[0], description: field('description'), notes: field('notes'), linkedId: field('linkedId'), priority: field('priority'), expected: field('expected'), actual: field('actual'), date: field('date'), version: old?.version ?? 0, updatedAt: old?.updatedAt ?? ''};
+    const record: WorkRecord = {id: old?.id || draftId || `${kind.slice(0,3).toUpperCase()}-${crypto.randomUUID().slice(0,8).toUpperCase()}`, kind, requestId: field('requestId'), title: field('title'), owner: field('owner'), type: field('type'), status: old?.status ?? module.statuses[0], description: field('description'), notes: field('notes'), linkedId: field('linkedId'), priority: field('priority'), expected: field('expected'), actual: field('actual'), date: field('date'), version: old?.version ?? 0, updatedAt: old?.updatedAt ?? ''};
     try {
       if (record.linkedId) {
         const match = kind === 'defects' ? tests.find(test => test.id === record.linkedId) : state.records.find(item => item.id === record.linkedId);
         if (!match || match.requestId !== record.requestId) throw new Error('Linked record must belong to the same RFC.');
       }
       if (['billing','revenue'].includes(kind)) record.status = reconciliation(record).status;
-      if (save(record, old ? 'Record updated' : 'Record created')) { setEditing(null); setSelectedId(record.id); }
+      if (save(record, old ? 'Record updated' : 'Record created')) { setEditing(null); setDraftId(''); setSelectedId(record.id); }
     } catch (error) { setError((error as Error).message); }
   }
   function transition(event: React.FormEvent<HTMLFormElement>) {
@@ -72,10 +73,10 @@ export function LifecycleBoard({kind, requests, onOpenRequest}: {kind: WorkKind;
   const editRecord = editing && editing !== 'new' ? editing : undefined;
 
   return <div className="lifecycle-board">
-    <div className="test-intro"><div><span className="eyebrow">CONNECTED DELIVERY</span><h2>{module.name}</h2><p>{module.description}</p></div><button className="primary" disabled={!ready || blocked || !requests.length} onClick={() => { setEditing('new'); setSelectedId(''); setMessage(''); }}><Plus size={16}/>New {module.singular}</button></div>
+    <div className="test-intro"><div><span className="eyebrow">CONNECTED DELIVERY</span><h2>{module.name}</h2><p>{module.description}</p></div><button className="primary" disabled={!ready || blocked || !requests.length} onClick={() => { setDraftId(`${kind.slice(0,3).toUpperCase()}-${crypto.randomUUID().slice(0,8).toUpperCase()}`); setEditing('new'); setSelectedId(''); setMessage(''); }}><Plus size={16}/>New {module.singular}</button></div>
     <div className="workflow-states">{module.statuses.map((status,index) => <span key={status}>{index > 0 && <small>→</small>}{status}</span>)}</div>
     {error && <div className="inline-error" role="alert">{error}</div>}{message && <p className="success-message" role="status">{message}</p>}
-    {editing && <section className="test-editor feature-form"><div className="section-title"><h2>{editRecord ? 'Edit' : 'Create'} {module.singular}</h2><button className="text-button" onClick={() => setEditing(null)}>Cancel</button></div><form key={editRecord?.id ?? 'new'} onSubmit={submit}>
+    {editing && <section className="test-editor feature-form"><div className="section-title"><h2>{editRecord ? 'Edit' : 'Create'} {module.singular}</h2><button className="text-button" onClick={() => { setEditing(null); setDraftId(''); }}>Cancel</button></div><RfcDocuments key={editRecord?.id ?? draftId} requestId={`work:${editRecord?.id ?? draftId}`} evidence title="Evidence & attachments — upload screenshots, video or documents"/><form key={editRecord?.id ?? draftId} onSubmit={submit}>
       <div className="form-row"><label>Linked RFC<select name="requestId" aria-label="Linked RFC" defaultValue={editRecord?.requestId ?? requestFilter ?? ''} required><option value="">Choose RFC</option>{requests.map(request => <option key={request.id} value={request.id}>{request.id} · {request.title}</option>)}</select></label><label>Record type<select name="type" aria-label="Record type" defaultValue={editRecord?.type}>{module.types.map(type => <option key={type}>{type}</option>)}</select></label></div>
       <label>Title<input name="title" required maxLength={160} autoFocus defaultValue={editRecord?.title}/></label><div className="form-row"><label>Owner / reviewer<input name="owner" required maxLength={80} defaultValue={editRecord?.owner}/></label><label>Priority<select name="priority" aria-label="Priority" defaultValue={editRecord?.priority ?? 'Medium'}>{['Critical','High','Medium','Low'].map(priority => <option key={priority}>{priority}</option>)}</select></label></div>
       <label>{kind === 'releases' ? 'Rollout plan' : kind === 'configuration' ? 'Configuration definition' : 'Description / steps'}<textarea name="description" required rows={4} maxLength={10000} defaultValue={editRecord?.description}/></label>
