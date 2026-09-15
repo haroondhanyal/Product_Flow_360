@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { BarChart3, Download, FileSpreadsheet, UploadCloud } from 'lucide-react';
-import { allLocal, putLocal } from '../lib/local-db';
-import { findColumn, sheetTable, summarize, type ExcelReport, type SheetData } from '../lib/reporting';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { BarChart3, Download, FileSpreadsheet, Paperclip, Pencil, Plus, Save, Search, SlidersHorizontal, Trash2, UploadCloud, X } from 'lucide-react';
+import { allLocal, deleteLocal, putLocal } from '../lib/local-db';
+import { RfcDocuments } from './rfc-documents';
+import { findColumn, normalizeStatus, sheetTable, summarize, type ExcelReport, type SheetData } from '../lib/reporting';
 import { parseTestCases, TEST_STORAGE_KEY, type TestCase } from '../lib/test-cases';
 
 function saveDownload(data: BlobPart, name: string, type: string) {
@@ -20,6 +21,9 @@ export function ExcelReports({requests}: {requests: {id: string; title: string}[
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [message, setMessage] = useState('');
   const [importRFC, setImportRFC] = useState('');
   const [page, setPage] = useState(0);
+  const [dataQuery, setDataQuery] = useState(''), [dataStatus, setDataStatus] = useState('All statuses'), [dataOwner, setDataOwner] = useState('All owners'), [sortBy, setSortBy] = useState('original');
+  const [editingRow, setEditingRow] = useState<number | null>(null), [rowDraft, setRowDraft] = useState<string[]>([]);
+  const [addingRow, setAddingRow] = useState(false), [evidenceRow, setEvidenceRow] = useState<number | null>(null);
   const input = useRef<HTMLInputElement>(null), worker = useRef<Worker | null>(null);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const operation = useRef(0);
@@ -30,11 +34,26 @@ export function ExcelReports({requests}: {requests: {id: string; title: string}[
   }, []);
   const sheet = report?.sheets[sheetIndex];
   const table = sheet ? sheetTable(sheet, headerRow) : {headers: [], rows: []};
+  const dataRows = sheet ? sheet.rows.slice(headerRow + 1).map((row, offset) => ({row, sourceIndex: headerRow + offset + 1})).filter(({row}) => row.some(value => value.trim())) : [];
   const statusColumn = statusOverride ?? findColumn(table.headers, ['Status', 'Result', 'Test result', 'Test status', 'Execution status', 'Outcome']);
   const ownerColumn = findColumn(table.headers, ['Owner', 'Tester', 'Assigned to', 'Executed by', 'Assignee']);
   const summary = summarize(table.rows, statusColumn, ownerColumn);
+  const statusOptions = useMemo(() => Object.keys(summary.counts).sort(), [summary.counts]);
+  const ownerOptions = useMemo(() => Object.keys(summary.owners).sort(), [summary.owners]);
+  const filteredDataRows = useMemo(() => dataRows.filter(({row}) => {
+    const matchesQuery = !dataQuery.trim() || row.join(' ').toLowerCase().includes(dataQuery.trim().toLowerCase());
+    const matchesStatus = dataStatus === 'All statuses' || (statusColumn >= 0 && normalizeStatus(row[statusColumn] ?? '') === dataStatus);
+    const matchesOwner = dataOwner === 'All owners' || (ownerColumn >= 0 && (row[ownerColumn] ?? '').trim().toLowerCase() === dataOwner.toLowerCase());
+    return matchesQuery && matchesStatus && matchesOwner;
+  }).sort((a, b) => sortBy === 'original' ? a.sourceIndex - b.sourceIndex : (a.row[Number(sortBy)] ?? '').localeCompare(b.row[Number(sortBy)] ?? '', undefined, {numeric: true})), [dataRows, dataOwner, dataQuery, dataStatus, ownerColumn, sortBy, statusColumn]);
+  const dashboard = useMemo(() => reports.reduce((total, saved) => {
+    const savedTable = saved.sheets[0] ? sheetTable(saved.sheets[0], 0) : {headers: [], rows: []};
+    const savedStatus = findColumn(savedTable.headers, ['Status', 'Result', 'Test result', 'Test status', 'Execution status', 'Outcome']);
+    const savedSummary = summarize(savedTable.rows, savedStatus);
+    return {reports: total.reports + 1, rows: total.rows + savedSummary.total, failed: total.failed + savedSummary.failed + savedSummary.blocked};
+  }, {reports: 0, rows: 0, failed: 0}), [reports]);
 
-  function resetSelection() { setSheetIndex(0); setHeaderRow(0); setStatusOverride(null); setPage(0); }
+  function resetSelection() { setSheetIndex(0); setHeaderRow(0); setStatusOverride(null); setPage(0); setDataQuery(''); setDataStatus('All statuses'); setDataOwner('All owners'); setSortBy('original'); setEditingRow(null); setAddingRow(false); setEvidenceRow(null); }
   function stop() { operation.current++; worker.current?.terminate(); worker.current = null; if (timeout.current) clearTimeout(timeout.current); setBusy(false); }
   async function loadFile(file?: File) {
     if (!file || busy) return;
@@ -73,13 +92,46 @@ export function ExcelReports({requests}: {requests: {id: string; title: string}[
     try {
       const {Workbook} = await import('exceljs');
       const workbook = new Workbook();
+      const exportedRows = filteredDataRows.map(({row}) => row);
+      const exportedSummary = summarize(exportedRows, statusColumn, ownerColumn);
       const overview = workbook.addWorksheet('Summary');
-      overview.addRows([['PF360 report', report.fileName], ['Sheet', sheet.name], ['Generated at', new Date().toISOString()], ['Total rows', summary.total], ['Passed', summary.passed], ['Failed', summary.failed], ['Blocked', summary.blocked], ['Pass rate (Passed / Passed + Failed)', summary.passRate === null ? 'N/A' : `${summary.passRate}%`], [], ['Status', 'Count'], ...Object.entries(summary.counts)]);
-      const data = workbook.addWorksheet('Extracted data'); data.addRow(table.headers); data.addRows(table.rows);
+      overview.addRows([['PF360 report', report.fileName], ['Sheet', sheet.name], ['Generated at', new Date().toISOString()], ['Exported rows', exportedSummary.total], ['Passed', exportedSummary.passed], ['Failed', exportedSummary.failed], ['Blocked', exportedSummary.blocked], ['Pass rate (Passed / Passed + Failed)', exportedSummary.passRate === null ? 'N/A' : `${exportedSummary.passRate}%`], [], ['Status', 'Count'], ...Object.entries(exportedSummary.counts)]);
+      const data = workbook.addWorksheet('Extracted data'); data.addRow(table.headers); data.addRows(exportedRows);
       for (const tab of [overview, data]) { tab.getRow(1).font = {bold: true}; tab.columns.forEach(column => { column.width = 28; }); tab.views = [{state: 'frozen', ySplit: 1}]; }
       const bytes = await workbook.xlsx.writeBuffer();
-      saveDownload(new Uint8Array(bytes), 'PF360-report.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      saveDownload(new Uint8Array(bytes), 'PF360-filtered-report.xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     } catch { setError('The report could not be exported. Please try again.'); }
+  }
+  async function deleteReport() {
+    if (!report) return;
+    if (!window.confirm(`Delete “${report.fileName}”? Its extracted data will be removed from this browser.`)) return;
+    setError(''); setMessage('');
+    try {
+      await deleteLocal(report.id);
+      const remaining = reports.filter(item => item.id !== report.id);
+      setReports(remaining); setReport(remaining[0] ?? null); resetSelection();
+      setMessage('Report deleted.');
+    } catch { setError('The report could not be deleted. Please try again.'); }
+  }
+  async function saveReportData(next: ExcelReport, success: string) {
+    try { await putLocal(next); setReport(next); setReports(items => items.map(item => item.id === next.id ? next : item)); setMessage(`${success} Summary, charts and the downloaded report now use the updated data.`); setError(''); }
+    catch { setError('Your changes could not be saved. Browser storage may be full.'); }
+  }
+  async function updateRow(sourceIndex: number, values: string[]) {
+    if (!report) return;
+    const next = {...report, sheets: report.sheets.map((candidate, index) => index === sheetIndex ? {...candidate, rows: candidate.rows.map((row, rowIndex) => rowIndex === sourceIndex ? values : row)} : candidate)};
+    await saveReportData(next, 'Extracted data updated.'); setEditingRow(null);
+  }
+  async function addRow() {
+    if (!report || !rowDraft.some(value => value.trim())) { setError('Add at least one value before saving the row.'); return; }
+    const next = {...report, sheets: report.sheets.map((candidate, index) => index === sheetIndex ? {...candidate, rows: [...candidate.rows, rowDraft]} : candidate)};
+    await saveReportData(next, 'New row added to extracted data.'); setAddingRow(false); setRowDraft([]);
+  }
+  async function deleteRow(sourceIndex: number) {
+    if (!report || !window.confirm('Delete this extracted data row?')) return;
+    const next = {...report, sheets: report.sheets.map((candidate, index) => index === sheetIndex ? {...candidate, rows: candidate.rows.map((row, rowIndex) => rowIndex === sourceIndex ? Array.from({length: row.length}, () => '') : row)} : candidate)};
+    await saveReportData(next, 'Extracted data row deleted.');
+    if (evidenceRow === sourceIndex) setEvidenceRow(null);
   }
   function importTests() {
     setError(''); setMessage('');
@@ -105,13 +157,14 @@ export function ExcelReports({requests}: {requests: {id: string; title: string}[
     <div className="test-intro"><div><span className="eyebrow">FROM SPREADSHEET TO INSIGHT</span><h2>Your Excel data. A report, automatically.</h2><p>Upload a workbook to extract rows, understand results and share a report.</p></div><span className="metric-icon green"><BarChart3 size={23}/></span></div>
     <div className="document-dropzone report-dropzone" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); void loadFile(event.dataTransfer.files[0]); }}><UploadCloud size={30}/><strong>{busy ? 'Reading workbook and building report…' : 'Drop an Excel workbook or CSV here'}</strong><span>XLSX / CSV · Up to 50 MB · 20,000 rows · 100 columns</span><button className="primary" disabled={busy} onClick={() => input.current?.click()}><FileSpreadsheet size={17}/>Choose spreadsheet</button>{busy && <button className="text-button" onClick={stop}>Cancel processing</button>}<input type="file" ref={input} className="sr-only" tabIndex={-1} aria-label="Upload spreadsheet" accept=".xlsx,.csv" disabled={busy} onChange={event => void loadFile(event.target.files?.[0])}/></div>
     {error && <div role="alert" className="inline-error">{error}</div>}{message && <p role="status" className="success-message">{message}</p>}
-    {reports.length > 0 && <label className="saved-reports">Saved reports<select aria-label="Saved reports" value={report?.id ?? ''} onChange={event => { const chosen = reports.find(item => item.id === event.target.value); if (chosen) { setReport(chosen); resetSelection(); setMessage(''); setError(''); } }}><option value="" disabled>Select a saved report</option>{reports.map(item => <option key={item.id} value={item.id}>{item.fileName} · {new Date(item.createdAt).toLocaleString()}</option>)}</select></label>}
+    {reports.length > 0 && <div className="test-summary report-library-summary"><article><span>Saved reports</span><strong>{dashboard.reports}</strong></article><article><span>Extracted rows</span><strong>{dashboard.rows}</strong></article><article><span>Failed / blocked</span><strong>{dashboard.failed}</strong></article><article><span>Report health</span><strong>{dashboard.rows ? `${Math.round((dashboard.rows - dashboard.failed) / dashboard.rows * 100)}%` : '—'}</strong></article></div>}
+    {reports.length > 0 && <section className="saved-reports" aria-label="Saved report actions"><label>Saved reports<select aria-label="Saved reports" value={report?.id ?? ''} onChange={event => { const chosen = reports.find(item => item.id === event.target.value); if (chosen) { setReport(chosen); resetSelection(); setMessage(''); setError(''); } }}><option value="" disabled>Select a saved report</option>{reports.map(item => <option key={item.id} value={item.id}>{item.fileName} · {new Date(item.createdAt).toLocaleString()}</option>)}</select></label><div className="report-actions"><button className="text-button" onClick={() => input.current?.click()}><Plus size={16}/>Add another report</button><button className="text-button danger-action" disabled={!report} onClick={() => void deleteReport()}><Trash2 size={16}/>Delete selected report</button></div></section>}
     {report && sheet && <>
-      <section className="report-controls feature-form"><div className="section-title"><div><h2>{report.fileName}</h2><p>{report.sheets.length} sheets extracted · Source values are preserved</p></div><button className="text-button" onClick={() => void exportReport()}><Download size={16}/>Download report</button></div><div className="form-row"><label>Worksheet<select aria-label="Worksheet" value={sheetIndex} onChange={event => { setSheetIndex(Number(event.target.value)); setHeaderRow(0); setStatusOverride(null); setPage(0); }}>{report.sheets.map((sheet, index) => <option key={index} value={index}>{sheet.name}</option>)}</select></label><label>Header row (non-empty rows)<select aria-label="Header row" value={headerRow} onChange={event => { setHeaderRow(Number(event.target.value)); setStatusOverride(null); setPage(0); }}>{sheet.rows.slice(0,20).map((_,index) => <option key={index} value={index}>Row {index + 1}</option>)}</select></label><label>Status column<select aria-label="Status column" value={statusColumn} onChange={event => setStatusOverride(Number(event.target.value))}><option value={-1}>No status column</option>{table.headers.map((header,index) => <option key={index} value={index}>{header}</option>)}</select></label></div></section>
+      <section className="report-controls feature-form"><div className="section-title"><div><h2>{report.fileName}</h2><p>{report.sheets.length} sheets extracted · Source values are preserved</p></div><button className="text-button" onClick={() => void exportReport()}><Download size={16}/>Download filtered report</button></div><div className="form-row"><label>Worksheet<select aria-label="Worksheet" value={sheetIndex} onChange={event => { setSheetIndex(Number(event.target.value)); setHeaderRow(0); setStatusOverride(null); setPage(0); setEditingRow(null); setEvidenceRow(null); }}>{report.sheets.map((sheet, index) => <option key={index} value={index}>{sheet.name}</option>)}</select></label><label>Header row (non-empty rows)<select aria-label="Header row" value={headerRow} onChange={event => { setHeaderRow(Number(event.target.value)); setStatusOverride(null); setPage(0); setEditingRow(null); setEvidenceRow(null); }}>{sheet.rows.slice(0,20).map((_,index) => <option key={index} value={index}>Row {index + 1}</option>)}</select></label><label>Status column<select aria-label="Status column" value={statusColumn} onChange={event => setStatusOverride(Number(event.target.value))}><option value={-1}>No status column</option>{table.headers.map((header,index) => <option key={index} value={index}>{header}</option>)}</select></label></div></section>
       <div className="test-summary report-summary">{[['Data rows',summary.total],['Passed',summary.passed],['Failed / blocked',summary.failed + summary.blocked],['Pass rate',summary.passRate === null ? 'N/A' : `${summary.passRate}%`]].map(([label,value]) => <article key={label}><span>{label}</span><strong>{value}</strong></article>)}</div>
       <p className="report-note">Pass rate = Passed ÷ (Passed + Failed). Blocked, unrun and unclassified rows are excluded from the rate. Formula cells use saved Excel results; formulas are not recalculated.</p>
       <div className="report-charts"><Breakdown title="Execution breakdown" entries={Object.entries(summary.counts)} total={summary.total}/><Breakdown title="Work by owner" entries={Object.entries(summary.owners)} total={summary.total}/></div>
-      <section className="requests"><div className="section-title"><h2>Extracted data</h2><span className="subtle">{table.rows.length} rows · {table.headers.length} columns</span></div><div className="table-scroll"><table><thead><tr>{table.headers.map((header,index) => <th key={index}>{header}</th>)}</tr></thead><tbody>{table.rows.slice(page * 25, page * 25 + 25).map((row,index) => <tr key={index}>{table.headers.map((_,column) => <td key={column}>{row[column] || '—'}</td>)}</tr>)}</tbody></table></div><div className="table-footer"><button className="text-button" disabled={page === 0} onClick={() => setPage(page - 1)}>Previous</button><span>Page {page + 1} of {Math.max(1,Math.ceil(table.rows.length / 25))}</span><button className="text-button" disabled={(page + 1) * 25 >= table.rows.length} onClick={() => setPage(page + 1)}>Next</button></div></section>
+      <section className="requests extracted-data"><div className="section-title"><div><h2>Extracted data</h2><span className="subtle">{filteredDataRows.length} of {table.rows.length} rows · {table.headers.length} columns</span></div><button className="text-button" onClick={() => { setAddingRow(true); setEditingRow(null); setRowDraft(Array.from({length: table.headers.length}, () => '')); }}><Plus size={16}/>Add row</button></div><p className="report-note">Every row keeps its own actions together: edit/update, attach screenshots or evidence, and delete.</p><div className="table-toolbar report-data-toolbar"><label className="search"><Search size={17}/><input aria-label="Search extracted data" placeholder="Search any extracted value…" value={dataQuery} onChange={event => { setDataQuery(event.target.value); setPage(0); }}/></label><label className="filter"><SlidersHorizontal size={15}/><select aria-label="Filter extracted status" value={dataStatus} onChange={event => { setDataStatus(event.target.value); setPage(0); }}><option>All statuses</option>{statusOptions.map(value => <option key={value}>{value}</option>)}</select></label><label className="filter"><select aria-label="Filter extracted owner" value={dataOwner} onChange={event => { setDataOwner(event.target.value); setPage(0); }}><option>All owners</option>{ownerOptions.map(value => <option key={value}>{value}</option>)}</select></label><label className="filter"><select aria-label="Sort extracted data" value={sortBy} onChange={event => { setSortBy(event.target.value); setPage(0); }}><option value="original">Original order</option>{table.headers.map((header,index) => <option key={index} value={index}>Sort by {header}</option>)}</select></label></div><div className="table-scroll"><table><thead><tr>{table.headers.map((header,index) => <th key={index}>{header}</th>)}<th className="action-column">Actions</th></tr></thead><tbody>{filteredDataRows.slice(page * 25, page * 25 + 25).map(({row,sourceIndex}) => <Fragment key={sourceIndex}><tr>{table.headers.map((header,column) => <td key={column}>{editingRow === sourceIndex ? <input aria-label={`Edit ${header}`} value={rowDraft[column] ?? ''} onChange={event => setRowDraft(values => values.map((value,index) => index === column ? event.target.value : value))}/> : row[column] || '—'}</td>)}<td className="row-actions">{editingRow === sourceIndex ? <><button className="row-action" onClick={() => void updateRow(sourceIndex, rowDraft)}><Save size={15}/>Update</button><button className="row-action" onClick={() => setEditingRow(null)}><X size={15}/>Cancel</button></> : <><button className="row-action" onClick={() => { setEditingRow(sourceIndex); setAddingRow(false); setRowDraft(Array.from({length: table.headers.length}, (_, index) => row[index] ?? '')); }}><Pencil size={15}/>Edit</button><button className="row-action" onClick={() => setEvidenceRow(open => open === sourceIndex ? null : sourceIndex)}><Paperclip size={15}/>Evidence</button><button className="row-action danger-action" onClick={() => void deleteRow(sourceIndex)}><Trash2 size={15}/>Delete</button></>}</td></tr>{evidenceRow === sourceIndex && <tr className="row-evidence"><td colSpan={table.headers.length + 1}><RfcDocuments requestId={`report-evidence:${report.id}:${sheetIndex}:${sourceIndex}`} evidence title={`Evidence for extracted row ${sourceIndex + 1}`} /></td></tr>}</Fragment>)}{addingRow && <tr className="new-row">{table.headers.map((header,column) => <td key={column}><input aria-label={`New ${header}`} value={rowDraft[column] ?? ''} onChange={event => setRowDraft(values => values.map((value,index) => index === column ? event.target.value : value))}/></td>)}<td className="row-actions"><button className="row-action" onClick={() => void addRow()}><Save size={15}/>Save</button><button className="row-action" onClick={() => setAddingRow(false)}><X size={15}/>Cancel</button></td></tr>}</tbody></table></div><div className="table-footer"><button className="text-button" disabled={page === 0} onClick={() => setPage(page - 1)}>Previous</button><span>Page {page + 1} of {Math.max(1,Math.ceil(filteredDataRows.length / 25))}</span><button className="text-button" disabled={(page + 1) * 25 >= filteredDataRows.length} onClick={() => setPage(page + 1)}>Next</button></div></section>
       <section className="test-editor feature-form"><h2>Turn this sheet into test cases</h2><p className="report-note">Requires Title, Steps and Expected result columns. Imported cases start as QA drafts; spreadsheet statuses do not create execution history.</p><label>Target RFC<select aria-label="Target RFC" value={importRFC} onChange={event => setImportRFC(event.target.value)}><option value="">Choose RFC</option>{requests.map(request => <option key={request.id} value={request.id}>{request.id} · {request.title}</option>)}</select></label><button className="primary" disabled={!table.rows.length} onClick={importTests}>Import as draft test cases</button></section>
     </>}
   </div>;

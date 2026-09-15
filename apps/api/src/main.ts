@@ -3,16 +3,14 @@ import { Body, CanActivate, Controller, ExecutionContext, Get, HttpException, Ht
 import { NestFactory } from '@nestjs/core';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import helmet from 'helmet';
-import { Pool } from 'pg';
-import { scryptSync, timingSafeEqual } from 'node:crypto';
+import { randomUUID, scryptSync, timingSafeEqual } from 'node:crypto';
 import { z } from 'zod';
+import { type LocalData, type Role, type StoredRecord, readLocalData, writeLocalData } from './local-store.js';
 
 const ROLE_VALUES = ['Super Admin', 'Admin', 'Project Manager', 'Product Manager', 'QA Lead', 'QA Engineer', 'Developer', 'Viewer'] as const;
 const ENTITY_VALUES = ['project', 'rfc', 'user-story', 'requirement', 'test-case', 'test-run', 'bug', 'document', 'comment', 'link'] as const;
-type Role = typeof ROLE_VALUES[number];
 type EntityType = typeof ENTITY_VALUES[number];
 type Session = { sub: string; workspaceId: string; role: Role };
-
 const loginSchema = z.object({ email: z.string().trim().email(), password: z.string().min(12).max(256) });
 const entitySchema = z.object({ workspaceId: z.string().uuid(), projectId: z.string().uuid().nullable().optional(), title: z.string().trim().min(1).max(160), status: z.string().trim().min(1).max(80), payload: z.record(z.string(), z.unknown()).default({}) });
 
@@ -30,8 +28,8 @@ function verifyPassword(password: string, stored: string) {
 
 @Injectable()
 class DatabaseService {
-  private readonly pool = new Pool({ connectionString: process.env.DATABASE_URL });
-  query<T extends Record<string, unknown> = Record<string, unknown>>(sql: string, values: unknown[] = []) { return this.pool.query<T>(sql, values); }
+  async read() { return readLocalData(); }
+  async write(mutator: (data: LocalData) => void) { const data = await this.read(); mutator(data); await writeLocalData(data); return data; }
 }
 
 @Injectable()
@@ -40,10 +38,11 @@ class AuthService {
   async login(input: unknown) {
     const parsed = loginSchema.safeParse(input);
     if (!parsed.success) throw new HttpException('Enter a valid email and password (minimum 12 characters).', HttpStatus.BAD_REQUEST);
-    const result = await this.database.query<{id:string; password_hash:string; workspace_id:string; role:Role}>('select u.id, u.password_hash, m.workspace_id, m.role from app_user u join workspace_member m on m.user_id = u.id where lower(u.email) = lower($1) and u.active = true limit 1', [parsed.data.email]);
-    const user = result.rows[0];
-    if (!user || !verifyPassword(parsed.data.password, user.password_hash) || !ROLE_VALUES.includes(user.role)) throw new HttpException('Invalid credentials.', HttpStatus.UNAUTHORIZED);
-    const payload: Session = { sub: user.id, workspaceId: user.workspace_id, role: user.role };
+    const data = await this.database.read();
+    const user = data.users.find(candidate => candidate.active && candidate.email.toLowerCase() === parsed.data.email.toLowerCase());
+    const member = user && data.memberships.find(candidate => candidate.userId === user.id);
+    if (!user || !member || !verifyPassword(parsed.data.password, user.passwordHash)) throw new HttpException('Invalid credentials.', HttpStatus.UNAUTHORIZED);
+    const payload: Session = { sub: user.id, workspaceId: member.workspaceId, role: member.role };
     return { accessToken: await this.jwt.signAsync(payload), tokenType: 'Bearer', expiresIn: '15m' };
   }
 }
@@ -63,7 +62,7 @@ class JwtGuard implements CanActivate {
 @Controller('health')
 class HealthController {
   constructor(private readonly database: DatabaseService) {}
-  @Get() async health() { await this.database.query('select 1'); return { status: 'ok', service: 'pf360-api', at: new Date().toISOString() }; }
+  @Get() async health() { await this.database.read(); return { status: 'ok', service: 'pf360-api', storage: 'local-file', at: new Date().toISOString() }; }
 }
 
 @Controller('auth')
@@ -75,8 +74,7 @@ class EntityController {
   constructor(private readonly database: DatabaseService) {}
   @Get(':type') async list(@Param('type') type: string, @Req() request: { user: Session }) {
     const entityType = assertEntity(type);
-    const result = await this.database.query('select id, workspace_id as "workspaceId", project_id as "projectId", entity_type as "entityType", title, status, payload, created_at as "createdAt", updated_at as "updatedAt" from entity_record where workspace_id=$1 and entity_type=$2 order by updated_at desc', [request.user.workspaceId, entityType]);
-    return result.rows;
+    return (await this.database.read()).records.filter(record => record.workspaceId === request.user.workspaceId && record.entityType === entityType).sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   }
   @Post(':type') async create(@Param('type') type: string, @Body() body: unknown, @Req() request: { user: Session }) { return this.write(assertEntity(type), null, body, request.user); }
   @Post(':type/:id') async update(@Param('type') type: string, @Param('id') id: string, @Body() body: unknown, @Req() request: { user: Session }) { return this.write(assertEntity(type), id, body, request.user); }
@@ -85,14 +83,16 @@ class EntityController {
     const parsed = entitySchema.safeParse(body);
     if (!parsed.success) throw new HttpException(parsed.error.issues.map(issue => issue.message).join(' '), HttpStatus.BAD_REQUEST);
     if (parsed.data.workspaceId !== user.workspaceId) throw new HttpException('Workspace boundary violation.', HttpStatus.FORBIDDEN);
-    const existing = id ? await this.database.query<{id:string; payload:unknown}>('select id,payload from entity_record where id=$1 and workspace_id=$2 and entity_type=$3', [id, user.workspaceId, type]) : undefined;
-    if (id && !existing?.rows[0]) throw new HttpException('Record not found.', HttpStatus.NOT_FOUND);
-    const result = id
-      ? await this.database.query<{id:string}>('update entity_record set project_id=$1,title=$2,status=$3,payload=$4::jsonb,updated_by=$5,updated_at=now() where id=$6 returning id', [parsed.data.projectId ?? null, parsed.data.title, parsed.data.status, JSON.stringify(parsed.data.payload), user.sub, id])
-      : await this.database.query<{id:string}>('insert into entity_record(workspace_id,project_id,entity_type,title,status,payload,created_by,updated_by) values($1,$2,$3,$4,$5,$6::jsonb,$7,$7) returning id', [user.workspaceId, parsed.data.projectId ?? null, type, parsed.data.title, parsed.data.status, JSON.stringify(parsed.data.payload), user.sub]);
-    const recordId = result.rows[0].id;
-    await this.database.query('insert into audit_event(workspace_id,actor_id,entity_id,action,before,after) values($1,$2,$3,$4,$5::jsonb,$6::jsonb)', [user.workspaceId, user.sub, recordId, id ? 'updated' : 'created', JSON.stringify(existing?.rows[0]?.payload ?? null), JSON.stringify(parsed.data)]);
-    return { id: recordId };
+    let result: StoredRecord | undefined;
+    await this.database.write(data => {
+      const existing = id ? data.records.find(record => record.id === id && record.workspaceId === user.workspaceId && record.entityType === type) : undefined;
+      if (id && !existing) throw new HttpException('Record not found.', HttpStatus.NOT_FOUND);
+      const now = new Date().toISOString();
+      result = existing ? { ...existing, projectId: parsed.data.projectId ?? null, title: parsed.data.title, status: parsed.data.status, payload: parsed.data.payload, updatedBy: user.sub, updatedAt: now } : { id: randomUUID(), workspaceId: user.workspaceId, projectId: parsed.data.projectId ?? null, entityType: type, title: parsed.data.title, status: parsed.data.status, payload: parsed.data.payload, createdBy: user.sub, updatedBy: user.sub, createdAt: now, updatedAt: now };
+      if (existing) data.records[data.records.indexOf(existing)] = result; else data.records.push(result);
+      data.audits.push({ id: randomUUID(), workspaceId: user.workspaceId, actorId: user.sub, entityId: result.id, action: existing ? 'updated' : 'created', before: existing?.payload ?? null, after: parsed.data, createdAt: now });
+    });
+    return { id: result!.id };
   }
 }
 
@@ -100,7 +100,7 @@ class EntityController {
 class AppModule {}
 
 async function bootstrap() {
-  if (!process.env.DATABASE_URL || !process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) throw new Error('DATABASE_URL and JWT_SECRET (at least 32 characters) are required.');
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) throw new Error('JWT_SECRET (at least 32 characters) is required.');
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.enableCors({ origin: process.env.WEB_ORIGIN?.split(',') ?? false, credentials: true });

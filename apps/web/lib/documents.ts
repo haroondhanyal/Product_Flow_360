@@ -129,6 +129,11 @@ export async function removeDocument(id: string): Promise<void> {
   await transaction('readwrite', store => store.delete(id));
 }
 
+export async function removeDocumentsForRequest(requestId: string): Promise<void> {
+  const documents = await listDocuments(requestId);
+  await Promise.all(documents.map(document => removeDocument(document.id)));
+}
+
 export function documentError(error: unknown): string {
   if (error instanceof DOMException && error.name === 'QuotaExceededError') {
     return 'Your browser storage is full. Free space or remove unused attachments, then try again. This document was not saved.';
