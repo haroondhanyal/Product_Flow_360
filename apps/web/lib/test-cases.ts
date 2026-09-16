@@ -1,4 +1,4 @@
-export const TEST_STAGES = ['SIT', 'QA', 'UAT'] as const;
+export const TEST_STAGES = ['Smoke', 'Regression', 'SIT', 'QA', 'UAT'] as const;
 export const TEST_STATUSES = ['Draft', 'Ready', 'In progress', 'Passed', 'Failed', 'Blocked'] as const;
 export type TestStatus = typeof TEST_STATUSES[number];
 export type TestStage = typeof TEST_STAGES[number];

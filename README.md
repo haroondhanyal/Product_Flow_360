@@ -226,6 +226,19 @@ Playwright remains included because it protects core browser behavior such as lo
 
 Before production use, migrate browser/file persistence to managed PostgreSQL plus object storage; add PTCL SSO, server-side sessions, password reset/MFA, HTTPS, secret management, backups, observability, organization-specific RBAC and API rate limiting.
 
+## Test automation
+
+The repository includes a dedicated [`playwright/`](playwright) automation framework with TypeScript, Playwright, Page Object Model, Gherkin/Cucumber-ready features, separate UI/API layers, cross-browser projects, screenshots, videos, traces, HTML reporting and CI-ready conventions.
+
+```sh
+cd playwright
+npm install
+npx playwright install
+npm run test:smoke
+```
+
+The root scripts also support `npm run test:ui`, `npm run test:smoke`, `npm run test:regression` and `npm run test:api`. Read the [automation guide](playwright/README.md) and [architecture document](playwright/docs/AUTOMATION_ARCHITECTURE.md) before extending coverage.
+
 ## References
 
 - [Implementation plan](docs/IMPLEMENTATION-PLAN.md)

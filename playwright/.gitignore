@@ -1,0 +1,5 @@
+node_modules/
+artifacts/
+reports/
+storage/auth/*.json
+config/environments/*.local.env

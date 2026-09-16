@@ -10,7 +10,11 @@
     "build": "npm run build --workspace apps/web",
     "start": "npm run start --workspace apps/web",
     "typecheck": "npm run typecheck --workspace apps/web",
-    "test": "playwright test",
+    "test": "playwright test --project=chromium",
+    "test:ui": "playwright test --project=chromium",
+    "test:smoke": "playwright test --grep @smoke --project=chromium",
+    "test:regression": "playwright test --grep @regression --project=chromium",
+    "test:api": "playwright test playwright/tests/api --project=chromium",
     "api:build": "npm run build --workspace apps/api",
     "api:dev": "npm run dev --workspace apps/api"
   },
