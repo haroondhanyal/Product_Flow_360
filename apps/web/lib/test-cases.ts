@@ -8,6 +8,7 @@ export type TestCase = {
   id: string; requestId: string; title: string; stage: TestStage;
   priority: string; owner: string; preconditions: string; steps: string;
   expected: string; status: TestStatus; runs: TestRun[]; workspaceId?: string; workspaceName?: string;
+  objective?: string; module?: string; testData?: string; remarks?: string;
 };
 export const TEST_STORAGE_KEY = 'pf360-test-cases';
 

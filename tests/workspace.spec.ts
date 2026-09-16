@@ -22,6 +22,12 @@ async function openWorkspace(page: Page) {
   await expect(page.getByRole('button', { name: 'Login to ProductFlow 360' })).toBeVisible();
   await page.getByLabel('Email').fill('admin@ptcl.com');
   await page.locator('input[name="password"]').fill('PTCLAdmin!2026');
+  await page.getByLabel('Show Password').click();
+  await expect(page.locator('input[name="password"]')).toHaveAttribute('type', 'text');
+  await expect(page.locator('input[name="password"]')).toHaveValue('PTCLAdmin!2026');
+  await page.getByLabel('Hide Password').click();
+  await expect(page.locator('input[name="password"]')).toHaveAttribute('type', 'password');
+  await expect(page.locator('input[name="password"]')).toHaveValue('PTCLAdmin!2026');
   await page.getByRole('button', { name: 'Login to ProductFlow 360' }).click();
   await expect(page.locator('.splash')).toBeHidden();
 }
@@ -40,6 +46,22 @@ test('document validation accepts supported signatures and rejects invalid input
   await expect(validateDocument(new File(['%PDF-1.7'], 'spec.exe'))).rejects.toThrow('supported project document');
 });
 
+test('login, signup and password visibility controls are interactive', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('button', { name: 'Login to ProductFlow 360' })).toBeVisible();
+  await page.getByRole('button', { name: 'Sign up', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Submit for approval' })).toBeVisible();
+  await page.getByRole('button', { name: 'Login', exact: true }).click();
+  const password = page.locator('input[name="password"]');
+  await password.fill('PTCLAdmin!2026');
+  await page.getByLabel('Show Password').click();
+  await expect(password).toHaveAttribute('type', 'text');
+  await expect(password).toHaveValue('PTCLAdmin!2026');
+  await page.getByLabel('Hide Password').click();
+  await expect(password).toHaveAttribute('type', 'password');
+  await expect(password).toHaveValue('PTCLAdmin!2026');
+});
+
 test('50 MB attachment persists, downloads intact, and can be removed; larger files are rejected', async ({ page }) => {
   await openWorkspace(page); await openRFC(page);
   await page.getByLabel('Upload RFC documents').setInputFiles(join(fixtures, 'too-large.pdf'));
@@ -54,8 +76,9 @@ test('50 MB attachment persists, downloads intact, and can be removed; larger fi
   await page.getByRole('button', { name: 'Download exact-50mb.pdf' }).click();
   const download = await downloadPromise;
   expect(statSync((await download.path())!).size).toBe(MAX_DOCUMENT_BYTES);
-  page.once('dialog', dialog => dialog.accept());
   await page.getByRole('button', { name: 'Remove exact-50mb.pdf' }).click();
+  await expect(page.getByRole('dialog', { name: 'Delete evidence?' })).toBeVisible();
+  await page.getByRole('button', { name: 'Delete evidence', exact: true }).click();
   await expect(page.locator('.document-list li')).toHaveCount(0);
   await page.reload(); await expect(page.locator('.splash')).toBeHidden(); await openRFC(page);
   await expect(page.locator('.document-list li')).toHaveCount(0);

@@ -2,150 +2,31 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { RfcDocuments } from './rfc-documents';
-import { ArrowRight, CheckCircle2, ClipboardList, FlaskConical, Play, Plus, Search } from 'lucide-react';
+import { CheckCircle2, Download, Eye, FileUp, Pencil, Play, Plus, Search, Trash2 } from 'lucide-react';
 import { changeTestStatus, parseTestCases, recordTestRun, TEST_STAGES, TEST_STATUSES, TEST_STORAGE_KEY, type TestCase, type TestRun, type TestStage } from '../lib/test-cases';
 import { activeWorkspaceLink, commitRecord, EMPTY_LIFECYCLE, LIFECYCLE_KEY, parseLifecycle, type WorkRecord } from '../lib/lifecycle';
+import './test-case-board.css';
 
-type LinkedRequest = { id: string; title: string };
+type Request = { id:string; title:string }; type Editor = TestCase | 'new' | null;
+const actual = (test:TestCase) => test.runs[0]?.actual ?? '';
+const cell = (value:unknown) => `"${String(value ?? '').replace(/^[=+@-]/,"'").replaceAll('"','""')}"`;
 
-export function TestManagement({ requests, initialRequest = '', onOpenRequest }: {
-  requests: LinkedRequest[]; initialRequest?: string; onOpenRequest: (id: string) => void;
-}) {
-  const [tests, setTests] = useState<TestCase[]>([]);
-  const [loaded, setLoaded] = useState(false);
-  const [readFailed, setReadFailed] = useState(false);
-  const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
-  const [requestFilter, setRequestFilter] = useState(initialRequest);
-  const [statusFilter, setStatusFilter] = useState('');
-  const [query, setQuery] = useState('');
-  const [creating, setCreating] = useState(false);
-  const [draftId, setDraftId] = useState('');
-  const editorRef = useRef<HTMLElement>(null);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selected = tests.find(test => test.id === selectedId);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(TEST_STORAGE_KEY);
-      if (saved) setTests(parseTestCases(saved));
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Test storage is unavailable.');
-      setReadFailed(true);
-    }
-    setLoaded(true);
-  }, []);
-  useEffect(() => { setRequestFilter(initialRequest); }, [initialRequest]);
-  useEffect(() => { if (creating) requestAnimationFrame(() => editorRef.current?.scrollIntoView({behavior: 'smooth', block: 'start'})); }, [creating]);
-
-  function persist(next: TestCase[]) {
-    if (!loaded || readFailed) return false;
-    try {
-      localStorage.setItem(TEST_STORAGE_KEY, JSON.stringify(next));
-      setTests(next); setError('');
-      return true;
-    } catch {
-      setError('Unable to save test cases. Browser storage may be full or disabled. Your last saved data is unchanged.');
-      return false;
-    }
-  }
-
-  function create(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const field = (key: string) => String(form.get(key) ?? '').trim();
-    if (!['title', 'owner', 'steps', 'expected'].every(key => field(key))) {
-      setError('Title, owner, steps and expected result are required.'); return;
-    }
-    if (!requests.some(request => request.id === field('requestId'))) {
-      setError('Choose an existing RFC.'); return;
-    }
-    const test: TestCase = {
-      id: draftId || `TC-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, requestId: field('requestId'),
-      title: field('title'), stage: field('stage') as TestStage, priority: field('priority'),
-      owner: field('owner'), preconditions: field('preconditions'), steps: field('steps'),
-      expected: field('expected'), status: 'Draft', runs: [], ...activeWorkspaceLink(),
-    };
-    if (persist([test, ...tests])) {
-      setCreating(false); setDraftId(''); setSelectedId(test.id); setQuery(''); setStatusFilter('');
-      setRequestFilter(test.requestId); setMessage('Test case created. Review the steps, then mark it ready.');
-    }
-  }
-
-  function transition(next: 'Ready' | 'In progress') {
-    if (!selected) return;
-    try {
-      const updated = changeTestStatus(selected, next);
-      if (persist(tests.map(test => test.id === updated.id ? updated : test))) setMessage(`Test ${next === 'Ready' ? 'marked ready' : 'started'}.`);
-    } catch (error) { setError((error as Error).message); }
-  }
-
-  function execute(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!selected) return;
-    const form = new FormData(event.currentTarget);
-    try {
-      const updated = recordTestRun(selected, {
-        id: crypto.randomUUID(), at: new Date().toISOString(), result: String(form.get('result')) as TestRun['result'],
-        actual: String(form.get('actual') ?? ''), tester: String(form.get('tester') ?? ''),
-      });
-      if (persist(tests.map(test => test.id === updated.id ? updated : test))) setMessage('Execution result saved to run history.');
-    } catch (error) { setError((error as Error).message); }
-  }
-  function createBugFromFailure() {
-    if (!selected || !['Failed', 'Blocked'].includes(selected.status)) return;
-    const latestRun = selected.runs[0];
-    try {
-      const state = parseLifecycle(localStorage.getItem(LIFECYCLE_KEY) ?? JSON.stringify(EMPTY_LIFECYCLE));
-      const duplicate = state.records.find(record => record.kind === 'defects' && record.linkedId === selected.id && !['Closed', 'Rejected'].includes(record.status));
-      if (duplicate) throw new Error(`${duplicate.id} is already linked to this failed test.`);
-      const bug: WorkRecord = { id: `BUG-${crypto.randomUUID().slice(0, 8).toUpperCase()}`, kind: 'defects', requestId: selected.requestId, title: `Failure: ${selected.title}`, owner: selected.owner, status: 'Open', type: 'Functional', description: latestRun?.actual || 'Failure reported from test execution.', notes: `Created directly from ${selected.id}.`, linkedId: selected.id, priority: selected.priority, expected: selected.expected, actual: latestRun?.actual || '', date: '', version: 0, updatedAt: '' };
-      const next = commitRecord(state, bug, `Bug created from failed test ${selected.id}`);
-      localStorage.setItem(LIFECYCLE_KEY, JSON.stringify(next));
-      setMessage(`${bug.id} created and linked to this failed test. Open Defects to triage it.`);
-    } catch (error) { setError(error instanceof Error ? error.message : 'Unable to create the linked bug.'); }
-  }
-
-  const filtered = tests.filter(test => (!requestFilter || test.requestId === requestFilter) &&
-    (!statusFilter || test.status === statusFilter) && `${test.id} ${test.title} ${test.owner}`.toLowerCase().includes(query.toLowerCase()));
-  const scoped = tests.filter(test => !requestFilter || test.requestId === requestFilter);
-
-  return <div className="test-management">
-    <div className="test-intro"><div><span className="eyebrow">QUALITY AT EVERY GATE</span><h2>From requirements to confidence.</h2><p>Link a test to an RFC, define the expected outcome, and record every run.</p></div>
-      <button className="primary" disabled={!loaded || readFailed || !requests.length} onClick={() => { setDraftId(`TC-${crypto.randomUUID().slice(0, 8).toUpperCase()}`); setCreating(true); setSelectedId(null); setMessage(''); }}><Plus size={17} />New test case</button></div>
-    <ol className="test-flow" aria-label="Test case workflow">{['Link RFC', 'Define test', 'Mark ready', 'Execute', 'Record & retest'].map((step, index) => <li key={step}><span>{index + 1}</span>{step}{index < 4 && <ArrowRight size={15} />}</li>)}</ol>
-    <div className="test-summary">{[{ label: 'Test cases', value: scoped.length, icon: ClipboardList }, { label: 'In progress', value: scoped.filter(test => test.status === 'In progress').length, icon: Play }, { label: 'Passed', value: scoped.filter(test => test.status === 'Passed').length, icon: CheckCircle2 }, { label: 'Failed / blocked', value: scoped.filter(test => ['Failed', 'Blocked'].includes(test.status)).length, icon: FlaskConical }].map(({ label, value, icon: Icon }) => <article key={label}><Icon size={18} /><span>{label}</span><strong>{value}</strong></article>)}</div>
-    {error && <div className="inline-error" role="alert">{error}</div>}
-    {message && <p className="success-message" role="status">{message}</p>}
-    {creating && <section ref={editorRef} className="test-editor feature-form"><div className="section-title"><h2>Create a test case</h2><button className="text-button" onClick={() => { setCreating(false); setDraftId(''); }}>Cancel</button></div><RfcDocuments key={draftId} requestId={`test:${draftId}`} evidence title="Evidence for this test case — screenshots, video & documents"/>
-      <form onSubmit={create}><div className="form-row"><label>Linked RFC<select name="requestId" defaultValue={requestFilter || requests[0]?.id} required>{requests.map(request => <option key={request.id} value={request.id}>{request.id} · {request.title}</option>)}</select></label><label>Test stage<select name="stage" aria-label="Test stage">{TEST_STAGES.map(stage => <option key={stage}>{stage}</option>)}</select></label></div>
-        <label>Test case title<input name="title" autoFocus required maxLength={160} placeholder="e.g. Verify the upgraded speed profile" /></label>
-        <div className="form-row"><label>Test owner<input name="owner" required maxLength={80} placeholder="Full name" /></label><label>Priority<select name="priority"><option>Medium</option><option>High</option><option>Low</option></select></label></div>
-        <label>Preconditions <span className="optional">(optional)</span><textarea name="preconditions" maxLength={5000} rows={2} placeholder="Test account, environment and setup" /></label>
-        <label>Test steps<textarea name="steps" required maxLength={10000} rows={4} placeholder={'1. Open the customer account\n2. Apply the new speed profile\n3. Verify the provisioned speed'} /></label>
-        <label>Expected result<textarea name="expected" required maxLength={5000} rows={3} placeholder="What should happen when the steps are completed?" /></label>
-        <button className="primary" type="submit"><Plus size={16} />Save test case</button>
-      </form></section>}
-    <section className="requests"><div className="table-toolbar test-toolbar"><label className="search"><Search size={17} /><input aria-label="Search test cases" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search test cases or owners…" /></label><label className="filter"><select aria-label="Filter tests by RFC" value={requestFilter} onChange={event => setRequestFilter(event.target.value)}><option value="">All RFCs</option>{requests.map(request => <option key={request.id} value={request.id}>{request.id}</option>)}</select></label><label className="filter"><select aria-label="Filter test status" value={statusFilter} onChange={event => setStatusFilter(event.target.value)}><option value="">All statuses</option>{TEST_STATUSES.map(status => <option key={status}>{status}</option>)}</select></label></div>
-      <div className="table-scroll"><table><thead><tr><th>TEST CASE</th><th>LINKED RFC</th><th>STAGE</th><th>STATUS</th><th>OWNER</th><th>RUNS</th></tr></thead><tbody>{filtered.map(test => <tr key={test.id}><td><button className="request-title" onClick={() => { setSelectedId(test.id); setCreating(false); setMessage(''); }}><small>{test.id}</small><strong>{test.title}</strong></button></td><td><button className="rfc-link" onClick={() => onOpenRequest(test.requestId)}>{test.requestId}</button></td><td>{test.stage}</td><td><span className={`status test-status-${test.status.toLowerCase().replaceAll(' ', '-')}`}>{test.status}</span></td><td>{test.owner}</td><td>{test.runs.length}</td></tr>)}</tbody></table></div>
-      {!filtered.length && <div className="empty"><FlaskConical size={28} /><h3>{tests.length ? 'No matching test cases' : 'Your first quality gate starts here'}</h3><p>{!loaded ? 'Loading test cases…' : tests.length ? 'Adjust the search or filters to see more tests.' : 'Create a test case and link it to an RFC to start SIT, QA or UAT.'}</p></div>}
-      <div className="table-footer"><span>{filtered.length} test cases shown</span><span>Saved in this browser</span></div>
-    </section>
-    {selected && <section key={selected.id} className="test-editor feature-form" aria-label="Test case details"><div className="section-title"><div><span className="eyebrow">{selected.id} · {selected.stage}</span><h2>{selected.title}</h2></div><button className="text-button" onClick={() => setSelectedId(null)}>Close details</button></div>
-      <div className="test-detail-meta"><button className="rfc-link" onClick={() => onOpenRequest(selected.requestId)}>{selected.requestId}</button><span>{selected.owner}</span><span>{selected.priority} priority</span><span className={`status test-status-${selected.status.toLowerCase().replaceAll(' ', '-')}`}>{selected.status}</span></div>
-      {selected.preconditions && <div className="test-copy"><h3>Preconditions</h3><p>{selected.preconditions}</p></div>}
-      <div className="test-copy"><h3>Steps</h3><p>{selected.steps}</p></div><div className="test-copy"><h3>Expected result</h3><p>{selected.expected}</p></div>
-      {selected.status === 'Draft' && <button className="primary" onClick={() => transition('Ready')}><CheckCircle2 size={16} />Mark ready</button>}
-      {['Ready', 'Passed', 'Failed', 'Blocked'].includes(selected.status) && <button className="primary" onClick={() => transition('In progress')}><Play size={16} />{selected.status === 'Ready' ? 'Start test' : 'Start retest'}</button>}
-      {['Failed', 'Blocked'].includes(selected.status) && <button className="text-button create-bug" onClick={createBugFromFailure}>Create linked bug</button>}
-      {selected.status === 'In progress' && <form onSubmit={execute} className="execution-form"><h3>Record this execution</h3><div className="form-row"><label>Result<select name="result" aria-label="Result"><option>Passed</option><option>Failed</option><option>Blocked</option></select></label><label>Executed by<input name="tester" defaultValue={selected.owner} required maxLength={80} /></label></div><label>Actual result / evidence notes<textarea name="actual" required rows={3} maxLength={10000} placeholder="Record what happened, including any discrepancy or blocker." /></label><button className="primary" type="submit">Save execution result</button></form>}
-      <RfcDocuments key={selected.id} requestId={`test:${selected.id}`} evidence title={selected.stage === 'UAT' ? 'UAT case screenshots, video & evidence' : 'Test case screenshots, video & evidence'}/>
-      <div className="run-history"><h3>Run history <span className="count">{selected.runs.length}</span></h3>{!selected.runs.length && <p>No completed runs yet.</p>}{selected.runs.map(run => <article key={run.id}><div><span className={`status test-status-${run.result.toLowerCase()}`}>{run.result}</span><span>{run.tester} · {new Date(run.at).toLocaleString()}</span></div><p>{run.actual}</p><RunEvidence testId={selected.id} runId={run.id}/></article>)}</div>
-    </section>}
-  </div>;
-}
-
-function RunEvidence({testId, runId}: {testId: string; runId: string}) {
-  const [open, setOpen] = useState(false);
-  return <div><button className="text-button" onClick={() => setOpen(!open)}>{open ? 'Hide run evidence' : 'Attach screenshots, video or run evidence'}</button>{open && <RfcDocuments requestId={`run:${testId}:${runId}`} evidence title="Test run screenshots, video & evidence"/>}</div>;
+export function TestManagement({requests,initialRequest='',onOpenRequest}:{requests:Request[];initialRequest?:string;onOpenRequest:(id:string)=>void}) {
+ const [tests,setTests]=useState<TestCase[]>([]),[loaded,setLoaded]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState(''),[query,setQuery]=useState(''),[rfc,setRfc]=useState(initialRequest),[status,setStatus]=useState(''),[editing,setEditing]=useState<Editor>(null),[selectedId,setSelectedId]=useState<string|null>(null),[draft,setDraft]=useState('');
+ const editor=useRef<HTMLElement>(null), importer=useRef<HTMLInputElement>(null); const selected=tests.find(test=>test.id===selectedId); const current=editing==='new'?undefined:editing;
+ useEffect(()=>{try{const saved=localStorage.getItem(TEST_STORAGE_KEY);if(saved)setTests(parseTestCases(saved));}catch(cause){setError(cause instanceof Error?cause.message:'Test storage is unavailable.');}setLoaded(true);},[]);useEffect(()=>setRfc(initialRequest),[initialRequest]);useEffect(()=>{if(editing)requestAnimationFrame(()=>editor.current?.scrollIntoView({behavior:'smooth',block:'start'}));},[editing]);
+ const persist=(next:TestCase[])=>{try{localStorage.setItem(TEST_STORAGE_KEY,JSON.stringify(next));setTests(next);setError('');return true;}catch{setError('Unable to save test cases.');return false;}};
+ const newTest=()=>{setDraft(`TC-${crypto.randomUUID().slice(0,8).toUpperCase()}`);setEditing('new');setSelectedId(null);setMessage('');};
+ function save(event:React.FormEvent<HTMLFormElement>){event.preventDefault();const form=new FormData(event.currentTarget),f=(key:string)=>String(form.get(key)??'').trim();if(!f('title')||!f('owner')||!f('steps')||!f('expected'))return setError('Title, owner, steps and expected result are required.');if(!requests.some(item=>item.id===f('requestId')))return setError('Choose an existing RFC.');const test:TestCase={id:current?.id??draft,requestId:f('requestId'),title:f('title'),stage:f('stage') as TestStage,priority:f('priority'),owner:f('owner'),objective:f('objective'),module:f('module'),preconditions:f('preconditions'),steps:f('steps'),testData:f('testData'),expected:f('expected'),remarks:f('remarks'),status:current?.status??'Draft',runs:current?.runs??[],...(current?.workspaceId?{workspaceId:current.workspaceId,workspaceName:current.workspaceName}:activeWorkspaceLink())};if(persist(current?tests.map(item=>item.id===test.id?test:item):[test,...tests])){setEditing(null);setSelectedId(test.id);setRfc(test.requestId);setMessage(current?'Test case updated.':'Test case created.');}}
+ function remove(){if(!selected||!window.confirm(`Delete test case “${selected.title}”?`))return;if(persist(tests.filter(test=>test.id!==selected.id))){setSelectedId(null);setMessage('Test case deleted.');}}
+ function state(next:'Ready'|'In progress'){if(!selected)return;try{const updated=changeTestStatus(selected,next);if(persist(tests.map(item=>item.id===updated.id?updated:item)))setMessage(`Test ${next==='Ready'?'marked ready':'started'}.`);}catch(cause){setError((cause as Error).message);}}
+ function execute(event:React.FormEvent<HTMLFormElement>){event.preventDefault();if(!selected)return;const form=new FormData(event.currentTarget);try{const updated=recordTestRun(selected,{id:crypto.randomUUID(),at:new Date().toISOString(),result:String(form.get('result')) as TestRun['result'],actual:String(form.get('actual')??''),tester:String(form.get('tester')??'')});if(persist(tests.map(item=>item.id===updated.id?updated:item)))setMessage('Execution result saved.');}catch(cause){setError((cause as Error).message);}}
+ function createBug(){if(!selected||!['Failed','Blocked'].includes(selected.status))return;try{const life=parseLifecycle(localStorage.getItem(LIFECYCLE_KEY)??JSON.stringify(EMPTY_LIFECYCLE));const bug:WorkRecord={id:`BUG-${crypto.randomUUID().slice(0,8).toUpperCase()}`,kind:'defects',requestId:selected.requestId,title:`Failure: ${selected.title}`,owner:selected.owner,status:'Open',type:'Functional',description:actual(selected)||'Failure reported from test execution.',notes:`Created from ${selected.id}.`,linkedId:selected.id,priority:selected.priority,expected:selected.expected,actual:actual(selected),date:'',version:0,updatedAt:''};localStorage.setItem(LIFECYCLE_KEY,JSON.stringify(commitRecord(life,bug,`Bug created from ${selected.id}`)));setMessage(`${bug.id} created and linked to this test.`);}catch{setError('Unable to create linked bug.');}}
+ function exportCsv(){const head=['Test Case ID','Title','Objective','Module','Linked RFC','Stage','Preconditions','Steps','Test Data','Expected Result','Actual Result','Status','Remarks','Owner','Priority'];const rows=tests.map(t=>[t.id,t.title,t.objective,t.module,t.requestId,t.stage,t.preconditions,t.steps,t.testData,t.expected,actual(t),t.status,t.remarks,t.owner,t.priority]);const url=URL.createObjectURL(new Blob([[head,...rows].map(row=>row.map(cell).join(',')).join('\r\n')],{type:'text/csv'}));const a=document.createElement('a');a.href=url;a.download='PF360-test-cases.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+ async function importCsv(file?:File){if(!file)return;try{const lines=(await file.text()).trim().split(/\r?\n/);const headers=lines.shift()?.split(',').map(x=>x.replace(/^"|"$/g,'').toLowerCase())??[];const get=(row:string[],name:string)=>row[headers.indexOf(name)]?.replace(/^"|"$/g,'').replaceAll('""','"').trim()??'';if(!headers.includes('title')||!headers.includes('linked rfc'))throw new Error('Export the CSV template first, then add Title and Linked RFC.');const imported=lines.filter(Boolean).map(line=>{const row=line.match(/("(?:[^"]|"")*"|[^,]*)/g)?.filter((_,i)=>i%2===0)??line.split(',');const requestId=get(row,'linked rfc');if(!requests.some(request=>request.id===requestId))throw new Error(`Unknown RFC: ${requestId||'(blank)'}`);const importedStatus=get(row,'status');return{id:get(row,'test case id')||`TC-${crypto.randomUUID().slice(0,8).toUpperCase()}`,title:get(row,'title'),objective:get(row,'objective'),module:get(row,'module'),requestId,stage:(TEST_STAGES.includes(get(row,'stage') as TestStage)?get(row,'stage'):'QA') as TestStage,preconditions:get(row,'preconditions'),steps:get(row,'steps'),testData:get(row,'test data'),expected:get(row,'expected result'),remarks:get(row,'remarks'),owner:get(row,'owner')||'Unassigned',priority:get(row,'priority')||'Medium',status:(TEST_STATUSES.includes(importedStatus as TestCase['status'])?importedStatus:'Draft') as TestCase['status'],runs:[],...activeWorkspaceLink()} as TestCase;});if(!imported.length)throw new Error('No test rows found.');if(persist([...imported,...tests]))setMessage(`${imported.length} test case(s) imported.`);}catch(cause){setError(cause instanceof Error?cause.message:'CSV import failed.');}finally{if(importer.current)importer.current.value='';}}
+ const filtered=tests.filter(t=>(!rfc||t.requestId===rfc)&&(!status||t.status===status)&&`${t.id} ${t.title} ${t.module} ${t.owner}`.toLowerCase().includes(query.toLowerCase()));
+ return <div className="test-management test-case-board"><div className="test-intro"><div><span className="eyebrow">QUALITY CONTROL BOARD</span><h2>Test case management.</h2><p>Trace, execute, evidence and govern every test case.</p></div><div className="test-board-actions"><button className="text-button" onClick={exportCsv}><Download size={16}/>Export CSV</button><button className="text-button" onClick={()=>importer.current?.click()}><FileUp size={16}/>Import CSV</button><input className="sr-only" ref={importer} type="file" accept=".csv,text/csv" onChange={e=>void importCsv(e.target.files?.[0])}/><button className="primary" disabled={!loaded||!requests.length} onClick={newTest}><Plus size={16}/>New test case</button></div></div>{error&&<div className="inline-error">{error}</div>}{message&&<p className="success-message">{message}</p>}
+ {editing&&<section ref={editor} className="test-editor feature-form test-case-editor"><div className="section-title"><h2>{current?'Edit test case':'Create test case'}</h2><button className="text-button" onClick={()=>setEditing(null)}>Cancel</button></div><RfcDocuments key={current?.id??draft} requestId={`test:${current?.id??draft}`} evidence title="Attach test-case evidence"/><form onSubmit={save}><div className="form-row"><label>Linked RFC<select name="requestId" defaultValue={current?.requestId??rfc??requests[0]?.id}>{requests.map(x=><option key={x.id} value={x.id}>{x.id} · {x.title}</option>)}</select></label><label>Stage<select name="stage" defaultValue={current?.stage??'QA'}>{TEST_STAGES.map(x=><option key={x}>{x}</option>)}</select></label></div><div className="form-row"><label>Test case ID<input value={current?.id??draft} readOnly/></label><label>Module<input name="module" defaultValue={current?.module} placeholder="Billing, CRM, Digital…"/></label></div><label>Test case title<input name="title" required autoFocus defaultValue={current?.title}/></label><label>Objective<textarea name="objective" rows={2} defaultValue={current?.objective} placeholder="Behaviour to verify"/></label><div className="form-row"><label>Owner<input name="owner" required defaultValue={current?.owner}/></label><label>Priority<select name="priority" defaultValue={current?.priority??'Medium'}>{['Critical','High','Medium','Low'].map(x=><option key={x}>{x}</option>)}</select></label></div><label>Preconditions<textarea name="preconditions" rows={2} defaultValue={current?.preconditions}/></label><label>Steps<textarea name="steps" required rows={4} defaultValue={current?.steps}/></label><label>Test data<textarea name="testData" rows={2} defaultValue={current?.testData}/></label><label>Expected result<textarea name="expected" required rows={3} defaultValue={current?.expected}/></label><label>Remarks<textarea name="remarks" rows={2} defaultValue={current?.remarks}/></label><button className="primary"><Plus size={16}/>Save test case</button></form></section>}
+ <section className="requests"><div className="table-toolbar test-toolbar"><label className="search"><Search size={17}/><input aria-label="Search test cases" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search ID, title, module or owner…"/></label><label className="filter"><select value={rfc} aria-label="Filter tests by RFC" onChange={e=>setRfc(e.target.value)}><option value="">All RFCs</option>{requests.map(x=><option key={x.id}>{x.id}</option>)}</select></label><label className="filter"><select value={status} aria-label="Filter test status" onChange={e=>setStatus(e.target.value)}><option value="">All statuses</option>{TEST_STATUSES.map(x=><option key={x}>{x}</option>)}</select></label></div><div className="table-scroll"><table><thead><tr><th>TEST CASE</th><th>OBJECTIVE / MODULE</th><th>LINKED RFC</th><th>STATUS</th><th>OWNER</th><th>ACTUAL RESULT</th><th>ACTIONS</th></tr></thead><tbody>{filtered.map(t=><tr key={t.id}><td><div className="test-record"><small>{t.id}</small><strong>{t.title}</strong></div></td><td className="test-board-copy">{t.objective||'—'}<small>{t.module||'General'}</small></td><td><button className="rfc-link" onClick={()=>onOpenRequest(t.requestId)}>{t.requestId}</button></td><td><span className={`status test-status-${t.status.toLowerCase().replaceAll(' ','-')}`}>{t.status}</span></td><td>{t.owner}</td><td className="test-board-copy">{actual(t)||'Not executed'}</td><td><button className="row-action test-actions-open" onClick={()=>{setSelectedId(t.id);setEditing(null);}}>⚙ Manage test</button></td></tr>)}</tbody></table></div><div className="table-footer"><span>{filtered.length} test cases shown</span><span>Saved in this browser</span></div></section>
+ {selected&&!editing&&<section className="test-editor feature-form test-case-details" aria-label="Test case details"><div className="section-title"><div><span className="eyebrow">{selected.id} · {selected.stage}</span><h2>{selected.title}</h2></div><button className="text-button" onClick={()=>setSelectedId(null)}>Close details</button></div><div className="test-detail-meta"><button className="rfc-link" onClick={()=>onOpenRequest(selected.requestId)}>{selected.requestId}</button><span>{selected.owner}</span><span>{selected.priority} priority</span><span className={`status test-status-${selected.status.toLowerCase().replaceAll(' ','-')}`}>{selected.status}</span></div><div className="test-case-quick-actions"><button className="row-action defect-view-evidence" onClick={()=>document.querySelector<HTMLElement>('.test-case-details .evidence-open-button')?.click()}>＋ Add evidence</button><button className="row-action defect-view-evidence" onClick={()=>window.dispatchEvent(new CustomEvent('pf360-open-evidence-view',{detail:`test:${selected.id}`}))}><Eye size={15}/>View evidence</button><button className="row-action" onClick={()=>setEditing(selected)}><Pencil size={15}/>Edit test</button><button className="row-action danger-action" onClick={remove}><Trash2 size={15}/>Delete test</button></div><div className="test-case-grid">{[['Objective',selected.objective],['Module',selected.module],['Preconditions',selected.preconditions],['Steps',selected.steps],['Test data',selected.testData],['Expected result',selected.expected],['Actual result',actual(selected)||'Not executed'],['Remarks',selected.remarks]].map(([label,value])=><div className="test-copy" key={label}><h3>{label}</h3><p>{value||'—'}</p></div>)}</div>{selected.status==='Draft'&&<button className="primary" onClick={()=>state('Ready')}><CheckCircle2 size={16}/>Mark ready</button>}{['Ready','Passed','Failed','Blocked'].includes(selected.status)&&<button className="primary" onClick={()=>state('In progress')}><Play size={16}/>{selected.status==='Ready'?'Start test':'Start retest'}</button>}{['Failed','Blocked'].includes(selected.status)&&<button className="text-button" onClick={createBug}>Create linked bug</button>}{selected.status==='In progress'&&<form className="execution-form" onSubmit={execute}><h3>Record this execution</h3><div className="form-row"><label>Result<select name="result"><option>Passed</option><option>Failed</option><option>Blocked</option></select></label><label>Executed by<input name="tester" defaultValue={selected.owner} required/></label></div><label>Actual result<textarea name="actual" required rows={3}/></label><button className="primary">Save execution result</button></form>}<RfcDocuments key={selected.id} requestId={`test:${selected.id}`} evidence title="Test-case evidence"/><div className="run-history"><h3>Run history <span className="count">{selected.runs.length}</span></h3>{selected.runs.map(run=><article key={run.id}><div><span className={`status test-status-${run.result.toLowerCase()}`}>{run.result}</span><span>{run.tester} · {new Date(run.at).toLocaleString()}</span></div><p>{run.actual}</p></article>)}</div></section>}</div>;
 }

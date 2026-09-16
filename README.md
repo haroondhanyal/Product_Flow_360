@@ -63,6 +63,36 @@ flowchart TB
 | Evidence | Attach and preview images, videos, PDF, Office files, JSON, text and log files against delivery records. |
 | Administration | Approve accounts, manage departments, user roles and access status through the Admin Board. |
 
+## Latest delivery-control experience
+
+The current UI focuses on a consistent, operationally safe board experience across requirements, test cases and defects.
+
+| Area | Current behaviour |
+| --- | --- |
+| Requirements board | A requirement record is opened from **Manage requirement**, rather than from an accidental row click. The action window provides view, add evidence, view evidence, edit and delete controls. |
+| Test Management board | Standard test-case fields include ID, title, objective, module, linked RFC, preconditions, steps, test data, expected result, actual result, status, remarks, owner and priority. Cases can be created manually or imported/exported as CSV. |
+| Defect board | Jira-style independent or RFC-linked issues support description, actual result, owner, priority, linked test case, multiple attachments and an action-led issue workflow. |
+| Evidence controls | **Add evidence** opens the upload flow. **View evidence** is read-only and shows only attached files. A file name or **View file** opens image, PDF, video or text preview; Office files provide an in-window download handoff. |
+| Evidence preview | Image/PDF content fills an aligned, theme-aware modal. It has a persistent header, `Cancel ×`, zoom for images, and expand/restore controls. |
+| Theming and accessibility | Management modals use shared theme variables for readable light/dark/contrast surfaces, visible focus states, responsive modal dimensions and non-overlapping action bars. |
+
+### Board action flow
+
+```mermaid
+sequenceDiagram
+    participant U as Delivery user
+    participant B as Requirement/Test/Defect board
+    participant M as Manage action window
+    participant E as Evidence viewer
+    U->>B: Select Manage requirement / test / issue
+    B->>M: Open aligned theme-aware modal
+    U->>M: Add evidence, edit, update status or delete
+    U->>M: View evidence
+    M->>E: Open read-only attachment list
+    U->>E: Open file preview
+    E-->>U: Image/PDF/video/text preview + Cancel ×
+```
+
 ## Command Center
 
 The Command Center is the delivery-control layer. It reads the currently available workspace data and calculates rather than hardcodes its information.
@@ -99,7 +129,12 @@ Password: PTCLAdmin!2026
 
 ## Evidence and storage behavior
 
-Evidence belongs to each individual RFC, lifecycle record, test case, test execution or report row. Supported file types include images, video, PDF, DOC/DOCX, XLS/XLSX, CSV, JSON, TXT and LOG, up to 50 MiB per file.
+Evidence belongs to each individual RFC, lifecycle record, requirement, test case, test execution, RTM row or report row. Supported file types include images, video, PDF, DOC/DOCX, XLS/XLSX, CSV, JSON, TXT and LOG, up to 50 MiB per file. Multiple files can be attached to the same record.
+
+Evidence is deliberately split into two modes:
+
+- **Add evidence**: accepts multiple attachments and supports removing an attachment while editing.
+- **View evidence**: a read-only attachment list without upload controls. Every attachment is explicitly clickable through its name and a **View file** button.
 
 The web prototype stores operational data in the browser using localStorage and IndexedDB. Clearing browser site data removes this local prototype data. The API uses a local JSON file for development. These choices make the project simple to run without Docker, but production requires managed database and object storage.
 
@@ -170,6 +205,7 @@ Open [http://localhost:3000](http://localhost:3000).
 npm run typecheck
 npm run build
 npm run api:build
+npm test
 git diff --check
 ```
 
@@ -186,7 +222,7 @@ The API uses `apps/api/.data/pf360.json` in local development, so no Docker or P
 
 ## Quality and production roadmap
 
-Playwright remains included because it protects core browser behavior such as attachments, RFC-linked test/retest history, theme persistence and responsive UI.
+Playwright remains included because it protects core browser behavior such as login/password visibility, attachments, evidence preview, RFC-linked test/retest history, workspace changes, theme persistence and responsive UI.
 
 Before production use, migrate browser/file persistence to managed PostgreSQL plus object storage; add PTCL SSO, server-side sessions, password reset/MFA, HTTPS, secret management, backups, observability, organization-specific RBAC and API rate limiting.
 

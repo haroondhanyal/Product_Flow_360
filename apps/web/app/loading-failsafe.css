@@ -1,5 +1,5 @@
-/* The app state still controls the normal splash. This only prevents an old
-   cached browser session from permanently covering a loaded screen. */
-.splash{animation:pf360-splash-failsafe 5s forwards}
+/* Page data is ready immediately after browser storage is read. The fail-safe
+   only hides a stale splash after two seconds if a browser extension blocks it. */
+.splash{animation:pf360-splash-failsafe 2s forwards}
 .splash.loaded{animation:none}
 @keyframes pf360-splash-failsafe{to{opacity:0;visibility:hidden;pointer-events:none}}

@@ -51,15 +51,14 @@ export async function validateEvidence(file: File): Promise<void> {
 }
 
 export function evidenceMime(name: string): string | undefined {
-  const types: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf', mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime' };
+  const types: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf', mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime', txt: 'text/plain', log: 'text/plain', csv: 'text/csv', json: 'application/json', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
   return types[name.split('.').pop()?.toLowerCase() ?? ''];
 }
 
 export async function previewDocument(id: string): Promise<Blob> {
   const document = await transaction<StoredDocument | undefined>('readonly', store => store.get(id));
   if (!document) throw new Error('Evidence is no longer available.');
-  const type = evidenceMime(document.name);
-  if (!type) throw new Error('Download this document to open it.');
+  const type = evidenceMime(document.name) ?? document.blob.type ?? 'application/octet-stream';
   return document.blob.slice(0, document.blob.size, type);
 }
 
