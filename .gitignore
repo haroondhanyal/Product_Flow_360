@@ -9,3 +9,4 @@ apps/api/dist/
 
 test-results/
 playwright-report/
+reports/
