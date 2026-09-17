@@ -1,0 +1,2 @@
+import { allure } from 'allure-playwright';
+export async function brandAllure(feature: string, severity: 'critical' | 'normal' = 'normal') { await allure.epic('ProductFlow 360'); await allure.feature(feature); await allure.parentSuite('ProductFlow 360 Components'); await allure.suite(feature); await allure.owner('Raja Haroon'); await allure.label('designation', 'Full Stack QA Automation'); await allure.severity(severity); }

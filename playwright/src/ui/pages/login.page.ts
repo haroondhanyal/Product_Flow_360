@@ -1,7 +1,8 @@
 import { expect, type Page } from '@playwright/test';
 import { environment } from '../../../config/environment';
+import { loginLocators } from '../locators/login.locators';
 export class LoginPage {
-  constructor(private readonly page: Page) {}
-  async open() { await this.page.goto('/'); await expect(this.page.getByRole('button', { name: 'Login to ProductFlow 360' })).toBeVisible(); }
-  async login(email = environment.userEmail, password = environment.userPassword) { await this.page.getByLabel('Email').fill(email); await this.page.locator('input[name="password"]').fill(password); await this.page.getByRole('button', { name: 'Login to ProductFlow 360' }).click(); await expect(this.page.locator('.splash')).toBeHidden(); }
+  constructor(readonly page: Page) {}
+  async open() { const l = loginLocators(this.page); await this.page.goto('/'); await expect(l.submit).toBeVisible(); }
+  async login(email = environment.userEmail, password = environment.userPassword) { const l = loginLocators(this.page); await l.email.fill(email); await l.password.fill(password); await l.submit.click(); await expect(l.splash).toBeHidden(); }
 }

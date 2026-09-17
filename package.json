@@ -11,14 +11,25 @@
     "start": "npm run start --workspace apps/web",
     "typecheck": "npm run typecheck --workspace apps/web",
     "test": "playwright test --project=chromium",
-    "test:ui": "playwright test --project=chromium",
+    "test:ui": "playwright test playwright/tests/ui --project=chromium",
     "test:smoke": "playwright test --grep @smoke --project=chromium",
     "test:regression": "playwright test --grep @regression --project=chromium",
     "test:api": "playwright test playwright/tests/api --project=chromium",
+    "test:allure": "node playwright/scripts/run-combined-allure.mjs",
+    "test:bdd": "node playwright/scripts/run-bdd-allure.mjs",
+    "test:bdd:allure": "node playwright/scripts/run-bdd-allure.mjs",
+    "report:allure": "node playwright/scripts/generate-allure-report.mjs",
     "api:build": "npm run build --workspace apps/api",
     "api:dev": "npm run dev --workspace apps/api"
   },
   "devDependencies": {
-    "@playwright/test": "1.63.0"
+    "@cucumber/cucumber": "^13.2.1",
+    "@faker-js/faker": "^10.6.0",
+    "@playwright/test": "1.63.0",
+    "allure-commandline": "^2.46.1",
+    "allure-cucumberjs": "^3.12.2",
+    "allure-playwright": "^3.12.2",
+    "dotenv": "^17.4.2",
+    "tsx": "^4.23.13"
   }
 }

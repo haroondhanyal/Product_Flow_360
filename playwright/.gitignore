@@ -1,5 +1,7 @@
 node_modules/
 artifacts/
 reports/
+allure-results/
+.allure-history/
 storage/auth/*.json
 config/environments/*.local.env

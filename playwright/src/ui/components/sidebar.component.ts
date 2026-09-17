@@ -1,2 +1,3 @@
 import { type Page } from '@playwright/test';
-export class SidebarComponent { constructor(private readonly page: Page) {} async open(module: string) { await this.page.getByRole('button', { name: module, exact: true }).click(); } }
+import { navigationLocators } from '../locators/navigation.locators';
+export class SidebarComponent { constructor(private readonly page: Page) {} async open(module: string) { await navigationLocators(this.page).module(module).click(); } }

@@ -1,246 +1,156 @@
 # ProductFlow 360
 
-ProductFlow 360 (PF360) is a PTCL product-delivery command workspace. It brings the complete delivery journey—workspace setup, RFCs, requirements, RTM, testing, evidence, defects, approvals and release readiness—into one connected operational flow.
+<p align="center"><img src="apps/web/public/logo.svg" alt="ProductFlow 360 logo" width="112" /></p>
 
-It is designed for Product, Business, QA, Development, Revenue Assurance and delivery leadership teams that need a clear, traceable view from idea to production validation.
+<p align="center"><strong>One workspace for product delivery, quality, evidence, and release decisions.</strong></p>
 
-## What it delivers
+ProductFlow 360 is a PTCL delivery workspace for connecting projects, change requests, requirements, RTMs, test cases, defects, billing validation, revenue assurance, and releases. The current web experience is a **browser-local prototype**. A separate NestJS API exists for development and is **not yet the web application's shared data store**.
 
-- Multi-workspace delivery management with a persistent workspace switcher.
-- Change-request and RFC management with ownership, due dates, status, priority, editing and document evidence.
-- Requirements Traceability Matrix (RTM): manual creation, Excel/CSV extraction, custom fields, unlimited test cases, edit/delete, evidence and export.
-- SIT, QA and UAT execution with linked test cases, retest history, failures, blockers and evidence.
-- Lifecycle boards for requirements, defects, approvals, configuration, billing validation, revenue assurance and releases.
-- A consolidated Command Center with delivery KPIs, health, RFC pipeline, UAT, bugs, releases, approvals, My Work, audit activity, insights and quick actions.
-- Employee sign-up/login, profile pictures, department-based registration, approval-gated accounts and Admin Board controls.
-- Extracted report editing and per-record evidence preview.
+![ProductFlow 360 command center showing the delivery navigation, lifecycle, and requests](docs/images/command-center.png)
 
-## Delivery design
+## At a glance
+
+| Area | What is available now |
+| --- | --- |
+| Delivery | Workspaces, products, projects, RFCs, requirements, RTM, test management, defects, approvals, billing, revenue assurance, releases, reports, and evidence. |
+| Access | Employee signup, administrator approval, login, profile, and administrator-reviewed employee password recovery in the browser prototype. |
+| Automation | **83 Playwright UI cases + 20 Cucumber BDD scenarios** in one Allure report; Chromium run verified at **103/103 passed**. |
+| Stack | Next.js 16 and React 19 web app; NestJS 12 API with a local JSON development store; TypeScript automation. |
+
+## Product journey
 
 ```mermaid
 flowchart LR
-    W[Workspace] --> P[Project]
-    P --> R[RFC / Change Request]
-    R --> Q[Requirement or User Story]
-    Q --> M[RTM Mapping]
-    M --> T[SIT / QA / UAT Test Cases]
-    T -->|Pass| A[Approvals: Business / RA / CAB]
-    T -->|Fail or Blocked| B[Defect]
-    B --> F[Fix + Retest + Evidence]
-    F --> T
-    A --> L[Release Readiness]
-    L --> D[Deployment]
-    D --> V[Production Validation]
-    V --> C[Closed + Audit Trail]
+  W[Workspace and project] --> R[RFC / change request]
+  R --> Q[Requirement or user story]
+  Q --> M[RTM mapping]
+  M --> T[SIT / QA / UAT test case]
+  T -->|Failed or blocked| D[Defect and evidence]
+  D --> F[Fix and retest]
+  F --> T
+  T -->|Passed| A[UAT approval]
+  A --> B[Billing validation]
+  B --> V[Revenue assurance]
+  V --> L[Release readiness]
+  L --> P[Deployment and production verification]
 ```
 
-### Command Center data flow
+The links between records let a delivery team follow a request from its owner and requirements through testing, financial checks, and release. The UI also provides search, filtering, import or export where supported, attachments, and an audit-oriented activity view.
+
+## Key screens
+
+| Screen | Main work |
+| --- | --- |
+| Command Center | Portfolio overview, request pipeline, metrics, alerts, and next actions. |
+| Workspaces and products | Select a workspace, register projects, and browse the product portfolio. |
+| Change requests | Create and manage RFCs with status, owner, priority, documents, and linked delivery work. |
+| Requirements and RTM | Capture requirements, create or import matrices, and connect requirements to test coverage. |
+| Test Management and Defects | Define cases, execute or retest, record outcomes, attach evidence, and triage issues. |
+| UAT, billing, revenue, and releases | Review approval and validation records, then check release readiness. |
+| Admin Board | Review employee signups, roles, departments, and employee password reset requests. |
+
+### Employee access flow
+
+```mermaid
+flowchart LR
+  S[Employee signup] --> P[Pending account]
+  P --> A{Admin review}
+  A -->|Approve| L[Employee login]
+  A -->|Reject| X[Access denied]
+  L --> F[Forgot password request]
+  F --> R{Admin review}
+  R -->|Approve and share code| C[Employee enters code and new password]
+  R -->|Reject| X
+  C --> L
+```
+
+![ProductFlow 360 login screen with signup and password recovery entry points](docs/images/login.png)
+
+The browser prototype stores account records and recovery state locally. The administrator must share an approved recovery code with a verified employee through an appropriate channel. This workflow is suitable for demonstration and test automation, not production identity assurance.
+
+## Architecture and data boundaries
 
 ```mermaid
 flowchart TB
-    UI[ProductFlow 360 Web UI] --> LS[Browser Local Workspace Data]
-    LS --> CC[Command Center Calculations]
-    CC --> KPI[KPIs and Health]
-    CC --> AI[Flow Assistant Guidance]
-    CC --> ACT[Audit and Activity Feed]
-    API[NestJS API] --> FILE[Local JSON Store]
-    API --> JWT[JWT + Workspace Role Guard]
-    API --> DASH[Protected Dashboard Statistics APIs]
-    DASH --> CC
+  subgraph Browser[Current web prototype]
+    UI[Next.js UI] --> Domain[Client domain logic]
+    Domain --> LS[localStorage: records, settings, accounts]
+    Domain --> IDB[IndexedDB: documents and blobs]
+  end
+  subgraph APISide[Separate development API]
+    API[NestJS REST API] --> Auth[JWT and workspace role guard]
+    Auth --> Store[Local JSON store]
+  end
+  Tests[Playwright and Cucumber] --> UI
+  Tests -. optional API checks .-> API
+  UI -. future integration .-> API
 ```
 
-## Product modules
+The API provides JWT login, workspace-scoped entities, dashboard endpoints, and audit writes. The web UI currently uses browser persistence; starting the API does not make web data shared across browsers. The API's active store is `apps/api/.data/pf360.json`. Prisma and PostgreSQL packages are present for future work, but the current API reads and writes the local JSON store.
 
-| Module | Operational purpose |
+### Repository map
+
+| Path | Purpose |
 | --- | --- |
-| Command Center | Portfolio-level delivery controls, calculated metrics, health, alerts, activity and guided next actions. |
-| Workspaces and projects | Create workspaces with accountable owner, start date, description and image; link delivery work to the active workspace. |
-| Change requests | Create, update, review, export and attach documents/evidence to RFCs. |
-| RTM | Import or create traceability matrices, define custom fields, map requirements to tests and export the result. |
-| Test management | Build and execute SIT/QA/UAT cases, retest failures, retain history and link defects. |
-| Lifecycle boards | Manage requirements, defects, UAT approvals, configuration, billing, revenue assurance and releases. |
-| Reports | Extract XLSX/CSV data, filter/search/sort, edit rows, add/delete rows, attach per-row evidence and export filtered results. |
-| Evidence | Attach and preview images, videos, PDF, Office files, JSON, text and log files against delivery records. |
-| Administration | Approve accounts, manage departments, user roles and access status through the Admin Board. |
-
-## Latest delivery-control experience
-
-The current UI focuses on a consistent, operationally safe board experience across requirements, test cases and defects.
-
-| Area | Current behaviour |
-| --- | --- |
-| Requirements board | A requirement record is opened from **Manage requirement**, rather than from an accidental row click. The action window provides view, add evidence, view evidence, edit and delete controls. |
-| Test Management board | Standard test-case fields include ID, title, objective, module, linked RFC, preconditions, steps, test data, expected result, actual result, status, remarks, owner and priority. Cases can be created manually or imported/exported as CSV. |
-| Defect board | Jira-style independent or RFC-linked issues support description, actual result, owner, priority, linked test case, multiple attachments and an action-led issue workflow. |
-| Evidence controls | **Add evidence** opens the upload flow. **View evidence** is read-only and shows only attached files. A file name or **View file** opens image, PDF, video or text preview; Office files provide an in-window download handoff. |
-| Evidence preview | Image/PDF content fills an aligned, theme-aware modal. It has a persistent header, `Cancel ×`, zoom for images, and expand/restore controls. |
-| Theming and accessibility | Management modals use shared theme variables for readable light/dark/contrast surfaces, visible focus states, responsive modal dimensions and non-overlapping action bars. |
-
-### Board action flow
-
-```mermaid
-sequenceDiagram
-    participant U as Delivery user
-    participant B as Requirement/Test/Defect board
-    participant M as Manage action window
-    participant E as Evidence viewer
-    U->>B: Select Manage requirement / test / issue
-    B->>M: Open aligned theme-aware modal
-    U->>M: Add evidence, edit, update status or delete
-    U->>M: View evidence
-    M->>E: Open read-only attachment list
-    U->>E: Open file preview
-    E-->>U: Image/PDF/video/text preview + Cancel ×
-```
-
-## Command Center
-
-The Command Center is the delivery-control layer. It reads the currently available workspace data and calculates rather than hardcodes its information.
-
-- Executive metrics: active projects, open RFCs, UAT work, critical bugs, pending approvals, releases and blocked items.
-- Project health: Green/Amber/Red indicator based on completion, overdue work, risk and blockers.
-- RFC pipeline: Draft → Review → FS → Development → UAT → RA Validation → CAB → Deployment → Closed.
-- UAT control: passed, failed, blocked, not-executed and sign-off indicators.
-- Bug and release center: linked work, owners, status and release gate reminders.
-- Approval inbox, My Work and lifecycle audit activity.
-- Command palette with `Ctrl + K` on Windows/Linux or `⌘ + K` on macOS.
-- Flow Assistant: stable, deterministic operational guidance based on saved RFC, test, defect, approval and release data. It never makes automatic changes.
-
-## Flow Assistant modes
-
-The default **Local Workspace Assistant** is intentionally deterministic. It gives clear delivery recommendations from browser-saved records and does not send content to any external provider.
-
-The **API-ready** selection is a protected integration placeholder. It remains in safe local fallback mode until a server-side provider integration, authentication, rate limits and protected environment secret have been configured. Never put an AI provider key in the browser.
-
-## User roles and access
-
-| Role | Primary access |
-| --- | --- |
-| Admin | Account approvals, roles, departments, full workspace administration and Admin Board. |
-| Department Manager | Department delivery visibility and managed work. |
-| Employee | Assigned delivery work, workspace records, profile settings and evidence. |
-
-All employee accounts start as **Pending**. An administrator must approve them before sign-in. The local demo administrator is:
-
-```text
-Email: admin@ptcl.com
-Password: PTCLAdmin!2026
-```
-
-## Evidence and storage behavior
-
-Evidence belongs to each individual RFC, lifecycle record, requirement, test case, test execution, RTM row or report row. Supported file types include images, video, PDF, DOC/DOCX, XLS/XLSX, CSV, JSON, TXT and LOG, up to 50 MiB per file. Multiple files can be attached to the same record.
-
-Evidence is deliberately split into two modes:
-
-- **Add evidence**: accepts multiple attachments and supports removing an attachment while editing.
-- **View evidence**: a read-only attachment list without upload controls. Every attachment is explicitly clickable through its name and a **View file** button.
-
-The web prototype stores operational data in the browser using localStorage and IndexedDB. Clearing browser site data removes this local prototype data. The API uses a local JSON file for development. These choices make the project simple to run without Docker, but production requires managed database and object storage.
-
-## Architecture
-
-```text
-apps/
-  web/                  Next.js 16 application
-    app/                Shell, layout, styling and routes
-    components/         Reusable delivery, RTM, auth and Command Center UI
-    lib/                Browser-local domain models and persistence helpers
-  api/                  NestJS API
-    src/main.ts         JWT authentication, workspace guard and entity/dashboard APIs
-    src/local-store.ts  Development JSON persistence
-    migrations/         Initial local data migration
-tests/                  Playwright browser coverage
-docs/                   Delivery and enhancement documentation
-```
-
-## API foundation
-
-The NestJS API is secured with JWT bearer authentication and workspace-scoped entity access. A Viewer is read-only. Each create/update writes an audit entry.
-
-### Core endpoints
-
-| Endpoint | Purpose |
-| --- | --- |
-| `GET /health` | API and local store health check. |
-| `POST /auth/login` | Returns a short-lived bearer token. |
-| `GET /api/:type` | Lists workspace-scoped entities. |
-| `POST /api/:type` | Creates a workspace-scoped entity. |
-| `POST /api/:type/:id` | Updates a workspace-scoped entity and writes an audit record. |
-
-Supported entity types include `project`, `rfc`, `user-story`, `requirement`, `test-case`, `test-run`, `bug`, `document`, `comment`, `link`, `release`, `approval` and `risk`.
-
-### Command Center endpoints
-
-All require `Authorization: Bearer <token>`:
-
-```text
-GET /dashboard/summary
-GET /dashboard/project-health
-GET /dashboard/rfc-statistics
-GET /dashboard/uat-statistics
-GET /dashboard/bug-statistics
-GET /dashboard/release-statistics
-GET /dashboard/approval-statistics
-GET /dashboard/workload
-GET /dashboard/risks
-GET /dashboard/activity-feed
-GET /dashboard/notifications
-```
+| `apps/web/app`, `apps/web/components`, `apps/web/lib` | Next.js shell, product UI, browser-local workflows and persistence. |
+| `apps/web/public/logo.svg` | ProductFlow 360 brand mark. |
+| `apps/api/src` | NestJS endpoints, JWT authorization, dashboard aggregation, local store. |
+| `playwright/tests/ui` | Playwright browser tests. |
+| `playwright/features`, `playwright/step-definitions` | Executable Cucumber BDD scenarios and steps. |
+| `playwright/src/ui/locators`, `playwright/src/ui/pages` | Screen selectors and page objects. |
+| `docs` | Product notes, implementation status, and documentation images. |
 
 ## Run locally
 
-Requirements: Node.js 24 LTS and npm.
+Requirements: Node.js 24 and npm. From the repository root:
 
-```sh
+```bash
 npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000). The local demo administrator is `admin@ptcl.com` with password `PTCLAdmin!2026` (also shown on the prototype login screen). Change or remove this bootstrap account before any shared deployment.
 
-### Verification
+To run the separate development API, copy `.env.example` to `.env`, then provision a user and start the service:
 
-```sh
-npm run typecheck
-npm run build
-npm run api:build
-npm test
-git diff --check
-```
-
-### Run API without Docker
-
-```sh
+```bash
 cp .env.example .env
 npm run migrate --workspace apps/api
 npm run provision:user --workspace apps/api -- admin@example.com "PF360 Admin" "use-a-strong-password" "PTCL QA Workspace" "Super Admin"
 npm run api:dev
 ```
 
-The API uses `apps/api/.data/pf360.json` in local development, so no Docker or PostgreSQL service is required to evaluate the project.
+`GET /health` reports API and local-store health. Authenticated endpoints include `POST /auth/login`, workspace-scoped `/api/:type` records, and `/dashboard/*` statistics. API data is separate from browser-local UI data.
 
-## Quality and production roadmap
+## Quality and reports
 
-Playwright remains included because it protects core browser behavior such as login/password visibility, attachments, evidence preview, RFC-linked test/retest history, workspace changes, theme persistence and responsive UI.
-
-Before production use, migrate browser/file persistence to managed PostgreSQL plus object storage; add PTCL SSO, server-side sessions, password reset/MFA, HTTPS, secret management, backups, observability, organization-specific RBAC and API rate limiting.
-
-## Test automation
-
-The repository includes a dedicated [`playwright/`](playwright) automation framework with TypeScript, Playwright, Page Object Model, Gherkin/Cucumber-ready features, separate UI/API layers, cross-browser projects, screenshots, videos, traces, HTML reporting and CI-ready conventions.
-
-```sh
-cd playwright
-npm install
-npx playwright install
-npm run test:smoke
+```mermaid
+flowchart LR
+  BDD[20 Cucumber BDD scenarios] --> Results[Shared Allure results]
+  PW[83 Playwright UI cases] --> Results
+  Results --> Report[Allure report]
+  Report --> B[BDD Cases]
+  Report --> P[Playwright Cases]
+  B --> BC[Five component suites]
+  P --> PC[UI component and flow suites]
 ```
 
-The root scripts also support `npm run test:ui`, `npm run test:smoke`, `npm run test:regression` and `npm run test:api`. Read the [automation guide](playwright/README.md) and [architecture document](playwright/docs/AUTOMATION_ARCHITECTURE.md) before extending coverage.
+```bash
+npx playwright install chromium
+npm run typecheck
+npm run api:build
+npm run test:allure
+env -u JAVA_HOME npx allure open playwright/reports/allure --port 5052
+```
 
-## References
+`npm run test:allure` starts the local web app and runs both suites. The generated report is local and ignored by Git. BDD scenarios have Gherkin steps, screenshots, and videos; Playwright cases also include screenshot and video evidence. The API health tests require a running NestJS API and `PF360_RUN_API_TESTS=1`; otherwise they are skipped. See the [automation guide](playwright/README.md) and [functional automation diagrams](playwright/docs/AUTOMATION_ARCHITECTURE.md).
 
-- [Implementation plan](docs/IMPLEMENTATION-PLAN.md)
-- [Enhancement prompt](docs/ENHANCEMENT-PROMPT.md)
+## Current limits and next steps
+
+Browser storage is device-local and clearing site data removes local records. Authentication and password recovery in the web prototype are not server-backed. Production work includes connecting the UI to the API, managed database and file storage, organization identity, server-side access enforcement, backups, monitoring, and real billing integrations. The [implementation plan](docs/IMPLEMENTATION-PLAN.md) distinguishes current behavior from the target architecture.
+
+## Further reading
+
 - [Product description](docs/PRODUCT-DESCRIPTION.md)
+- [Implementation plan](docs/IMPLEMENTATION-PLAN.md)
+- [Automation architecture](playwright/docs/AUTOMATION_ARCHITECTURE.md)

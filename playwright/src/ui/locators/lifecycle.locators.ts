@@ -1,0 +1,27 @@
+import { type Page } from '@playwright/test';
+
+export const lifecycleLocators = (page: Page, name: string, singular: string) => ({
+  heading: page.getByRole('heading', { name, exact: true }),
+  create: page.getByRole('button', { name: `New ${singular}`, exact: true }),
+  editor: page.locator('.lifecycle-board .test-editor.feature-form').filter({ has: page.getByRole('heading', { name: `Create ${singular}` }) }),
+  formHeading: page.getByRole('heading', { name: `Create ${singular}` }),
+  cancel: page.getByRole('button', { name: 'Cancel', exact: true }),
+  linkedRfc: page.getByRole('combobox', { name: 'Linked RFC' }),
+  recordType: page.getByRole('combobox', { name: 'Record type' }),
+  priority: page.getByRole('combobox', { name: 'Priority' }),
+  title: page.getByRole('textbox', { name: 'Title', exact: true }),
+  owner: page.getByRole('textbox', { name: 'Owner / reviewer' }),
+  description: page.getByRole('textbox', { name: 'Description / steps' }),
+  rollout: page.getByRole('textbox', { name: 'Rollout plan' }),
+  rollback: page.getByRole('textbox', { name: 'Rollback plan' }),
+  expected: page.getByRole('textbox', { name: 'Expected amount (PKR)' }),
+  actual: page.getByRole('textbox', { name: 'Actual amount (PKR)' }),
+  date: page.getByRole('textbox', { name: 'Target / effective date' }),
+  linkedRecord: page.getByRole('combobox', { name: 'Linked record' }),
+  save: page.getByRole('button', { name: `Save ${singular}` }),
+  search: page.getByRole('textbox', { name: `Search ${name}` }),
+  filterRfc: page.getByRole('combobox', { name: 'Filter records by RFC' }),
+  table: page.locator('.lifecycle-board .requests table'),
+  statuses: page.locator('.lifecycle-board .workflow-states'),
+  export: page.locator('.lifecycle-board .requests').getByRole('button', { name: 'Export' }),
+});

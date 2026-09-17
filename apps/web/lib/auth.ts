@@ -4,7 +4,9 @@ export const AUTH_SESSION_KEY = 'pf360-auth-session';
 
 export type UserRole = 'Admin' | 'Department Manager' | 'Employee';
 export type UserStatus = 'Approved' | 'Pending' | 'Rejected';
-export type AuthUser = { id: string; fullName: string; employeeNo: string; designation: string; department: string; email: string; mobile: string; photo?: string; passwordHash: string; role: UserRole; status: UserStatus; createdAt: string };
+export type PasswordResetStatus = 'Pending' | 'Approved' | 'Rejected';
+export type PasswordResetRequest = { status: PasswordResetStatus; requestedAt: string; reviewedAt?: string; reviewedBy?: string; code?: string };
+export type AuthUser = { id: string; fullName: string; employeeNo: string; designation: string; department: string; email: string; mobile: string; photo?: string; passwordHash: string; role: UserRole; status: UserStatus; createdAt: string; passwordReset?: PasswordResetRequest };
 
 export const DEFAULT_DEPARTMENTS = ['Consumer Business', 'Enterprise Business', 'Technology', 'IT', 'Network', 'Digital', 'Customer Experience', 'Finance', 'Human Resources', 'Corporate Affairs'];
 

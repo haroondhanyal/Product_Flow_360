@@ -19,7 +19,7 @@ Typography uses a 14px base, 24–33px primary headings, 15–24px section/dialo
 - Playwright coverage of uploads, persistence, local test flow and themes. This is initial regression coverage, not completion of enterprise hardening.
 
 ## Phase 2: server foundation implemented
-- NestJS API with PostgreSQL migration scripts and Docker Compose development database.
+- NestJS API with a local JSON development store, JWT authentication and workspace-scoped endpoints. Prisma/PostgreSQL dependencies are present as target infrastructure, but the running API does not yet use them.
 - Scrypt-hashed user provisioning, 15-minute JWT bearer sessions, workspace membership roles and Viewer read-only enforcement.
 - Workspace-bound generic persistence for projects, RFCs, stories, requirements, tests, executions, bugs, documents, comments and links, with append-only audit events.
 - The existing frontend remains browser-local until its module-by-module API migration is complete. PTCL SSO, production secrets, HTTPS ingress, object storage and organization-specific role policy need deployment-owner inputs.
@@ -29,7 +29,7 @@ The PDF names Phase 0 through Phase 16 but does not specify the precise per-phas
 
 | Phase | Scope | Exit criteria |
 |---|---|---|
-| 2 | NestJS API, Prisma/PostgreSQL, authentication, refresh tokens, RBAC | Server enforces tenant and permission boundaries; session/revocation tests pass |
+| 2 | Connect the web UI to the NestJS API; migrate local JSON to managed PostgreSQL; add refresh tokens and full RBAC | Server enforces tenant and permission boundaries; session/revocation tests pass |
 | 3 | Products and RFC core | Persistent audited records, ownership, lifecycle transition rules and approvals |
 | 4 | Import/export | Validated templates, dry runs, row errors, authorized exports |
 | 5 | BRD, FRD, stories, acceptance criteria, Zero Hour | Versioned traceability and sign-off before development |
