@@ -31,7 +31,7 @@ try {
   const playwrightStatus = run('npx', ['playwright', 'test', 'playwright/tests/ui', '--project=chromium']);
   if (playwrightStatus !== 0) failed = true;
 
-  const apiStatus = run('node', ['playwright/scripts/run-api-allure.mjs']);
+  const apiStatus = run('node', ['playwright/scripts/run-api-suite.mjs']);
   if (apiStatus !== 0) failed = true;
 
   if (run('node', ['playwright/scripts/generate-allure-report.mjs'], { ...process.env, ALLURE_REPORT_MODE: 'combined' }) !== 0) failed = true;

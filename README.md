@@ -14,7 +14,8 @@ ProductFlow 360 is a PTCL delivery workspace for connecting projects, change req
 | --- | --- |
 | Delivery | Workspaces, products, projects, RFCs, requirements, RTM, test management, defects, approvals, billing, revenue assurance, releases, reports, and evidence. |
 | Access | Employee signup, administrator approval, login, profile, and administrator-reviewed employee password recovery in the browser prototype. |
-| Automation | **83 Playwright UI cases + 20 Cucumber BDD scenarios** in one Allure report; Chromium run verified at **103/103 passed**. |
+| Automation | **500 functional cases** in the branded Allure report: 260 UI, 120 API, and 120 BDD. |
+| Performance | **150 k6 workloads**, with a combined ProductFlow dashboard and native Grafana k6 HTML report. Latest saved run: 150/150 workloads passed and 1,500 requests recorded. |
 | Stack | Next.js 16 and React 19 web app; NestJS 12 API with a local JSON development store; TypeScript automation. |
 
 ## Product journey
@@ -98,6 +99,9 @@ The API provides JWT login, workspace-scoped entities, dashboard endpoints, and 
 | `playwright/tests/ui` | Playwright browser tests. |
 | `playwright/features`, `playwright/step-definitions` | Executable Cucumber BDD scenarios and steps. |
 | `playwright/src/ui/locators`, `playwright/src/ui/pages` | Screen selectors and page objects. |
+| `playwright/performance` | 150 workload definitions, k6 runner script, and combined report dashboard template. |
+| `playwright/scripts` | Allure, API, BDD, and k6 runners/report generation. |
+| `docs/images/automation-report-snapshots` | Latest captured Allure, combined k6, and native k6 report screenshots. |
 | `docs` | Product notes, implementation status, and documentation images. |
 
 ## Run locally
@@ -126,24 +130,84 @@ npm run api:dev
 
 ```mermaid
 flowchart LR
-  BDD[20 Cucumber BDD scenarios] --> Results[Shared Allure results]
-  PW[83 Playwright UI cases] --> Results
-  Results --> Report[Allure report]
-  Report --> B[BDD Cases]
-  Report --> P[Playwright Cases]
-  B --> BC[Five component suites]
-  P --> PC[UI component and flow suites]
+  UI[260 UI cases] --> Allure[Branded 500-case Allure report]
+  API[120 API cases] --> Allure
+  BDD[120 BDD cases] --> Allure
+  Allure --> K6[150 k6 workloads]
+  K6 --> Combined[Combined 650-case performance dashboard]
+  K6 --> Native[Native Grafana k6 HTML report]
 ```
+
+### Latest report screenshots
+
+The screenshots below were captured from the latest generated reports. The functional Allure run has three top-level sections. The k6 dashboard joins those 500 functional results with 150 performance workloads; the native k6 export shows the time-series view from the same run.
+
+#### Allure: 500 functional cases
+
+![ProductFlow 360 branded Allure report showing 500 test cases and the UI, BDD, and API suites](docs/images/automation-report-snapshots/allure-latest.png)
+
+#### Combined performance: 650 functional and k6 cases
+
+![ProductFlow 360 combined performance dashboard showing 650 cases, latest pass totals, and workload latency](docs/images/automation-report-snapshots/k6-performance-latest.png)
+
+#### Native Grafana k6 report
+
+![Native Grafana k6 web dashboard export showing request rate, request duration, virtual users, and transfer rate](docs/images/automation-report-snapshots/native-k6-latest.png)
+
+### What the 500 functional cases cover
+
+| Allure section | Count | Coverage |
+| --- | ---: | --- |
+| **UI Automation** | **260** | Chromium UI navigation, module availability, record forms, field and selector contracts, cancel/draft recovery, search and empty states, and workflow interactions. Includes smoke, regression, and negative search coverage across the workspace, RTM, test management, defects, requirements, billing validation, revenue assurance, releases, settings, and related screens. |
+| **APIs Automation** | **120** | API health/readiness; login input validation and credential cases; success/token contracts; missing, malformed, or invalid authorization; protected resource checks; entity create/read workflows; and dashboard endpoint access. The runner creates an isolated temporary API store and test account for the API suite. |
+| **BDD Cases** | **120** | Gherkin-driven delivery board visibility, creation form fields, draft cancellation, unmatched searches, and supported workflow options across Defects, Requirements, Revenue Assurance, Test Management, and RTM. This includes the original component feature scenarios and the expanded BDD case catalogue. |
+| **Total** | **500** | One branded Allure report with UI Automation, APIs Automation, and BDD Cases suites. |
+
+The 260 UI cases include the original UI coverage plus 45 navigation smoke checks, 62 regression checks for forms and board controls, and 70 negative unmatched-search checks. Allure groups tests by suite/component and includes the evidence produced by each layer: browser screenshots/videos for UI and BDD flows, and request/response evidence for API checks.
+
+### What the 150 k6 workloads cover
+
+The k6 suite targets the local ProductFlow 360 workspace page, the JavaScript bundle discovered from that page, and the ProductFlow logo asset. Its 150 uniquely named cases cross three target resources with 10 workload focuses and five request profiles:
+
+| Dimension | Breakdown |
+| --- | --- |
+| Workload focuses | Smoke: cold and warm response, content type; Regression: repeated navigation, body integrity, latency budget; Capacity baseline: one-VU baseline, steady request handling, availability; Resilience: short-interval availability. |
+| Request profiles | Standard request, browser Accept headers, no-cache headers, English locale header, and cache-bypass query. |
+| Targets | Workspace HTML (`/`), its discovered JavaScript bundle, and `/logo.svg`. |
+| Default execution | 10 requests per case, one virtual user: 1,500 total HTTP requests in the latest saved run. |
+| Checks | HTTP 200, expected response content type, non-empty response body, and per-route latency budget. k6 thresholds also check failed-request rate, overall p95 latency, and check pass rate. |
+
+The default profile is a low-load local baseline, not a production capacity claim. Configure it with `PF360_K6_REPEATS`, `PF360_K6_VUS`, `PF360_K6_MAX_DURATION`, `PF360_PERF_BASE_URL`, and `K6_BIN` as needed. The combined dashboard provides latency comparisons, workload search and details, six visual modes, and CSV/JSON/raw-metric downloads. The native export is generated by k6's [web dashboard output](https://grafana.com/docs/k6/latest/results-output/web-dashboard/).
+
+Latest saved run (24 September 2026): Allure **500/500 passed**; k6 **150/150 passed**, **1,500 requests**, overall request p95 **3.74 ms**. These timing values describe that local run and depend on the host and app build.
+
+### Generate the reports
+
+Install the browser and Grafana k6 (for example `brew install k6` on macOS). Start the web app on port 3100 in one terminal:
 
 ```bash
 npx playwright install chromium
-npm run typecheck
-npm run api:build
-npm run test:allure
-env -u JAVA_HOME npx allure open playwright/reports/allure --port 5052
+npm run dev --workspace apps/web -- --hostname 127.0.0.1 --port 3100
 ```
 
-`npm run test:allure` starts the local web app and runs both suites. The generated report is local and ignored by Git. BDD scenarios have Gherkin steps, screenshots, and videos; Playwright cases also include screenshot and video evidence. The API health tests require a running NestJS API and `PF360_RUN_API_TESTS=1`; otherwise they are skipped. See the [automation guide](playwright/README.md) and [functional automation diagrams](playwright/docs/AUTOMATION_ARCHITECTURE.md).
+Then generate both report sets from the repository root, in order:
+
+```bash
+npm run test:allure
+npm run test:k6
+```
+
+The Allure runner generates the 500 functional results. The k6 runner consumes that Allure data and creates its 150 workload results and native HTML export. **Run k6 after Allure:** Allure report generation cleans the output folder and can remove existing performance files. To refresh only the report from current Allure results, use `npm run report:allure`, then run `npm run test:k6` again to restore the combined performance files.
+
+Open the reports in Chrome:
+
+| Report | URL |
+| --- | --- |
+| Branded Allure report | <http://127.0.0.1:3100/reports/allure/index.html> |
+| Combined performance dashboard | <http://127.0.0.1:3100/reports/allure/performance/index.html> |
+| Native k6 HTML report | <http://127.0.0.1:3100/reports/allure/performance/native-k6-report.html> |
+
+Generated reports live under `playwright/reports/allure` and are ignored by Git; the committed README screenshots above are static snapshots of the latest saved run. See the [detailed automation guide](playwright/README.md) and [automation architecture](playwright/docs/AUTOMATION_ARCHITECTURE.md) for suite structure and configuration.
 
 ## Current limits and next steps
 
