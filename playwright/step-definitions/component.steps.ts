@@ -12,12 +12,15 @@ const definitions: Record<string, { nav: string; name: string; singular: string 
   RTM: { nav: 'RTM', name: 'RTM', singular: 'RTM' }, Defects: { nav: 'Defects', name: 'Defects', singular: 'defect' },
   'Test Management': { nav: 'Test management', name: 'Test management', singular: 'test case' }, Requirements: { nav: 'Requirements', name: 'Requirements', singular: 'requirement' },
   'Revenue Assurance': { nav: 'Revenue assurance', name: 'Revenue assurance', singular: 'revenue check' },
+  'Billing Validation': { nav: 'Billing validation', name: 'Billing validation', singular: 'billing check' },
+  Releases: { nav: 'Releases', name: 'Releases', singular: 'release' },
 };
 const config = (screen: string) => { const value = definitions[screen]; if (!value) throw new Error(`Unknown BDD screen: ${screen}`); return value; };
 const locators = (world: BddWorld, screen: string) => { const c = config(screen); return screen === 'RTM' ? rtmLocators(world.page) : screen === 'Test Management' ? testCaseLocators(world.page) : lifecycleLocators(world.page, c.name, c.singular); };
 
 Given('an authenticated BDD user opens the {string} screen', async function (this: BddWorld, screen: string) { const login = new LoginPage(this.page); await login.open(); await login.login(environment.userEmail, environment.userPassword); await new SidebarComponent(this.page).open(config(screen).nav); });
 Then('the {string} screen heading is visible', async function (this: BddWorld, screen: string) { await expect(locators(this, screen).heading).toBeVisible(); });
+Then('the creation action is available on {string}', async function (this: BddWorld, screen: string) { await expect(locators(this, screen).create).toBeVisible(); });
 Then('the primary creation action is available', async function (this: BddWorld) { await expect(locators(this, this.component).create).toBeVisible(); });
 When('the user starts a new record on {string}', async function (this: BddWorld, screen: string) { await locators(this, screen).create.click(); });
 Then('the common creation fields are visible for {string}', async function (this: BddWorld, screen: string) { const l: any = locators(this, screen); if (screen === 'RTM') { await expect(l.name).toBeVisible(); await expect(l.volume).toBeVisible(); } else if (screen === 'Test Management') { await expect(l.linkedRfc).toBeVisible(); await expect(l.title).toBeVisible(); await expect(l.module).toBeVisible(); } else { await expect(l.linkedRfc).toBeVisible(); await expect(l.title).toBeVisible(); await expect(l.owner).toBeVisible(); } });
@@ -29,5 +32,8 @@ Then('the linked RFC selector contains delivery requests', async function (this:
 Then('import and search controls are available for {string}', async function (this: BddWorld, screen: string) { const l: any = locators(this, screen); if (screen === 'RTM') await expect(l.import).toBeVisible(); else if (screen === 'Test Management') { await expect(l.board).toBeVisible(); } else { await expect(l.search).toBeVisible(); await expect(l.filterRfc).toBeVisible(); } });
 When('the user selects {string} as the RTM volume', async function (this: BddWorld, value: string) { await rtmLocators(this.page).volume.selectOption(value); });
 Then('the selected RTM volume is {string}', async function (this: BddWorld, value: string) { await expect(rtmLocators(this.page).volume).toHaveValue(value); });
+When('the user searches {string} on {string}', async function (this: BddWorld, query: string, screen: string) { await lifecycleLocators(this.page, config(screen).name, config(screen).singular).search.fill(query); });
+Then('the {string} search result list is empty', async function (this: BddWorld, screen: string) { const l = lifecycleLocators(this.page, config(screen).name, config(screen).singular); await expect(l.table.locator('tbody tr')).toHaveCount(0); await expect(this.page.locator('.lifecycle-board .empty')).toBeVisible(); });
+Then('the workflow options for {string} include {string}', async function (this: BddWorld, screen: string, values: string) { const options = screen === 'Test Management' ? testCaseLocators(this.page).stageOptions : lifecycleLocators(this.page, config(screen).name, config(screen).singular).recordType.locator('option'); await expect(options).toContainText(values.split(',')); });
 When('the user cancels the current BDD draft on {string}', async function (this: BddWorld, screen: string) { await locators(this, screen).cancel.click(); });
 Then('the creation editor is closed for {string}', async function (this: BddWorld, screen: string) { const l: any = locators(this, screen); await expect(screen === 'RTM' ? l.formHeading : screen === 'Test Management' ? l.editorHeading : l.formHeading).toHaveCount(0); });

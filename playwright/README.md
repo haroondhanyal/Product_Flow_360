@@ -1,72 +1,155 @@
-# ProductFlow 360 Automation
+# ProductFlow 360 Automation and Reports
 
-This folder contains the scalable QA automation framework for ProductFlow 360. It preserves the application and separates UI browser automation from API automation.
+This guide covers the functional automation suite, the branded Allure report, and the k6 performance reports. The combined report set contains **500 functional cases** and **150 k6 workloads**. Run functional automation first and k6 second so both report sets are available together.
 
-## Architecture
+## Report overview
+
+| Report section | Cases | What it covers |
+| --- | ---: | --- |
+| UI Automation | 260 | Chromium UI smoke, regression, and negative flows across ProductFlow modules. |
+| APIs Automation | 120 | API checks grouped in Allure under the API automation section. |
+| BDD Cases | 120 | Cucumber scenarios with readable Gherkin steps and component suites. |
+| **Functional Allure total** | **500** | The three functional sections above. |
+| k6 Performance | 150 | Local HTTP workloads with repeatable request profiles and per-workload latency details. |
+| **Combined dashboard total** | **650** | The 500 Allure cases plus 150 k6 workloads. |
+
+After both runs, open these pages from the ProductFlow web app:
+
+| Page | Local URL |
+| --- | --- |
+| Branded Allure report | <http://127.0.0.1:3100/reports/allure/index.html> |
+| Combined performance dashboard | <http://127.0.0.1:3100/reports/allure/performance/index.html> |
+| Native Grafana k6 web dashboard export | <http://127.0.0.1:3100/reports/allure/performance/native-k6-report.html> |
+
+The Allure header links to the performance dashboard. The performance dashboard links back to Allure and the native k6 export. The dashboard includes combined totals, latency charts, workload search and details, theme choices, and CSV/JSON downloads.
+
+## Full report flow
 
 ```mermaid
-flowchart LR
-  F[Gherkin features] --> S[Thin step definitions]
-  S --> W[Business flows]
-  W --> P[Page objects and components]
-  P --> PW[Playwright browser]
-  AT[API tests] --> AS[API services] --> AC[API client] --> API[Nest API]
+flowchart TD
+  A[Start ProductFlow web app on port 3100] --> B[npm run test:allure]
+  B --> C[Run 120 BDD scenarios]
+  C --> D[Run 260 Chromium UI tests]
+  D --> E[Run 120 API cases]
+  E --> F[Generate branded 500-case Allure report]
+  F --> G[npm run test:k6]
+  G --> H[Run 150 k6 workloads, 10 requests per case by default]
+  H --> I[Write raw metrics, summary, combined dashboard, native k6 HTML]
+  I --> J[Open Allure or performance URL in Chrome]
 ```
 
-`tests/ui` contains executable Playwright UI tests. `features` is the executable Cucumber BDD layer. Page objects own screen actions, components own reusable navigation, and tests retain assertions.
+**Order matters:** `test:allure` and `report:allure` clean and regenerate the Allure output directory. Run k6 after Allure; otherwise a later Allure generation can remove the performance files. `test:k6` reads the generated Allure case data to produce the combined 650-case view.
 
-### Locator Selector Hub
+## Setup
 
-All screen selectors belong in `src/ui/locators/`: Login, Navigation, Workspace, RFC, Requirement, RTM, Test Case, Defect and Evidence each have their own hub. Page Objects call these hubs rather than declaring selectors inline. `xpath-fallbacks.ts` is intentionally isolated for legacy cases only; new automation must prefer role, label, placeholder and `data-testid` locators.
+From the repository root:
 
-## Layout
+```bash
+npm install
+npx playwright install chromium
+```
+
+The k6 runner requires Grafana k6 on `PATH` (or the executable path in `K6_BIN`). On macOS, install it with `brew install k6`; see the [Grafana k6 installation guide](https://grafana.com/docs/k6/latest/set-up/install-k6/). If the app is already built, start it on the report-serving port:
+
+```bash
+npm run build
+npm run dev --workspace apps/web -- --hostname 127.0.0.1 --port 3100
+```
+
+Keep that terminal running. The combined Allure runner also checks port 3100 and can start the built web app itself when it is not already available. If you want to run k6 by itself, start the app first. The default target is `http://127.0.0.1:3100`; override it with `PF360_PERF_BASE_URL` when needed.
+
+For environments and credentials, copy `playwright/.env.example` to `playwright/.env` when present and set the documented variables. Use CI secrets for real credentials; do not commit passwords, tokens, or browser storage state.
+
+## Generate the combined reports
+
+Run these commands from the repository root, in this order:
+
+```bash
+npm run test:allure
+npm run test:k6
+```
+
+`npm run test:allure` resets the previous Allure run, executes the Cucumber BDD suite, the Chromium UI suite, and the API suite, then creates the branded combined report. `npm run test:k6` requires that Allure data, executes the 150-workload performance suite, and writes the combined performance dashboard plus the native k6 HTML export.
+
+Open the reports in Chrome by navigating to the URLs in [Report overview](#report-overview). The web app's report route serves generated files from `playwright/reports/allure`; the reports are local artifacts and are not published automatically.
+
+### Generate or view only Allure
+
+```bash
+npm run test:allure
+```
+
+Open `http://127.0.0.1:3100/reports/allure/index.html`. To regenerate a report from the current Allure results without rerunning cases:
+
+```bash
+npm run report:allure
+```
+
+Report-only generation cleans the output directory. If you need the performance dashboard afterward, rerun `npm run test:k6` after the Allure report is regenerated.
+
+### Generate only the k6 reports
+
+With a current Allure report already generated and the app responding on the target URL:
+
+```bash
+npm run test:k6
+```
+
+The runner creates 150 named workloads from the local workspace route, the JavaScript bundle discovered from the workspace response, and `/logo.svg`. The workload catalogue combines Smoke, Regression, Capacity baseline, and Resilience focuses with standard, browser Accept header, no-cache, English locale, and cache-bypass request profiles. Each workload defaults to 10 requests and one virtual user. Checks cover HTTP 200, content type, a non-empty response body, and route-specific latency budgets.
+
+The script uses k6's web dashboard export to create `native-k6-report.html`. That is k6's native timeline and metrics view; the ProductFlow dashboard presents the same run with the Allure functional cases, workload search, charts, and exports. For details on k6's built-in export and thresholds, see the [Grafana k6 web dashboard documentation](https://grafana.com/docs/k6/latest/results-output/web-dashboard/) and [thresholds documentation](https://grafana.com/docs/k6/latest/using-k6/thresholds/).
+
+### k6 settings
+
+| Variable | Default | Purpose |
+| --- | ---: | --- |
+| `K6_BIN` | `k6` | k6 executable name or full path. |
+| `PF360_PERF_BASE_URL` | `http://127.0.0.1:3100` | ProductFlow instance to exercise. |
+| `PF360_K6_REPEATS` | `10` | Requests per workload. |
+| `PF360_K6_VUS` | `1` | Virtual users. This is a low-load local baseline by default. |
+| `PF360_K6_MAX_DURATION` | `3m` | Maximum k6 run duration. |
+
+Example with five virtual users and five repetitions per workload:
+
+```bash
+PF360_K6_VUS=5 PF360_K6_REPEATS=5 npm run test:k6
+```
+
+Changing these settings changes the run intensity and the number of recorded request samples. The default is intended for a quick local baseline, not a production capacity claim.
+
+## Generated files
+
+| File or directory | Contents |
+| --- | --- |
+| `playwright/reports/allure/index.html` | Branded Allure report entry point. |
+| `playwright/reports/allure/data/` | Allure report data, including the functional case details consumed by the combined dashboard. |
+| `playwright/reports/allure/performance/index.html` | ProductFlow combined performance dashboard. |
+| `playwright/reports/allure/performance/native-k6-report.html` | Native k6 web dashboard export. |
+| `playwright/reports/allure/performance/summary.json` | Summary, thresholds, functional totals, and detailed workload rows. |
+| `playwright/reports/allure/performance/k6-metrics.jsonl` | Raw k6 time-series metrics. |
+| `playwright/performance/cases.json` | Workload catalogue generated for the latest k6 run. |
+
+Reports and execution artifacts are generated locally and are ignored by Git. Preserve or archive the report directory separately if a run needs to be shared.
+
+## Framework structure
 
 | Path | Responsibility |
 | --- | --- |
 | `config/` | Environment selection and browser configuration. |
-| `src/ui/pages`, `src/ui/components` | POM and reusable UI controls. |
-| `src/api/clients`, `src/api/services` | APIRequestContext client and service layer. |
-| `tests/ui`, `tests/api` | Executable UI and API automation. |
-| `features`, `step-definitions` | Gherkin scenarios and thin BDD mappings. |
-| `test-data/` | Non-secret JSON data. |
-| `reports/`, `artifacts/` | Generated reports and failure evidence; ignored by Git. |
+| `src/ui/pages`, `src/ui/components` | Page objects and reusable UI controls. |
+| `src/ui/locators/` | Screen-specific locator hubs. |
+| `src/api/clients`, `src/api/services` | API client and service layer. |
+| `tests/ui`, `tests/api` | Playwright UI and API test sources. |
+| `features`, `step-definitions`, `support/` | Cucumber features, step bindings, and shared BDD setup. |
+| `performance/` | k6 script, workload catalogue, and dashboard template. |
+| `scripts/` | Combined runners, report generation, and utility scripts. |
+| `reports/`, `artifacts/` | Generated reports and test evidence. |
 
-Each UI module has its own spec page under `tests/ui`: `workspace.spec.ts`, `rtm.spec.ts`, `test-management.spec.ts`, `defects.spec.ts`, plus authentication and smoke coverage. Every module suite uses `beforeEach` for independent login/navigation setup and contains explicit positive and negative assertions.
+The UI locator hub is under `src/ui/locators/`. Page objects use these modules rather than embedding selectors. Prefer role, label, placeholder, and `data-testid` locators; `xpath-fallbacks.ts` is isolated for legacy cases.
 
-`core-components.spec.ts` and `lifecycle-components.spec.ts` add five focused cases each for Settings, Workspace, Products, Change Requests, Test Management, RTM, Billing Validation, Revenue Assurance, Releases, Requirements and Defects. Their page objects use screen-specific files under `src/ui/locators/`; Allure groups each component under its own suite. The verified Chromium UI run contains 83 tests, including smoke, authentication, signup, recovery and end-to-end cases.
+The functional journey follows authentication through workspace, change requests, requirements, RTM, test management, defects, UAT, billing validation, revenue assurance, and release. More layer and lifecycle details are in [Automation Architecture](docs/AUTOMATION_ARCHITECTURE.md).
 
-## Functional model
-
-```mermaid
-flowchart LR
-  Login[Authentication] --> Workspace[Workspace]
-  Workspace --> RFC[Change requests]
-  RFC --> Req[Requirements]
-  Req --> RTM[RTM]
-  RTM --> Test[Test Management]
-  Test -->|Failure| Defect[Defects]
-  Test -->|Pass| UAT[UAT approval]
-  UAT --> Billing[Billing validation]
-  Billing --> Revenue[Revenue assurance]
-  Revenue --> Release[Release]
-```
-
-The automation follows this same traceability path. Full layer, lifecycle, BDD and report diagrams are documented in [Automation Architecture](docs/AUTOMATION_ARCHITECTURE.md).
-
-## Install and configure
-
-```bash
-cd playwright
-npm install
-npx playwright install
-cp .env.example .env
-```
-
-Set secrets with environment variables or CI secrets. Do not commit real passwords, tokens or storage state. `TEST_ENV=dev|qa|staging` selects the matching documented environment contract; CI should inject its own `BASE_URL`, `API_BASE_URL`, `TEST_USER_EMAIL` and `TEST_USER_PASSWORD`.
-
-## Execute
-
-From the repository root:
+## Other useful commands
 
 ```bash
 npm run test:ui
@@ -76,34 +159,29 @@ npm run test:api
 npm run test:bdd:allure
 ```
 
-From this folder, use `npm run test:chromium`, `npm run test:firefox`, `npm run test:webkit`, `npm run test:headed` (add `--headed`), or `npm run report`. The default root run targets Chromium only; cross-browser execution is intentional rather than automatic for every local change.
+The root commands use the root Playwright configuration. To use the separate scripts in `playwright/package.json`, change into that directory first:
 
-Every test records a video and screenshot so passing flows are visible in Allure; failed tests also retain traces. Open a trace with `npx playwright show-trace <trace.zip>` and reports with `npx playwright show-report reports/playwright`.
+```bash
+cd playwright
+npm run test:chromium
+npm run test:firefox
+npm run test:webkit
+npm run report
+```
 
-### BDD Cases
+Use focused test commands while developing. The combined `npm run test:allure` command is the full 500-case functional report run. A standalone BDD run produces a BDD report in the same Allure directory, so run the combined command again before generating the complete report set.
 
-`npm run test:bdd:allure` starts the local app, runs 20 Chromium Cucumber scenarios, and generates a BDD-only report at `playwright/reports/allure`. The five feature files under `features/rtm`, `features/defects`, `features/test-management`, `features/requirements`, and `features/revenue-assurance` contain four scenarios each. Their Given/When/Then steps have browser assertions in `step-definitions/component.steps.ts` and shared browser setup in `support/bdd-world.ts`.
+## Troubleshooting
 
-Allure displays **BDD Cases** as the parent suite with a separate suite for each component. Each scenario includes its Gherkin steps, final screenshot, and execution video. To serve the report locally, run `env -u JAVA_HOME npx allure open playwright/reports/allure --port 5051` from the repository root.
+- **k6 executable not found:** install Grafana k6 or set `K6_BIN=/absolute/path/to/k6`.
+- **App not responding on port 3100:** start the web app on port 3100, then verify `http://127.0.0.1:3100` loads.
+- **k6 says Allure test data is missing:** run `npm run test:allure` first; then run `npm run test:k6`.
+- **Performance page or native report is missing:** rerun `npm run test:k6` after the last Allure report generation. Allure generation cleans its output directory.
+- **Report URL returns 404:** ensure the ProductFlow web app is running on port 3100 and that the generated file exists under `playwright/reports/allure`.
+- **Native dashboard is blank or not fully self-contained:** inspect the k6 run output for a failed export and rerun k6 with a compatible current Grafana k6 build.
 
-### Allure report branding
+Playwright failure evidence can include screenshots, videos, and traces depending on the test configuration. Open a saved trace with `npx playwright show-trace <trace.zip>`.
 
-`npm run test:allure` clears previous Allure results, runs the 20 BDD scenarios and all 83 existing Chromium Playwright UI cases, then produces one branded report at `playwright/reports/allure`. The report title is **ProductFlow 360 | BDD + Playwright Cases**. Its Suites view has two top-level groups: **BDD Cases** and **Playwright Cases**, each with component suites beneath it. Branded scenarios carry Owner **Raja Haroon** and Designation **Full Stack QA Automation** labels; the PF360 logo is copied from the application asset into the Allure result bundle. The report script ignores a stale `JAVA_HOME` when Java is available on `PATH`.
+## CI guidance
 
-The report pipeline preserves history between clean runs so Overview trend charts remain populated. It adds ProductFlow 360 categories, local or CI executor details, environment metadata, module-based Packages, Behaviors and Suites, test descriptions, and a large branded report header. Every generated test entry includes its component, execution layer, owner, environment, screenshot and video evidence.
-
-`signup-flow.spec.ts` and `forgot-password-flow.spec.ts` cover separate employee access flows: signup submission and admin approval, reset request and admin review, one-time recovery code validation, password replacement and login with the new credential. The administrator shares the recovery code with the verified employee through an approved channel; the code is shown in the Admin Board and invalidated after use. This browser-local prototype does not provide server-side identity verification or secure secret storage, so production recovery requires a backend and a trusted delivery channel.
-
-## Extending the framework
-
-1. Create a page object action in `src/ui/pages` using `getByRole`, `getByLabel`, then `getByPlaceholder` before CSS selectors.
-2. Add a business flow only when it crosses pages.
-3. Add a focused test under `tests/ui` or `tests/api`.
-4. Add an optional business-readable feature and a thin step definition.
-5. Keep data in JSON/factories and make generated records identifiable as automation data.
-
-API tests must use a service built on `BaseApiClient`; endpoint paths must not be scattered through UI pages. The current browser-local prototype does not expose every requested CRUD API in a production shape, so API coverage begins with health and expands when server endpoints are enabled.
-
-## CI
-
-CI installs dependencies and browsers, runs typecheck/API tests/UI smoke, then uploads `playwright/reports` and `playwright/artifacts` on failure. Never upload secrets, local auth state or customer evidence.
+Install Node dependencies and the required browser, run the functional and performance suites against an explicitly configured test target, and upload reports/artifacts even when a suite fails. Keep secrets out of artifacts. For k6, choose a load profile appropriate to the test environment rather than using local-baseline settings as a capacity result.

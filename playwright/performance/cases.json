@@ -1,0 +1,2432 @@
+[
+  {
+    "id": "K6-001",
+    "name": "ProductFlow workspace · Cold route response · standard request",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-002",
+    "name": "Workspace JavaScript bundle · Cold route response · standard request",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-003",
+    "name": "ProductFlow brand asset · Cold route response · standard request",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-004",
+    "name": "ProductFlow workspace · Warm route response · standard request",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-005",
+    "name": "Workspace JavaScript bundle · Warm route response · standard request",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-006",
+    "name": "ProductFlow brand asset · Warm route response · standard request",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-007",
+    "name": "ProductFlow workspace · Content type contract · standard request",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-008",
+    "name": "Workspace JavaScript bundle · Content type contract · standard request",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-009",
+    "name": "ProductFlow brand asset · Content type contract · standard request",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-010",
+    "name": "ProductFlow workspace · Repeated navigation response · standard request",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-011",
+    "name": "Workspace JavaScript bundle · Repeated navigation response · standard request",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-012",
+    "name": "ProductFlow brand asset · Repeated navigation response · standard request",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-013",
+    "name": "ProductFlow workspace · Response body integrity · standard request",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-014",
+    "name": "Workspace JavaScript bundle · Response body integrity · standard request",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-015",
+    "name": "ProductFlow brand asset · Response body integrity · standard request",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-016",
+    "name": "ProductFlow workspace · Latency budget · standard request",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-017",
+    "name": "Workspace JavaScript bundle · Latency budget · standard request",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-018",
+    "name": "ProductFlow brand asset · Latency budget · standard request",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-019",
+    "name": "ProductFlow workspace · Single virtual user baseline · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-020",
+    "name": "Workspace JavaScript bundle · Single virtual user baseline · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-021",
+    "name": "ProductFlow brand asset · Single virtual user baseline · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-022",
+    "name": "ProductFlow workspace · Steady request handling · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-023",
+    "name": "Workspace JavaScript bundle · Steady request handling · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-024",
+    "name": "ProductFlow brand asset · Steady request handling · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-025",
+    "name": "ProductFlow workspace · Response availability · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-026",
+    "name": "Workspace JavaScript bundle · Response availability · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-027",
+    "name": "ProductFlow brand asset · Response availability · standard request",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-028",
+    "name": "ProductFlow workspace · Short interval availability · standard request",
+    "suite": "Resilience",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow workspace using the standard request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-029",
+    "name": "Workspace JavaScript bundle · Short interval availability · standard request",
+    "suite": "Resilience",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for Workspace JavaScript bundle using the standard request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-030",
+    "name": "ProductFlow brand asset · Short interval availability · standard request",
+    "suite": "Resilience",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow brand asset using the standard request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-031",
+    "name": "ProductFlow workspace · Cold route response · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-032",
+    "name": "Workspace JavaScript bundle · Cold route response · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-033",
+    "name": "ProductFlow brand asset · Cold route response · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-034",
+    "name": "ProductFlow workspace · Warm route response · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-035",
+    "name": "Workspace JavaScript bundle · Warm route response · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-036",
+    "name": "ProductFlow brand asset · Warm route response · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-037",
+    "name": "ProductFlow workspace · Content type contract · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-038",
+    "name": "Workspace JavaScript bundle · Content type contract · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-039",
+    "name": "ProductFlow brand asset · Content type contract · browser accept headers",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-040",
+    "name": "ProductFlow workspace · Repeated navigation response · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-041",
+    "name": "Workspace JavaScript bundle · Repeated navigation response · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-042",
+    "name": "ProductFlow brand asset · Repeated navigation response · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-043",
+    "name": "ProductFlow workspace · Response body integrity · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-044",
+    "name": "Workspace JavaScript bundle · Response body integrity · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-045",
+    "name": "ProductFlow brand asset · Response body integrity · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-046",
+    "name": "ProductFlow workspace · Latency budget · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-047",
+    "name": "Workspace JavaScript bundle · Latency budget · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-048",
+    "name": "ProductFlow brand asset · Latency budget · browser accept headers",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-049",
+    "name": "ProductFlow workspace · Single virtual user baseline · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-050",
+    "name": "Workspace JavaScript bundle · Single virtual user baseline · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-051",
+    "name": "ProductFlow brand asset · Single virtual user baseline · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-052",
+    "name": "ProductFlow workspace · Steady request handling · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-053",
+    "name": "Workspace JavaScript bundle · Steady request handling · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-054",
+    "name": "ProductFlow brand asset · Steady request handling · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-055",
+    "name": "ProductFlow workspace · Response availability · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-056",
+    "name": "Workspace JavaScript bundle · Response availability · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-057",
+    "name": "ProductFlow brand asset · Response availability · browser accept headers",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-058",
+    "name": "ProductFlow workspace · Short interval availability · browser accept headers",
+    "suite": "Resilience",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow workspace using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-059",
+    "name": "Workspace JavaScript bundle · Short interval availability · browser accept headers",
+    "suite": "Resilience",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for Workspace JavaScript bundle using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-060",
+    "name": "ProductFlow brand asset · Short interval availability · browser accept headers",
+    "suite": "Resilience",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept": "text/html,application/xhtml+xml"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow brand asset using the browser accept headers profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-061",
+    "name": "ProductFlow workspace · Cold route response · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-062",
+    "name": "Workspace JavaScript bundle · Cold route response · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-063",
+    "name": "ProductFlow brand asset · Cold route response · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-064",
+    "name": "ProductFlow workspace · Warm route response · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-065",
+    "name": "Workspace JavaScript bundle · Warm route response · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-066",
+    "name": "ProductFlow brand asset · Warm route response · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-067",
+    "name": "ProductFlow workspace · Content type contract · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-068",
+    "name": "Workspace JavaScript bundle · Content type contract · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-069",
+    "name": "ProductFlow brand asset · Content type contract · no-cache request",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-070",
+    "name": "ProductFlow workspace · Repeated navigation response · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-071",
+    "name": "Workspace JavaScript bundle · Repeated navigation response · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-072",
+    "name": "ProductFlow brand asset · Repeated navigation response · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-073",
+    "name": "ProductFlow workspace · Response body integrity · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-074",
+    "name": "Workspace JavaScript bundle · Response body integrity · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-075",
+    "name": "ProductFlow brand asset · Response body integrity · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-076",
+    "name": "ProductFlow workspace · Latency budget · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-077",
+    "name": "Workspace JavaScript bundle · Latency budget · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-078",
+    "name": "ProductFlow brand asset · Latency budget · no-cache request",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-079",
+    "name": "ProductFlow workspace · Single virtual user baseline · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-080",
+    "name": "Workspace JavaScript bundle · Single virtual user baseline · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-081",
+    "name": "ProductFlow brand asset · Single virtual user baseline · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-082",
+    "name": "ProductFlow workspace · Steady request handling · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-083",
+    "name": "Workspace JavaScript bundle · Steady request handling · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-084",
+    "name": "ProductFlow brand asset · Steady request handling · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-085",
+    "name": "ProductFlow workspace · Response availability · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-086",
+    "name": "Workspace JavaScript bundle · Response availability · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-087",
+    "name": "ProductFlow brand asset · Response availability · no-cache request",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-088",
+    "name": "ProductFlow workspace · Short interval availability · no-cache request",
+    "suite": "Resilience",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow workspace using the no-cache request profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-089",
+    "name": "Workspace JavaScript bundle · Short interval availability · no-cache request",
+    "suite": "Resilience",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for Workspace JavaScript bundle using the no-cache request profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-090",
+    "name": "ProductFlow brand asset · Short interval availability · no-cache request",
+    "suite": "Resilience",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Cache-Control": "no-cache",
+      "Pragma": "no-cache"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow brand asset using the no-cache request profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-091",
+    "name": "ProductFlow workspace · Cold route response · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-092",
+    "name": "Workspace JavaScript bundle · Cold route response · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-093",
+    "name": "ProductFlow brand asset · Cold route response · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-094",
+    "name": "ProductFlow workspace · Warm route response · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-095",
+    "name": "Workspace JavaScript bundle · Warm route response · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-096",
+    "name": "ProductFlow brand asset · Warm route response · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-097",
+    "name": "ProductFlow workspace · Content type contract · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-098",
+    "name": "Workspace JavaScript bundle · Content type contract · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-099",
+    "name": "ProductFlow brand asset · Content type contract · English locale header",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-100",
+    "name": "ProductFlow workspace · Repeated navigation response · English locale header",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-101",
+    "name": "Workspace JavaScript bundle · Repeated navigation response · English locale header",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-102",
+    "name": "ProductFlow brand asset · Repeated navigation response · English locale header",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-103",
+    "name": "ProductFlow workspace · Response body integrity · English locale header",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-104",
+    "name": "Workspace JavaScript bundle · Response body integrity · English locale header",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-105",
+    "name": "ProductFlow brand asset · Response body integrity · English locale header",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-106",
+    "name": "ProductFlow workspace · Latency budget · English locale header",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-107",
+    "name": "Workspace JavaScript bundle · Latency budget · English locale header",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-108",
+    "name": "ProductFlow brand asset · Latency budget · English locale header",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-109",
+    "name": "ProductFlow workspace · Single virtual user baseline · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-110",
+    "name": "Workspace JavaScript bundle · Single virtual user baseline · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-111",
+    "name": "ProductFlow brand asset · Single virtual user baseline · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-112",
+    "name": "ProductFlow workspace · Steady request handling · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-113",
+    "name": "Workspace JavaScript bundle · Steady request handling · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-114",
+    "name": "ProductFlow brand asset · Steady request handling · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-115",
+    "name": "ProductFlow workspace · Response availability · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-116",
+    "name": "Workspace JavaScript bundle · Response availability · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-117",
+    "name": "ProductFlow brand asset · Response availability · English locale header",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-118",
+    "name": "ProductFlow workspace · Short interval availability · English locale header",
+    "suite": "Resilience",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow workspace using the English locale header profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-119",
+    "name": "Workspace JavaScript bundle · Short interval availability · English locale header",
+    "suite": "Resilience",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for Workspace JavaScript bundle using the English locale header profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-120",
+    "name": "ProductFlow brand asset · Short interval availability · English locale header",
+    "suite": "Resilience",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "",
+    "headers": {
+      "Accept-Language": "en-US,en;q=0.8"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow brand asset using the English locale header profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-121",
+    "name": "ProductFlow workspace · Cold route response · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=121",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-122",
+    "name": "Workspace JavaScript bundle · Cold route response · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=122",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-123",
+    "name": "ProductFlow brand asset · Cold route response · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=123",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Cold route response for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-124",
+    "name": "ProductFlow workspace · Warm route response · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=124",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-125",
+    "name": "Workspace JavaScript bundle · Warm route response · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=125",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-126",
+    "name": "ProductFlow brand asset · Warm route response · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=126",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Warm route response for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-127",
+    "name": "ProductFlow workspace · Content type contract · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=127",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-128",
+    "name": "Workspace JavaScript bundle · Content type contract · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=128",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-129",
+    "name": "ProductFlow brand asset · Content type contract · cache-bypass query",
+    "suite": "Smoke",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=129",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Content type contract for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-130",
+    "name": "ProductFlow workspace · Repeated navigation response · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=130",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-131",
+    "name": "Workspace JavaScript bundle · Repeated navigation response · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=131",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-132",
+    "name": "ProductFlow brand asset · Repeated navigation response · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=132",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Repeated navigation response for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-133",
+    "name": "ProductFlow workspace · Response body integrity · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=133",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-134",
+    "name": "Workspace JavaScript bundle · Response body integrity · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=134",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-135",
+    "name": "ProductFlow brand asset · Response body integrity · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=135",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response body integrity for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-136",
+    "name": "ProductFlow workspace · Latency budget · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=136",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-137",
+    "name": "Workspace JavaScript bundle · Latency budget · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=137",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-138",
+    "name": "ProductFlow brand asset · Latency budget · cache-bypass query",
+    "suite": "Regression",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=138",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Latency budget for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-139",
+    "name": "ProductFlow workspace · Single virtual user baseline · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=139",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-140",
+    "name": "Workspace JavaScript bundle · Single virtual user baseline · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=140",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-141",
+    "name": "ProductFlow brand asset · Single virtual user baseline · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=141",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Single virtual user baseline for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-142",
+    "name": "ProductFlow workspace · Steady request handling · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=142",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-143",
+    "name": "Workspace JavaScript bundle · Steady request handling · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=143",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-144",
+    "name": "ProductFlow brand asset · Steady request handling · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=144",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Steady request handling for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-145",
+    "name": "ProductFlow workspace · Response availability · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=145",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-146",
+    "name": "Workspace JavaScript bundle · Response availability · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=146",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-147",
+    "name": "ProductFlow brand asset · Response availability · cache-bypass query",
+    "suite": "Capacity baseline",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=147",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Response availability for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-148",
+    "name": "ProductFlow workspace · Short interval availability · cache-bypass query",
+    "suite": "Resilience",
+    "routeSuite": "UI delivery",
+    "path": "/",
+    "query": "?pf360_case=148",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "text/html",
+    "latencyBudgetMs": 2500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow workspace using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 2500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-149",
+    "name": "Workspace JavaScript bundle · Short interval availability · cache-bypass query",
+    "suite": "Resilience",
+    "routeSuite": "UI assets",
+    "path": "/_next/static/chunks/3c_bae98q44oq.js",
+    "query": "?pf360_case=149",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "javascript",
+    "latencyBudgetMs": 1500,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for Workspace JavaScript bundle using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 1500 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  },
+  {
+    "id": "K6-150",
+    "name": "ProductFlow brand asset · Short interval availability · cache-bypass query",
+    "suite": "Resilience",
+    "routeSuite": "Static assets",
+    "path": "/logo.svg",
+    "query": "?pf360_case=150",
+    "headers": {
+      "Accept": "*/*"
+    },
+    "expectedContentType": "image/svg+xml",
+    "latencyBudgetMs": 750,
+    "repetitions": 10,
+    "method": "GET",
+    "description": "Short interval availability for ProductFlow brand asset using the cache-bypass query profile. k6 checks HTTP 200, the response content type, a 750 ms latency budget, and a non-empty response body. Executed 10 times against the local ProductFlow 360 instance."
+  }
+]

@@ -15,10 +15,12 @@
     "test:smoke": "playwright test --grep @smoke --project=chromium",
     "test:regression": "playwright test --grep @regression --project=chromium",
     "test:api": "playwright test playwright/tests/api --project=chromium",
+    "test:api:allure": "node playwright/scripts/run-api-suite.mjs",
     "test:allure": "node playwright/scripts/run-combined-allure.mjs",
     "test:bdd": "node playwright/scripts/run-bdd-allure.mjs",
     "test:bdd:allure": "node playwright/scripts/run-bdd-allure.mjs",
     "report:allure": "node playwright/scripts/generate-allure-report.mjs",
+    "test:k6": "node playwright/scripts/run-k6-performance.mjs",
     "api:build": "npm run build --workspace apps/api",
     "api:dev": "npm run dev --workspace apps/api"
   },
