@@ -1,6 +1,6 @@
 # ProductFlow 360 Automation and Reports
 
-This guide covers the functional automation suite, the branded Allure report, and the k6 performance reports. The combined report set contains **500 functional cases** and **150 k6 workloads**. Run functional automation first and k6 second so both report sets are available together.
+This guide covers the functional automation suite, the branded Allure report, and the k6 performance reports. The combined report set contains **580 functional cases**, including **80 database validation cases**, and **150 k6 workloads**. Run functional automation first and k6 second so both report sets are available together.
 
 ## Report overview
 
@@ -8,10 +8,11 @@ This guide covers the functional automation suite, the branded Allure report, an
 | --- | ---: | --- |
 | UI Automation | 260 | Chromium UI smoke, regression, and negative flows across ProductFlow modules. |
 | APIs Automation | 120 | API checks grouped in Allure under the API automation section. |
+| Database Validation | 80 | API-backed persistence, read, update, audit, validation, workspace-boundary, and store-integrity checks with screenshots and videos. |
 | BDD Cases | 120 | Cucumber scenarios with readable Gherkin steps and component suites. |
-| **Functional Allure total** | **500** | The three functional sections above. |
+| **Functional Allure total** | **580** | The four functional sections above. |
 | k6 Performance | 150 | Local HTTP workloads with repeatable request profiles and per-workload latency details. |
-| **Combined dashboard total** | **650** | The 500 Allure cases plus 150 k6 workloads. |
+| **Combined dashboard total** | **730** | The 580 Allure cases plus 150 k6 workloads. |
 
 After both runs, open these pages from the ProductFlow web app:
 
@@ -30,15 +31,15 @@ flowchart TD
   A[Start ProductFlow web app on port 3100] --> B[npm run test:allure]
   B --> C[Run 120 BDD scenarios]
   C --> D[Run 260 Chromium UI tests]
-  D --> E[Run 120 API cases]
-  E --> F[Generate branded 500-case Allure report]
+  D --> E[Run 120 API cases and 80 DB cases]
+  E --> F[Generate branded 580-case Allure report]
   F --> G[npm run test:k6]
   G --> H[Run 150 k6 workloads, 10 requests per case by default]
   H --> I[Write raw metrics, summary, combined dashboard, native k6 HTML]
   I --> J[Open Allure or performance URL in Chrome]
 ```
 
-**Order matters:** `test:allure` and `report:allure` clean and regenerate the Allure output directory. Run k6 after Allure; otherwise a later Allure generation can remove the performance files. `test:k6` reads the generated Allure case data to produce the combined 650-case view.
+**Order matters:** `test:allure` and `report:allure` clean and regenerate the Allure output directory. Run k6 after Allure; otherwise a later Allure generation can remove the performance files. `test:k6` reads the generated Allure case data to produce the combined 730-case view.
 
 ## Setup
 
@@ -69,7 +70,9 @@ npm run test:allure
 npm run test:k6
 ```
 
-`npm run test:allure` resets the previous Allure run, executes the Cucumber BDD suite, the Chromium UI suite, and the API suite, then creates the branded combined report. `npm run test:k6` requires that Allure data, executes the 150-workload performance suite, and writes the combined performance dashboard plus the native k6 HTML export.
+`npm run test:allure` resets the previous Allure run, executes the Cucumber BDD suite, the Chromium UI suite, the API suite, and the isolated database validation suite, then creates the branded combined report. `npm run test:k6` requires that Allure data, executes the 150-workload performance suite, and writes the combined performance dashboard plus the native k6 HTML export.
+
+The API service currently uses an atomic local JSON store (`LOCAL_DATA_FILE`); the SQL migration defines a PostgreSQL schema but the service does not yet query PostgreSQL. The 80 database cases therefore verify real API writes and reads against an isolated temporary JSON store, including persisted rows and audit events. They do not claim live PostgreSQL query coverage. Each case attaches a result screenshot and execution video to Allure.
 
 Open the reports in Chrome by navigating to the URLs in [Report overview](#report-overview). The web app's report route serves generated files from `playwright/reports/allure`; the reports are local artifacts and are not published automatically.
 
@@ -139,7 +142,7 @@ Reports and execution artifacts are generated locally and are ignored by Git. Pr
 | `src/ui/pages`, `src/ui/components` | Page objects and reusable UI controls. |
 | `src/ui/locators/` | Screen-specific locator hubs. |
 | `src/api/clients`, `src/api/services` | API client and service layer. |
-| `tests/ui`, `tests/api` | Playwright UI and API test sources. |
+| `tests/ui`, `tests/api`, `tests/db` | Playwright UI, API, and database persistence test sources. |
 | `features`, `step-definitions`, `support/` | Cucumber features, step bindings, and shared BDD setup. |
 | `performance/` | k6 script, workload catalogue, and dashboard template. |
 | `scripts/` | Combined runners, report generation, and utility scripts. |
@@ -169,7 +172,7 @@ npm run test:webkit
 npm run report
 ```
 
-Use focused test commands while developing. The combined `npm run test:allure` command is the full 500-case functional report run. A standalone BDD run produces a BDD report in the same Allure directory, so run the combined command again before generating the complete report set.
+Use focused test commands while developing. The combined `npm run test:allure` command is the full 580-case functional report run. A standalone BDD run produces a BDD report in the same Allure directory, so run the combined command again before generating the complete report set.
 
 ## Troubleshooting
 

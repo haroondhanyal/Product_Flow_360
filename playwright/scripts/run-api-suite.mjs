@@ -53,7 +53,7 @@ try {
     await new Promise(resolve => setTimeout(resolve, 250));
   }
   if (!ready) throw new Error('Isolated API test server did not become ready.');
-  status = run('npx', ['playwright', 'test', 'playwright/tests/api', '--project=chromium', '--workers=1', ...process.argv.slice(2)], env);
+  status = run('npx', ['playwright', 'test', 'playwright/tests/api', 'playwright/tests/db', '--project=chromium', '--workers=1', ...process.argv.slice(2)], env);
 } finally {
   server?.kill('SIGTERM');
   rmSync(temp, { recursive: true, force: true });

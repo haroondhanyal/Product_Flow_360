@@ -14,7 +14,7 @@ ProductFlow 360 is a PTCL delivery workspace for connecting projects, change req
 | --- | --- |
 | Delivery | Workspaces, products, projects, RFCs, requirements, RTM, test management, defects, approvals, billing, revenue assurance, releases, reports, and evidence. |
 | Access | Employee signup, administrator approval, login, profile, and administrator-reviewed employee password recovery in the browser prototype. |
-| Automation | **500 functional cases** in the branded Allure report: 260 UI, 120 API, and 120 BDD. |
+| Automation | **580 functional cases** in the branded Allure report: 260 UI, 120 API, 80 database persistence, and 120 BDD. |
 | Performance | **150 k6 workloads**, with a combined ProductFlow dashboard and native Grafana k6 HTML report. Latest saved run: 150/150 workloads passed and 1,500 requests recorded. |
 | Stack | Next.js 16 and React 19 web app; NestJS 12 API with a local JSON development store; TypeScript automation. |
 
@@ -156,23 +156,24 @@ npm run api:dev
 
 ```mermaid
 flowchart LR
-  UI[260 UI cases] --> Allure[Branded 500-case Allure report]
+  UI[260 UI cases] --> Allure[Branded 580-case Allure report]
   API[120 API cases] --> Allure
+  DB[80 database cases] --> Allure
   BDD[120 BDD cases] --> Allure
   Allure --> K6[150 k6 workloads]
-  K6 --> Combined[Combined 650-case performance dashboard]
+  K6 --> Combined[Combined 730-case performance dashboard]
   K6 --> Native[Native Grafana k6 HTML report]
 ```
 
 ### Latest report screenshots
 
-The screenshots below were captured from the latest generated reports. The functional Allure run has three top-level sections. The k6 dashboard joins those 500 functional results with 150 performance workloads; the native k6 export shows the time-series view from the same run.
+The screenshots below show the generated reports. The functional Allure run has four top-level sections. The k6 dashboard joins those 580 functional results with 150 performance workloads; the native k6 export shows the time-series view from the same run.
 
-#### Allure: 500 functional cases
+#### Allure: 580 functional cases
 
-![ProductFlow 360 branded Allure report showing 500 test cases and the UI, BDD, and API suites](docs/images/automation-report-snapshots/allure-latest.png)
+![ProductFlow 360 branded Allure report showing 580 test cases across UI, BDD, API, and database suites](docs/images/automation-report-snapshots/allure-latest.png)
 
-#### Combined performance: 650 functional and k6 cases
+#### Combined performance: 730 functional and k6 cases
 
 ![ProductFlow 360 combined performance dashboard showing 650 cases, latest pass totals, and workload latency](docs/images/automation-report-snapshots/k6-performance-latest.png)
 
@@ -180,16 +181,17 @@ The screenshots below were captured from the latest generated reports. The funct
 
 ![Native Grafana k6 web dashboard export showing request rate, request duration, virtual users, and transfer rate](docs/images/automation-report-snapshots/native-k6-latest.png)
 
-### What the 500 functional cases cover
+### What the 580 functional cases cover
 
 | Allure section | Count | Coverage |
 | --- | ---: | --- |
 | **UI Automation** | **260** | Chromium UI navigation, module availability, record forms, field and selector contracts, cancel/draft recovery, search and empty states, and workflow interactions. Includes smoke, regression, and negative search coverage across the workspace, RTM, test management, defects, requirements, billing validation, revenue assurance, releases, settings, and related screens. |
 | **APIs Automation** | **120** | API health/readiness; login input validation and credential cases; success/token contracts; missing, malformed, or invalid authorization; protected resource checks; entity create/read workflows; and dashboard endpoint access. The runner creates an isolated temporary API store and test account for the API suite. |
+| **Database Validation** | **80** | Persisted writes, workspace-scoped reads, updates, audit rows, rejected invalid writes, workspace isolation, store integrity, and user/workspace membership checks. These exercise the API's isolated local JSON store; they are not live PostgreSQL tests. Every case includes screenshot and video evidence in Allure. |
 | **BDD Cases** | **120** | Gherkin-driven delivery board visibility, creation form fields, draft cancellation, unmatched searches, and supported workflow options across Defects, Requirements, Revenue Assurance, Test Management, and RTM. This includes the original component feature scenarios and the expanded BDD case catalogue. |
-| **Total** | **500** | One branded Allure report with UI Automation, APIs Automation, and BDD Cases suites. |
+| **Total** | **580** | One branded Allure report with UI Automation, APIs Automation, Database Validation, and BDD Cases suites. |
 
-The 260 UI cases include the original UI coverage plus 45 navigation smoke checks, 62 regression checks for forms and board controls, and 70 negative unmatched-search checks. Allure groups tests by suite/component and includes the evidence produced by each layer: browser screenshots/videos for UI and BDD flows, and request/response evidence for API checks.
+The 260 UI cases include the original UI coverage plus 45 navigation smoke checks, 62 regression checks for forms and board controls, and 70 negative unmatched-search checks. Allure groups tests by suite/component and includes the evidence produced by each layer: browser screenshots/videos for UI, BDD, API, and database flows, plus request/response and persisted-row evidence for API and database checks.
 
 ### What the 150 k6 workloads cover
 
@@ -205,7 +207,7 @@ The k6 suite targets the local ProductFlow 360 workspace page, the JavaScript bu
 
 The default profile is a low-load local baseline, not a production capacity claim. Configure it with `PF360_K6_REPEATS`, `PF360_K6_VUS`, `PF360_K6_MAX_DURATION`, `PF360_PERF_BASE_URL`, and `K6_BIN` as needed. The combined dashboard provides latency comparisons, workload search and details, six visual modes, and CSV/JSON/raw-metric downloads. The native export is generated by k6's [web dashboard output](https://grafana.com/docs/k6/latest/results-output/web-dashboard/).
 
-Latest functional run (6 October 2026): Allure **500/500 passed** (260 UI, 120 API, 120 BDD). Latest saved k6 run (24 September 2026): **150/150 passed**, **1,500 requests**, overall request p95 **3.74 ms**. These timing values describe that local run and depend on the host and app build.
+Latest functional run (6 October 2026): Allure **580/580 passed** (260 UI, 120 API, 80 database, 120 BDD). Latest k6 run (6 October 2026): **150/150 passed**, **1,500 requests**, overall request p95 **4.07 ms**. These timing values describe that local run and depend on the host and app build.
 
 ### Generate the reports
 
@@ -223,7 +225,7 @@ npm run test:allure
 npm run test:k6
 ```
 
-The Allure runner generates the 500 functional results. The k6 runner consumes that Allure data and creates its 150 workload results and native HTML export. **Run k6 after Allure:** Allure report generation cleans the output folder and can remove existing performance files. To refresh only the report from current Allure results, use `npm run report:allure`, then run `npm run test:k6` again to restore the combined performance files.
+The Allure runner generates the 580 functional results. The k6 runner consumes that Allure data and creates its 150 workload results and native HTML export. **Run k6 after Allure:** Allure report generation cleans the output folder and can remove existing performance files. To refresh only the report from current Allure results, use `npm run report:allure`, then run `npm run test:k6` again to restore the combined performance files.
 
 Open the reports in Chrome:
 

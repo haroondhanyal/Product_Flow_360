@@ -10,11 +10,12 @@ const logo = resolve(root, '../apps/web/public/logo.svg');
 const bddReport = process.env.ALLURE_REPORT_MODE === 'bdd';
 const combinedReport = process.env.ALLURE_REPORT_MODE === 'combined';
 mkdirSync(results, { recursive: true });
-const caseCounts = { ui: 0, api: 0, bdd: 0 };
+const caseCounts = { ui: 0, api: 0, bdd: 0, db: 0 };
 
-const sections = ['Employee signup', 'Employee password recovery', 'Settings', 'Workspace', 'Products', 'Change requests', 'Test management', 'RTM', 'Billing validation', 'Revenue assurance', 'Releases', 'Requirements', 'Defects', 'Authentication'];
+const sections = ['Database Validation', 'Employee signup', 'Employee password recovery', 'Settings', 'Workspace', 'Products', 'Change requests', 'Test management', 'RTM', 'Billing validation', 'Revenue assurance', 'Releases', 'Requirements', 'Defects', 'Authentication'];
 const titleCase = value => value.replace(/(^|[\s-])\w/g, match => match.toUpperCase());
 const sectionFor = result => {
+  if ((result.labels ?? []).some(label => label.name === 'tag' && label.value === 'database')) return 'Database Validation';
   const componentTag = (result.labels ?? []).find(label => label.name === 'tag' && label.value.startsWith('@component_'))?.value;
   if (componentTag) return componentTag.slice('@component_'.length).replace(/([a-z])([A-Z])/g, '$1 $2');
   const text = `${result.fullName ?? ''} ${result.name ?? ''}`;
@@ -26,14 +27,15 @@ const replaceLabel = (labels, name, value) => [...labels.filter(label => label.n
 for (const file of readdirSync(results).filter(file => file.endsWith('-result.json'))) {
   const path = resolve(results, file);
   const result = JSON.parse(readFileSync(path, 'utf8'));
+  const isDb = (result.labels ?? []).some(label => label.name === 'tag' && label.value === 'database');
   const section = sectionFor(result);
   const isBdd = (result.labels ?? []).some(label => label.name === 'framework' && label.value === 'cucumberjs') || (result.labels ?? []).some(label => label.name === 'layer' && label.value === 'bdd');
   const isApi = !isBdd && (result.fullName?.includes('/api/') || result.fullName?.startsWith('api/') || (result.labels ?? []).some(label => label.name === 'tag' && ['api', '@api'].includes(label.value)));
-  const layer = isBdd ? 'BDD' : isApi ? 'API' : result.fullName?.includes('e2e') ? 'End-to-End' : 'UI Automation';
-  caseCounts[isBdd ? 'bdd' : isApi ? 'api' : 'ui']++;
+  const layer = isDb ? 'Database' : isBdd ? 'BDD' : isApi ? 'API' : result.fullName?.includes('e2e') ? 'End-to-End' : 'UI Automation';
+  caseCounts[isDb ? 'db' : isBdd ? 'bdd' : isApi ? 'api' : 'ui']++;
   let labels = result.labels ?? [];
   for (const [name, value] of [
-    ['epic', isBdd ? 'BDD Cases' : isApi ? 'APIs Automation' : 'UI Automation'], ['feature', section], ['parentSuite', isBdd ? 'BDD Cases' : isApi ? 'APIs Automation' : 'UI Automation'],
+    ['epic', isDb ? 'Database Validation' : isBdd ? 'BDD Cases' : isApi ? 'APIs Automation' : 'UI Automation'], ['feature', section], ['parentSuite', isDb ? 'Database Validation' : isBdd ? 'BDD Cases' : isApi ? 'APIs Automation' : 'UI Automation'],
     ['suite', section], ['subSuite', titleCase(result.name ?? 'Automated checks')],
     ['package', `com.ptcl.productflow360.${layer.toLowerCase().replaceAll(/[^a-z]+/g, '.')}.${section.toLowerCase().replaceAll(/[^a-z]+/g, '.')}`],
     ['owner', 'Raja Haroon'], ['designation', 'Full Stack QA Automation'], ['layer', layer.toLowerCase()],
@@ -47,8 +49,8 @@ for (const file of readdirSync(results).filter(file => file.endsWith('-result.js
 }
 
 writeFileSync(resolve(results, 'environment.properties'), [
-  'Product=ProductFlow 360', `Test Suite=${bddReport ? 'BDD Cases' : combinedReport ? 'UI Automation + APIs Automation + BDD Cases' : 'UI Automation'}`, 'Browser=Chromium',
-  `UI Automation Cases=${caseCounts.ui}`, `APIs Automation Cases=${caseCounts.api}`, `BDD Cases=${caseCounts.bdd}`,
+  'Product=ProductFlow 360', `Test Suite=${bddReport ? 'BDD Cases' : combinedReport ? 'UI Automation + APIs Automation + Database Validation + BDD Cases' : 'UI Automation'}`, 'Browser=Chromium',
+  `UI Automation Cases=${caseCounts.ui}`, `APIs Automation Cases=${caseCounts.api}`, `Database Cases=${caseCounts.db}`, `BDD Cases=${caseCounts.bdd}`,
   'Environment=Local QA', 'Owner=Raja Haroon', 'Designation=Full Stack QA Automation',
   `Framework=${bddReport ? 'Cucumber + Playwright + Allure' : combinedReport ? 'Cucumber + Playwright + Allure' : 'Playwright + Allure'}`, 'Evidence=Screenshot and video for every test',
 ].join('\n') + '\n');
@@ -81,7 +83,7 @@ writeFileSync(resolve(results, 'executor.json'), JSON.stringify({
 if (existsSync(logo)) cpSync(logo, resolve(results, 'pf360-logo.svg'));
 const cliEnvironment = { ...process.env };
 if (cliEnvironment.JAVA_HOME && !existsSync(resolve(cliEnvironment.JAVA_HOME, 'bin/java'))) delete cliEnvironment.JAVA_HOME;
-execFileSync('npx', ['allure', 'generate', results, '--clean', '-o', report, '--report-name', bddReport ? 'BDD Cases | ProductFlow 360' : combinedReport ? 'ProductFlow 360 | UI + APIs + BDD Cases' : 'ProductFlow 360 | UI Automation'], { stdio: 'inherit', env: cliEnvironment });
+execFileSync('npx', ['allure', 'generate', results, '--clean', '-o', report, '--report-name', bddReport ? 'BDD Cases | ProductFlow 360' : combinedReport ? 'ProductFlow 360 | UI + APIs + Database + BDD Cases' : 'ProductFlow 360 | UI Automation'], { stdio: 'inherit', env: cliEnvironment });
 
 rmSync(savedHistory, { recursive: true, force: true });
 if (existsSync(resolve(report, 'history'))) cpSync(resolve(report, 'history'), savedHistory, { recursive: true });
@@ -89,7 +91,7 @@ if (existsSync(resolve(report, 'history'))) cpSync(resolve(report, 'history'), s
 if (existsSync(logo)) {
   cpSync(logo, resolve(report, 'pf360-logo.svg'));
   const index = resolve(report, 'index.html');
-  const branding = `<style>
+const branding = `<style>
   body{padding-top:142px!important;box-sizing:border-box}
   .pf360-report-brand{--pf-bg:linear-gradient(110deg,#fff 0%,#f2faf5 55%,#e8f5ed 100%);--pf-fg:#173f52;--pf-muted:#667b85;--pf-accent:#087c59;position:fixed;inset:0 0 auto;z-index:99999;display:flex;align-items:center;justify-content:center;gap:22px;width:100%;min-height:142px;padding:14px 28px;box-sizing:border-box;border:0;border-bottom:1px solid #d7e7de;background:var(--pf-bg);box-shadow:0 5px 22px #173f5218;font-family:Arial,sans-serif;color:var(--pf-fg);text-align:left;transition:background .18s,color .18s,border-color .18s}
   .pf360-report-brand[data-theme="dark"]{--pf-bg:linear-gradient(110deg,#17212b,#202e39);--pf-fg:#f1f5f8;--pf-muted:#c0ccd5;--pf-accent:#8be0bd;border-color:#40515e;box-shadow:0 5px 22px #0008}
@@ -102,7 +104,7 @@ if (existsSync(logo)) {
   @media(max-width:1120px){.pf360-report-links{left:12px;top:auto;bottom:9px;transform:none}.pf360-report-links a{padding:6px 8px;font-size:10px}}
   @media(max-width:920px){.pf360-report-brand{justify-content:flex-start;padding-right:18px}.pf360-report-themes{position:static;transform:none;margin-left:auto;max-width:280px}}
   @media(max-width:640px){body{padding-top:148px!important}.pf360-report-brand{min-height:148px;flex-wrap:wrap;justify-content:center;gap:8px;padding:8px 10px}.pf360-report-brand img{width:56px;height:56px;flex-basis:56px;border-radius:15px}.pf360-report-brand b{font-size:22px}.pf360-report-brand small{font-size:8px;letter-spacing:.5px;margin-top:5px}.pf360-report-brand em{font-size:9px;margin-top:4px}.pf360-report-themes{width:100%;max-width:none;margin:0;justify-content:center;gap:5px}.pf360-report-themes button{min-height:29px;padding:5px 8px;font-size:10px}}
-  </style><header class="pf360-report-brand" data-theme="light"><nav class="pf360-report-links" aria-label="Report navigation"><a href="/reports/allure/index.html" target="_blank" rel="noopener" aria-current="page">View Allure report</a><a href="/reports/allure/performance/index.html" target="_blank" rel="noopener">View performance report ↗</a></nav><img src="pf360-logo.svg" alt="ProductFlow 360 logo"><div class="pf360-report-brand-copy"><b>ProductFlow 360</b><small>${bddReport ? 'GHERKIN AUTOMATION REPORT' : combinedReport ? 'UI AUTOMATION · APIs AUTOMATION · BDD CASES' : 'UI AUTOMATION REPORT'}</small><em>${caseCounts.ui + caseCounts.api + caseCounts.bdd} cases · UI ${caseCounts.ui} · APIs ${caseCounts.api} · BDD ${caseCounts.bdd} · Raja Haroon · Full Stack QA Automation</em></div><nav class="pf360-report-themes" aria-label="Header theme"><button type="button" data-theme-choice="light" aria-pressed="true">Light</button><button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button><button type="button" data-theme-choice="gray" aria-pressed="false">Gray</button><button type="button" data-theme-choice="blue" aria-pressed="false">Blue</button><button type="button" data-theme-choice="green" aria-pressed="false">Green</button><button type="button" data-theme-choice="contrast" aria-pressed="false">High contrast</button></nav></header><script>(function(){const header=document.querySelector('.pf360-report-brand');if(!header)return;const buttons=[...header.querySelectorAll('[data-theme-choice]')];function setTheme(theme){if(!buttons.some(button=>button.dataset.themeChoice===theme))theme='light';header.dataset.theme=theme;buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.themeChoice===theme)));try{localStorage.setItem('pf360-allure-header-theme',theme)}catch{}}buttons.forEach(button=>button.addEventListener('click',()=>setTheme(button.dataset.themeChoice)));let saved='light';try{saved=localStorage.getItem('pf360-allure-header-theme')||'light'}catch{}setTheme(saved)})();</script>`;
+  </style><header class="pf360-report-brand" data-theme="light"><nav class="pf360-report-links" aria-label="Report navigation"><a href="/reports/allure/index.html" target="_blank" rel="noopener" aria-current="page">View Allure report</a><a href="/reports/allure/performance/index.html" target="_blank" rel="noopener">View performance report ↗</a></nav><img src="pf360-logo.svg" alt="ProductFlow 360 logo"><div class="pf360-report-brand-copy"><b>ProductFlow 360</b><small>${bddReport ? 'GHERKIN AUTOMATION REPORT' : combinedReport ? 'UI · APIs · DATABASE · BDD AUTOMATION' : 'UI AUTOMATION REPORT'}</small><em>${caseCounts.ui + caseCounts.api + caseCounts.db + caseCounts.bdd} cases · UI ${caseCounts.ui} · APIs ${caseCounts.api} · Database ${caseCounts.db} · BDD ${caseCounts.bdd} · Raja Haroon · Full Stack QA Automation</em></div><nav class="pf360-report-themes" aria-label="Header theme"><button type="button" data-theme-choice="light" aria-pressed="true">Light</button><button type="button" data-theme-choice="dark" aria-pressed="false">Dark</button><button type="button" data-theme-choice="gray" aria-pressed="false">Gray</button><button type="button" data-theme-choice="blue" aria-pressed="false">Blue</button><button type="button" data-theme-choice="green" aria-pressed="false">Green</button><button type="button" data-theme-choice="contrast" aria-pressed="false">High contrast</button></nav></header><script>(function(){const header=document.querySelector('.pf360-report-brand');if(!header)return;const buttons=[...header.querySelectorAll('[data-theme-choice]')];function setTheme(theme){if(!buttons.some(button=>button.dataset.themeChoice===theme))theme='light';header.dataset.theme=theme;buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.themeChoice===theme)));try{localStorage.setItem('pf360-allure-header-theme',theme)}catch{}}buttons.forEach(button=>button.addEventListener('click',()=>setTheme(button.dataset.themeChoice)));let saved='light';try{saved=localStorage.getItem('pf360-allure-header-theme')||'light'}catch{}setTheme(saved)})();</script>`;
   writeFileSync(index, readFileSync(index, 'utf8').replace('<body>', `<body>${branding}`));
 }
 console.log(`Allure report created: ${report}`);
