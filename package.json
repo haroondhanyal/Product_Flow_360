@@ -21,6 +21,7 @@
     "test:bdd:allure": "node playwright/scripts/run-bdd-allure.mjs",
     "report:allure": "node playwright/scripts/generate-allure-report.mjs",
     "test:k6": "node playwright/scripts/run-k6-performance.mjs",
+    "screenshots": "node playwright/scripts/capture-screen-evidence.mjs",
     "api:build": "npm run build --workspace apps/api",
     "api:dev": "npm run dev --workspace apps/api"
   },
