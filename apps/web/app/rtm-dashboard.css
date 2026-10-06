@@ -1,0 +1,5 @@
+.rtm-dashboard{margin:0 0 30px}
+.rtm-dashboard .request-title{color:var(--green);font-weight:600}
+.rtm-dashboard .request-title:hover{text-decoration:underline}
+.rtm-dashboard .rtm-open-button{min-width:104px;color:var(--green);white-space:nowrap}
+.rtm-dashboard .table-footer .text-button{padding:6px 9px}

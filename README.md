@@ -42,7 +42,7 @@ The links between records let a delivery team follow a request from its owner an
 
 | Screen | Main work |
 | --- | --- |
-| Command Center | Portfolio overview, request pipeline, metrics, alerts, and next actions. |
+| Command Center | Portfolio overview, request pipeline, metrics, alerts, and saved project RTMs with a direct open action. |
 | Workspaces and products | Select a workspace, register projects, and browse the product portfolio. |
 | Change requests | Create and manage RFCs with status, owner, priority, documents, and linked delivery work. |
 | Requirements and RTM | Capture requirements, create or import matrices, and connect requirements to test coverage. |
@@ -52,7 +52,7 @@ The links between records let a delivery team follow a request from its owner an
 
 ### Screen-by-screen screenshots
 
-The screenshots below were freshly captured from a clean Chromium browser on 6 October 2026. A first-time browser gets a realistic demo portfolio with 30 change requests, 30 records in each lifecycle board, 30 test cases, a 30-row RTM, and 30 delivery projects. Existing browser data is preserved. The gallery includes every workspace screen plus login, signup, and password recovery.
+The screenshots below were freshly captured from a clean Chromium browser on 6 October 2026. The Command Center lists saved RTMs with their workspace and case count; **Open RTM** selects that matrix in the existing editor so its rows and evidence flow continue there. A first-time browser gets a realistic demo portfolio with 30 change requests, 30 records in each lifecycle board, 30 test cases, a 30-row RTM, and 30 delivery projects. Existing browser data is preserved. The gallery includes every workspace screen plus login, signup, and password recovery.
 
 | Login | Sign up | Password recovery | Command Center |
 | --- | --- | --- | --- |

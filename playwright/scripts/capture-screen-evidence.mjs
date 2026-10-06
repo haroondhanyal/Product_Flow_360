@@ -36,6 +36,12 @@ for (const [file, name] of screens) {
   await page.locator('.shell .main > main').waitFor();
   await page.waitForTimeout(450);
   await page.screenshot({ path: resolve(output, `${file}.png`), fullPage: true, animations: 'disabled' });
+  if (name === 'Overview') {
+    await page.getByRole('button', { name: 'Open RTM', exact: true }).click();
+    await page.getByRole('heading', { name: 'Flash Fiber Portfolio RTM', exact: true }).waitFor();
+    await page.locator('.rtm-table tbody tr').first().waitFor();
+    await page.locator('.sidebar nav button.nav-item').filter({ hasText: 'Overview' }).click();
+  }
   console.log(`Captured ${name}`);
 }
 await page.goto(`${baseURL}/reports/allure/index.html`);

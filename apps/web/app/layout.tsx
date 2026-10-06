@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import '@fontsource-variable/inter';
 import './globals.css';
+import './rtm-dashboard.css';
 import './features.css';
 import './loading-failsafe.css';
 import './header-fixed.css';
