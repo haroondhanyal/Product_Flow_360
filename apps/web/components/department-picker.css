@@ -1,0 +1,16 @@
+.department-picker{margin-top:8px;padding:16px;border:1px solid var(--line);border-radius:12px;background:linear-gradient(145deg,var(--surface),var(--surface-soft))}
+.department-picker-title{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.department-picker-title .department-icon{display:grid;place-items:center;flex:0 0 36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--green)}
+.department-picker-title h3{margin:0;font-size:13px;font-weight:650}
+.department-picker-title p{margin:4px 0 0;color:var(--muted);font-size:10px;line-height:1.5}
+.department-select-field{display:block;margin:13px 0 0!important;font-size:11px!important;font-weight:600!important}
+.department-select-field>span{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.department-select-field>span i{display:grid;place-items:center;width:19px;height:19px;border-radius:6px;background:var(--accent-soft);color:var(--green);font-size:9px;font-style:normal}
+.department-select-wrap{display:flex;align-items:center;gap:9px;min-height:43px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--green)}
+.department-select-wrap:focus-within{border-color:var(--green);box-shadow:0 0 0 3px color-mix(in srgb,var(--green) 13%,transparent)}
+.department-select-wrap>svg{flex:0 0 17px}
+.department-select-wrap select{width:100%;min-width:0;margin:0!important;padding:11px 20px 11px 0!important;border:0!important;border-radius:0!important;outline:0;background:transparent!important;color:var(--ink)!important;font:inherit!important;font-size:12px!important;appearance:auto}
+.department-select-field>small{margin-top:5px;color:var(--muted);font-size:10px;font-weight:400}
+.department-selection{margin:12px 0 0!important;padding:9px 10px;border-radius:7px;background:var(--surface);color:var(--muted);font-size:10px!important;line-height:1.5!important}
+.department-selection strong{color:var(--green)}
+@media(max-width:560px){.department-picker{padding:12px}.department-select-wrap{min-height:42px}}

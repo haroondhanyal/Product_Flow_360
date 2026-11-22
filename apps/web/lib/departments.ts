@@ -1,0 +1,7 @@
+export const PTCL_DEPARTMENT_CATALOG = [
+  {id:'commercial',name:'Commercial & Marketing',note:'Products, customers, growth and brand',teams:['Marketing & Brand','Customer Value Management (CVM)','Product Development (PD)','Wireless & Mobility Products','Devices & Mobile Broadband (MBB)','Pricing & Commercial Strategy','Sales & Distribution','Customer Insights & Analytics']},
+  {id:'business-solutions',name:'Business Solutions',note:'Enterprise, ICT and wholesale services',teams:['Enterprise Sales & Account Management','Cloud & Data Center','ICT & Managed Services','International & Wholesale','B2B Product Management']},
+  {id:'technology',name:'Technology & Information',note:'Network, platforms and digital delivery',teams:['Network Engineering','Fixed Access & Fiber','Wireless Network','IT & Digital Platforms','Cybersecurity & Information Security','Data & Analytics','Architecture & Service Assurance']},
+  {id:'customer-operations',name:'Customer & Operations',note:'Care, service delivery and field operations',teams:['Customer Care & Contact Center','Customer Experience','Service Delivery','Field Operations','Service Assurance','Billing Operations']},
+  {id:'corporate',name:'Corporate & Shared Services',note:'Company-wide enabling and governance teams',teams:['Finance','People & Organization (HR)','Legal & Company Secretariat','Regulatory Affairs','Corporate Affairs & Communications','Internal Audit','Procurement & Supply Chain','Strategy & Transformation','Revenue Assurance','Facilities & Administration']},
+] as const;
