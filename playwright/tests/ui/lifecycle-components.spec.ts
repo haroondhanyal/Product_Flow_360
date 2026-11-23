@@ -26,6 +26,15 @@ for (const module of modules) {
       await expect(l.table).toBeVisible();
     });
 
+    test('board exposes icon-led status filters and per-record edit actions', async ({ page }) => {
+      const l = module.make(page).locators;
+      const statusFilter = page.getByRole('combobox', { name: `Filter ${module.name} by status` });
+      await expect(statusFilter).toBeVisible();
+      await statusFilter.click();
+      await expect(page.getByRole('listbox', { name: `Filter ${module.name} by status` }).getByRole('option')).toContainText(module.statuses);
+      if (await l.table.locator('tbody tr').count()) await expect(l.table.getByRole('button', { name: /^Edit / }).first()).toBeVisible();
+    });
+
     test('new record exposes RFC, title and owner', async ({ page }) => {
       const board = module.make(page);
       await board.begin();
@@ -39,7 +48,8 @@ for (const module of modules) {
       await expect(board.locators.statuses.locator(':scope > span')).toHaveCount(module.statuses.length);
       for (const status of module.statuses) await expect(board.locators.statuses).toContainText(status);
       await board.begin();
-      await expect(board.locators.recordType.locator('option')).toHaveText(module.types);
+      await board.locators.recordType.click();
+      await expect(page.getByRole('listbox', { name: 'Record type' }).getByRole('option')).toContainText(module.types);
     });
 
     test('module-specific fields are available for the workflow', async ({ page }) => {

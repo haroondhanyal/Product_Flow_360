@@ -77,3 +77,23 @@
 .request-form-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px}
 .request-department-cell{margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4;white-space:normal}
 @media(max-width:650px){.modal .request-department-segment,.modal .request-owner-date{grid-template-columns:1fr;gap:2px}.request-detail-heading{flex-direction:column}}
+
+/* Keep quality and lifecycle boards inside their content column at wide and
+   narrow viewports; allow deliberate horizontal scrolling on compact screens. */
+.test-management,.lifecycle-board{min-width:0;width:100%;max-width:100%}
+.test-management .requests,.lifecycle-board .requests{min-width:0;max-width:100%}
+.test-management .table-scroll,.lifecycle-board .table-scroll{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-gutter:stable}
+.test-management .table-scroll table{width:100%;min-width:1120px;table-layout:fixed;white-space:normal}
+.test-management .table-scroll th,.test-management .table-scroll td,.lifecycle-board .table-scroll th,.lifecycle-board .table-scroll td{overflow-wrap:anywhere;vertical-align:middle}
+.test-management .table-scroll th:nth-child(1){width:20%}.test-management .table-scroll th:nth-child(2){width:21%}.test-management .table-scroll th:nth-child(3){width:10%}.test-management .table-scroll th:nth-child(4){width:12%}.test-management .table-scroll th:nth-child(5){width:11%}.test-management .table-scroll th:nth-child(6){width:17%}.test-management .table-scroll th:nth-child(7){width:9%}
+.test-management .test-board-copy{white-space:normal;line-height:1.5}.test-management .test-board-copy small{margin-top:5px;color:var(--green)}
+.test-row-actions,.lifecycle-row-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.test-row-actions .row-action,.lifecycle-row-actions .row-action{min-height:32px;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font-size:10px;white-space:nowrap}
+.test-row-actions .row-action:hover,.lifecycle-row-actions .row-action:hover{border-color:var(--green);color:var(--green)}
+.lifecycle-board .table-scroll table{min-width:980px;table-layout:auto}
+.lifecycle-board .lifecycle-board-copy{max-width:260px;white-space:normal;line-height:1.5}
+.lifecycle-board .table-toolbar .status-filter{min-width:175px}
+.lifecycle-board .workflow-states{align-items:center}
+.lifecycle-board .workflow-states .status-indicator{min-height:32px}
+.lifecycle-board .test-intro{min-width:0}
+@media(max-width:800px){.test-management .test-intro{align-items:flex-start}.test-management .test-board-actions{display:flex;flex-wrap:wrap;gap:8px}.test-management .table-scroll table{min-width:1080px}.lifecycle-board .test-toolbar .search{flex-basis:100%}.lifecycle-board .table-toolbar .filter{flex:1 1 180px}.lifecycle-board .table-toolbar>.text-button{flex:0 0 auto}}
