@@ -57,3 +57,23 @@
 .report-workspace>.test-intro p{max-width:650px}
 .report-workspace .report-dropzone{margin:0 0 24px;border-radius:0 0 13px 13px;min-height:210px}
 @media(max-width:650px){.request-product-priority{grid-template-columns:1fr;gap:2px}.allure-report-card{padding:18px!important}.report-workspace>.test-intro{padding:17px}.report-workspace>.test-intro h2{font-size:19px}}
+
+/* RFC capture and details */
+.modal .request-department-segment,.modal .request-owner-date{grid-template-columns:repeat(2,minmax(0,1fr));align-items:end;gap:16px}
+.modal .request-department-segment label,.modal .request-owner-date label{min-width:0}
+.modal .request-department-segment .record-type-trigger{min-height:44px}
+.modal .request-attachments-label input[type=file]{height:auto;min-height:44px;padding:8px}
+.modal .request-attachments-label small{display:block;margin-top:7px;color:var(--muted);font-size:10px;font-weight:400;line-height:1.55}
+.request-staged-files{display:flex;flex-wrap:wrap;gap:7px;margin:-3px 0 14px}
+.request-staged-files>span{display:inline-flex;align-items:center;gap:7px;max-width:100%;padding:6px 9px;border:1px solid var(--line);border-radius:8px;background:var(--surface-soft);font-size:11px;overflow-wrap:anywhere}
+.request-staged-files button{flex:none;border:0;background:transparent;color:var(--muted);padding:2px}
+.request-detail-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:15px}
+.request-detail-heading h2{overflow-wrap:anywhere}
+.request-detail-heading .text-button{flex:none}
+.request-detail-owner{margin:8px 0 16px!important;color:var(--muted)}
+.request-description{padding:13px;margin:14px 0;border:1px solid var(--line);border-radius:9px;background:var(--surface-soft)}
+.request-description h3{margin:0 0 6px;font-size:12px}
+.request-description p{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;line-height:1.6}
+.request-form-actions{display:flex;justify-content:flex-end;align-items:center;gap:10px}
+.request-department-cell{margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4;white-space:normal}
+@media(max-width:650px){.modal .request-department-segment,.modal .request-owner-date{grid-template-columns:1fr;gap:2px}.request-detail-heading{flex-direction:column}}

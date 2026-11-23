@@ -1,6 +1,6 @@
 export const MAX_DOCUMENT_BYTES = 50 * 1024 * 1024;
-export const EVIDENCE_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov,.pdf,.doc,.docx,.xlsx,.xls,.csv,.json,.txt,.log';
-export const DOCUMENT_ACCEPT = '.pdf,.doc,.docx,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov,.json,.txt,.log,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime';
+export const EVIDENCE_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov,.pdf,.doc,.docx,.ppt,.pptx,.xlsx,.xls,.csv,.json,.txt,.log';
+export const DOCUMENT_ACCEPT = '.pdf,.doc,.docx,.ppt,.pptx,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov,.json,.txt,.log,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime';
 
 export type DocumentInfo = {
   id: string;
@@ -14,8 +14,8 @@ type StoredDocument = DocumentInfo & { blob: Blob };
 export async function validateDocument(file: File): Promise<void> {
   const extension = file.name.split('.').pop()?.toLowerCase();
   if (['png', 'jpg', 'jpeg', 'webp', 'gif', 'mp4', 'webm', 'mov', 'xlsx', 'xls', 'csv', 'json', 'txt', 'log'].includes(extension ?? '')) return validateEvidence(file);
-  if (!['pdf', 'doc', 'docx'].includes(extension ?? '')) {
-    throw new Error('Choose a supported project document: PDF, Word, Excel, CSV, image, video, JSON, TXT or LOG.');
+  if (!['pdf', 'doc', 'docx', 'ppt', 'pptx'].includes(extension ?? '')) {
+    throw new Error('Choose a supported project document: PDF, Word, PowerPoint, Excel, CSV, image, video, JSON, TXT or LOG.');
   }
   if (file.size === 0) throw new Error('Empty documents cannot be attached.');
   if (file.size > MAX_DOCUMENT_BYTES) throw new Error('Each document must be 50 MB or smaller (52,428,800 bytes).');
@@ -23,7 +23,7 @@ export async function validateDocument(file: File): Promise<void> {
   const startsWith = (signature: number[]) => signature.every((byte, index) => bytes[index] === byte);
   const valid = extension === 'pdf'
     ? startsWith([0x25, 0x50, 0x44, 0x46, 0x2d])
-    : extension === 'doc'
+    : extension === 'doc' || extension === 'ppt'
       ? startsWith([0xd0, 0xcf, 0x11, 0xe0, 0xa1, 0xb1, 0x1a, 0xe1])
       : startsWith([0x50, 0x4b, 0x03, 0x04]);
   if (!valid) throw new Error('The document format does not match its file extension. Choose the original PDF or Word file.');
@@ -31,8 +31,8 @@ export async function validateDocument(file: File): Promise<void> {
 
 export async function validateEvidence(file: File): Promise<void> {
   const extension = file.name.split('.').pop()?.toLowerCase() ?? '';
-  if (['pdf', 'doc', 'docx'].includes(extension)) return validateDocument(file);
-  if (!EVIDENCE_ACCEPT.split(',').includes('.' + extension)) throw new Error('Choose a supported screenshot, video, PDF, Word or Excel document.');
+  if (['pdf', 'doc', 'docx', 'ppt', 'pptx'].includes(extension)) return validateDocument(file);
+  if (!EVIDENCE_ACCEPT.split(',').includes('.' + extension)) throw new Error('Choose a supported screenshot, video, PDF, Word, PowerPoint or Excel document.');
   if (!file.size) throw new Error('Empty evidence cannot be attached.');
   if (file.size > MAX_DOCUMENT_BYTES) throw new Error('Each evidence file must be 50 MB or smaller.');
   const bytes = new Uint8Array(await file.slice(0, 16).arrayBuffer());
@@ -51,7 +51,7 @@ export async function validateEvidence(file: File): Promise<void> {
 }
 
 export function evidenceMime(name: string): string | undefined {
-  const types: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf', mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime', txt: 'text/plain', log: 'text/plain', csv: 'text/csv', json: 'application/json', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
+  const types: Record<string, string> = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', gif: 'image/gif', pdf: 'application/pdf', mp4: 'video/mp4', webm: 'video/webm', mov: 'video/quicktime', txt: 'text/plain', log: 'text/plain', csv: 'text/csv', json: 'application/json', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', ppt: 'application/vnd.ms-powerpoint', pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', xls: 'application/vnd.ms-excel', xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' };
   return types[name.split('.').pop()?.toLowerCase() ?? ''];
 }
 

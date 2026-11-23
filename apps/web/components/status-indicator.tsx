@@ -1,13 +1,33 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Archive, ArrowDown, ArrowUp, BadgeCheck, Ban, CalendarDays, CheckCircle2, ChevronDown, CircleAlert, CircleDashed, CircleDot, CirclePause, CircleX, ClipboardCheck, ClipboardList, Clock3, Code2, Eye, FlaskConical, Gauge, Layers3, LoaderCircle, MailCheck, Minus, Network, PackageCheck, Receipt, RotateCcw, Rocket, Router, ShieldCheck, Tag, UserCheck, Wrench } from 'lucide-react';
+import { Activity, Archive, ArrowDown, ArrowUp, BadgeCheck, BarChart3, Ban, Briefcase, CalendarDays, CheckCircle2, ChevronDown, CircleAlert, CircleDashed, CircleDot, CirclePause, CircleX, ClipboardCheck, ClipboardList, Clock3, Code2, Eye, FlaskConical, Gauge, Globe2, Headphones, Layers3, LoaderCircle, MailCheck, Megaphone, Minus, Network, PackageCheck, Radio, Receipt, RotateCcw, Rocket, Router, ShieldCheck, Smartphone, Tag, Users, Wrench, Workflow } from 'lucide-react';
 import './status-indicator.css';
 
 const keyOf=(value:string)=>value.trim().toLowerCase().replaceAll(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
 const iconFor=(value:string)=>{
   const key=keyOf(value);
+  if(key==='crm'||key.includes('customer-value')||key==='cvm')return Users;
+  if(key==='cbs'||key.includes('billing'))return Receipt;
+  if(key==='bi'||key.includes('data-analyst')||key.includes('analytics'))return BarChart3;
+  if(key.includes('maximo')||key.includes('meximo')||key.includes('devices'))return Wrench;
+  if(key.includes('one-window')||key.includes('website'))return Globe2;
+  if(key.includes('prisma')||key.includes('product-development'))return Layers3;
+  if(key.includes('ocean'))return Workflow;
+  if(key.includes('uptcl-app')||key.includes('iptv')||key.includes('mobile-app'))return Smartphone;
+  if(key==='evam')return Radio;
+  if(key.includes('contact-center')||key==='cc'||key.includes('customer-care'))return Headphones;
+  if(key.includes('marketing')||key.includes('brand'))return Megaphone;
+  if(key.includes('it-dev')||key.includes('it-planning')||key.includes('digital-team'))return Code2;
+  if(key.includes('revenue-assurance')||key==='ra')return Activity;
+  if(key.includes('consumer')||key.includes('enterprise')||key.includes('wholesale'))return Briefcase;
+  if(key.includes('segment'))return Users;
   if(key==='critical')return CircleAlert;
+  if(key==='smoke')return Activity;
+  if(key==='regression')return RotateCcw;
+  if(key==='sit')return Network;
+  if(key==='qa')return ShieldCheck;
+  if(key==='uat')return BadgeCheck;
   if(key==='high')return ArrowUp;
   if(key==='medium')return Minus;
   if(key==='low')return ArrowDown;
@@ -35,12 +55,27 @@ export function StatusSelect({value,options,onChange,ariaLabel,name}:{value:stri
   useEffect(()=>setSelected(value),[value]);
   function choose(option:string){setSelected(option);onChange(option);setOpen(false)}
   function navigate(event:React.KeyboardEvent<HTMLButtonElement>,index:number){if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();if(!open){setOpen(true);requestAnimationFrame(()=>items.current[0]?.focus());return}const offset=event.key==='ArrowDown'?1:-1;items.current[(index+offset+options.length)%options.length]?.focus()}else if(event.key==='Escape'){event.preventDefault();setOpen(false);root.current?.querySelector('button')?.focus()}}
-  return <div className="status-select" ref={root}>{name&&<input type="hidden" name={name} value={selected}/>}<button type="button" className="status-select-trigger" aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={open} onClick={()=>setOpen(value=>!value)} onKeyDown={event=>navigate(event,-1)}><StatusIndicator status={selected}/><ChevronDown size={14}/></button>{open&&<div className="status-select-menu" role="listbox" aria-label={ariaLabel}>{options.map((option,index)=><button type="button" role="option" aria-selected={selected===option} key={option} ref={element=>{items.current[index]=element}} onClick={()=>choose(option)} onKeyDown={event=>navigate(event,index)}><StatusIndicator status={option}/>{selected===option&&<CheckCircle2 size={14}/>}</button>)}</div>}</div>;
+  return <div className="status-select" ref={root}>{name&&<input type="hidden" name={name} value={selected}/>}<button type="button" role="combobox" className="status-select-trigger" aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={open} onClick={()=>setOpen(value=>!value)} onKeyDown={event=>navigate(event,-1)}><StatusIndicator status={selected}/><ChevronDown size={14}/></button>{open&&<div className="status-select-menu" role="listbox" aria-label={ariaLabel}>{options.map((option,index)=><button type="button" role="option" aria-selected={selected===option} key={option} ref={element=>{items.current[index]=element}} onClick={()=>choose(option)} onKeyDown={event=>navigate(event,index)}><StatusIndicator status={option}/>{selected===option&&<CheckCircle2 size={14}/>}</button>)}</div>}</div>;
 }
 
 const recordIconFor=(value:string)=>{
   const key=keyOf(value);
-  if(key.includes('billing')||key.includes('pre-bill'))return Receipt;
+  if(key==='crm'||key==='cvm'||key.includes('customer-value'))return Users;
+  if(key==='cbs'||key.includes('billing'))return Receipt;
+  if(key==='bi'||key.includes('data-analyst')||key.includes('analytics'))return BarChart3;
+  if(key.includes('maximo')||key.includes('meximo')||key.includes('device'))return Wrench;
+  if(key.includes('one-window')||key.includes('website'))return Globe2;
+  if(key.includes('prisma')||key.includes('product-development'))return Layers3;
+  if(key.includes('ocean'))return Workflow;
+  if(key.includes('uptcl-app')||key.includes('iptv'))return Smartphone;
+  if(key==='evam')return Radio;
+  if(key.includes('contact-center')||key==='cc'||key.includes('customer-care'))return Headphones;
+  if(key.includes('marketing')||key.includes('brand'))return Megaphone;
+  if(key.includes('it-dev')||key.includes('it-planning')||key.includes('digital-team'))return Code2;
+  if(key.includes('revenue-assurance')||key==='ra')return Activity;
+  if(key.includes('consumer')||key.includes('enterprise')||key.includes('wholesale'))return Briefcase;
+  if(key.includes('segment'))return Users;
+  if(key.includes('pre-bill'))return Receipt;
   if(key.includes('performance')||key.includes('speed'))return Gauge;
   if(key.includes('integration'))return Network;
   if(key==='ui'||key.includes('customer-experience'))return Eye;
@@ -58,6 +93,10 @@ const recordIconFor=(value:string)=>{
 };
 
 export function RecordTypeSelect({value,options,onChange,ariaLabel,name='type'}:{value:string;options:string[];onChange:(value:string)=>void;ariaLabel:string;name?:string}){
+  return <IconSelect value={value} options={options} onChange={onChange} ariaLabel={ariaLabel} name={name}/>;
+}
+
+export function IconSelect({value,options,onChange,ariaLabel,name}:{value:string;options:string[];onChange:(value:string)=>void;ariaLabel:string;name:string}){
   const [open,setOpen]=useState(false),[selected,setSelected]=useState(value);
   const root=useRef<HTMLDivElement>(null),items=useRef<Array<HTMLButtonElement|null>>([]);
   useEffect(()=>setSelected(value),[value]);
@@ -65,5 +104,5 @@ export function RecordTypeSelect({value,options,onChange,ariaLabel,name='type'}:
   function choose(option:string){setSelected(option);onChange(option);setOpen(false)}
   function navigate(event:React.KeyboardEvent<HTMLButtonElement>,index:number){if(event.key==='ArrowDown'||event.key==='ArrowUp'){event.preventDefault();if(!open){setOpen(true);requestAnimationFrame(()=>items.current[0]?.focus());return}items.current[(index+(event.key==='ArrowDown'?1:-1)+options.length)%options.length]?.focus()}else if(event.key==='Escape'){event.preventDefault();setOpen(false);root.current?.querySelector('button')?.focus()}}
   const SelectedIcon=recordIconFor(selected);
-  return <div className="record-type-select" ref={root}><input type="hidden" name={name} value={selected}/><button type="button" className="record-type-trigger" aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={open} onClick={()=>setOpen(value=>!value)} onKeyDown={event=>navigate(event,-1)}><span><SelectedIcon size={16}/>{selected}</span><ChevronDown size={14}/></button>{open&&<div className="record-type-menu" role="listbox" aria-label={ariaLabel}>{options.map((option,index)=>{const Icon=recordIconFor(option);return <button type="button" role="option" aria-selected={selected===option} key={option} ref={element=>{items.current[index]=element}} onClick={()=>choose(option)} onKeyDown={event=>navigate(event,index)}><span><Icon size={16}/>{option}</span>{selected===option&&<CheckCircle2 size={14}/>}</button>})}</div>}</div>;
+  return <div className="record-type-select" ref={root}><input type="hidden" name={name} value={selected}/><button type="button" role="combobox" className="record-type-trigger" aria-label={ariaLabel} aria-haspopup="listbox" aria-expanded={open} onClick={()=>setOpen(value=>!value)} onKeyDown={event=>navigate(event,-1)}><span><SelectedIcon size={16}/>{selected}</span><ChevronDown size={14}/></button>{open&&<div className="record-type-menu" role="listbox" aria-label={ariaLabel}>{options.map((option,index)=>{const Icon=recordIconFor(option);return <button type="button" role="option" aria-selected={selected===option} key={option} ref={element=>{items.current[index]=element}} onClick={()=>choose(option)} onKeyDown={event=>navigate(event,index)}><span><Icon size={16}/>{option}</span>{selected===option&&<CheckCircle2 size={14}/>}</button>})}</div>}</div>;
 }
