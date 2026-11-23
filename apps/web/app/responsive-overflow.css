@@ -8,18 +8,18 @@
 .requests{width:100%;min-width:0;max-width:100%}
 .requests>.table-scroll{width:100%;min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
 .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table{width:100%;min-width:980px;table-layout:fixed}
-.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(1){width:27%}
-.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(2){width:20%}
-.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(3){width:15%}
-.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(4){width:11%}
-.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(5){width:15%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(1){width:25%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(2){width:25%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(3){width:14%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(4){width:10%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(5){width:14%}
 .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(6){width:9%}
 .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(7){width:3%;min-width:38px}
 .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th,.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table td{overflow:hidden;text-overflow:ellipsis}
 .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table td:nth-child(1),.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table td:nth-child(2){white-space:normal}
 .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table .request-title strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table .request-classification{max-width:100%}
-.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table .classification-chip{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table .request-classification{max-width:100%;flex-wrap:nowrap;gap:4px}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table .classification-chip{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:0 1 auto}
 @media(max-width:1100px){
   .page-heading{align-items:flex-start;gap:14px}
   .page-heading-actions{flex:1 1 100%;justify-content:flex-start}
@@ -31,3 +31,11 @@
   .page-heading-actions>*{flex:1 1 160px;min-width:0}
   .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table{min-width:760px}
 }
+
+/* Keep request classifications readable as compact, aligned chips. */
+.request-classification{display:flex;flex-wrap:nowrap;align-items:center;gap:5px;min-width:0}
+.request-classification .classification-chip{flex:0 1 auto;min-width:0;white-space:nowrap}
+.sidebar-foot{min-height:68px;gap:10px;padding:14px 5px;color:var(--muted);font-size:9px;font-weight:600}
+.sidebar-foot img{width:58px;height:auto;flex:0 0 auto;opacity:1}
+.sidebar-foot>span{min-width:0;line-height:1.4}
+@media(max-width:900px){.sidebar-foot{gap:7px;font-size:8px}.sidebar-foot img{width:50px}}
