@@ -37,7 +37,7 @@ test.describe('@ui @component Change requests', () => {
   test.beforeEach(async ({ page }) => { await new ChangeRequestsPage(page).open(); await brandAllure('Change requests'); });
   test('request board has search, status and export', async ({ page }) => { const l = new ChangeRequestsPage(page).locators; await expect(l.table).toBeVisible(); await expect(l.search).toBeVisible(); await expect(l.status).toBeVisible(); await expect(l.export).toBeVisible(); });
   test('searching unknown request shows empty state', async ({ page }) => { const l = new ChangeRequestsPage(page).locators; await l.search.fill('PF360_NO_SUCH_REQUEST_7391'); await expect(l.empty).toBeVisible(); });
-  test('status filter offers review through approval', async ({ page }) => { const l = new ChangeRequestsPage(page).locators; await expect(l.status.locator('option')).toHaveText(['All statuses', 'In review', 'In development', 'In testing', 'Approved']); });
+  test('status filter offers review through approval with status icons', async ({ page }) => { const l = new ChangeRequestsPage(page).locators; await l.status.click(); await expect(page.getByRole('listbox', { name: 'Filter by status' }).getByRole('option')).toContainText(['All statuses', 'In review', 'In development', 'In testing', 'Approved']); });
   test('new request has product, priority and owner fields', async ({ page }) => { const r = new ChangeRequestsPage(page); await r.begin(); await expect(r.locators.title).toBeVisible(); await expect(r.locators.product).toBeVisible(); await expect(r.locators.priority).toBeVisible(); await expect(r.locators.owner).toBeVisible(); });
   test('closing a draft returns to the request board', async ({ page }) => { const r = new ChangeRequestsPage(page); await r.begin(); await r.locators.close.click(); await expect(r.locators.dialog).toHaveCount(0); await expect(r.locators.table).toBeVisible(); });
 });
@@ -47,7 +47,7 @@ test.describe('@ui @component Test management', () => {
   test('board offers new test case', async ({ page }) => { const l = new TestCasePage(page).locators; await expect(l.board).toBeVisible(); await expect(l.create).toBeVisible(); });
   test('new case links to an RFC', async ({ page }) => { const t = new TestCasePage(page); await t.begin(); await expect(t.locators.linkedRfc).toBeVisible(); await expect(t.locators.linkedRfc.locator('option')).not.toHaveCount(0); });
   test('case form captures title, module, steps and result', async ({ page }) => { const t = new TestCasePage(page); await t.begin(); const l = t.locators; for (const field of [l.title, l.module, l.steps, l.expected]) await expect(field).toBeVisible(); });
-  test('stages include smoke and regression', async ({ page }) => { const t = new TestCasePage(page); await t.begin(); await expect(t.locators.stageOptions).toContainText(['Smoke', 'Regression']); });
+  test('stage menu includes smoke and regression with matching icons', async ({ page }) => { const t = new TestCasePage(page); await t.begin(); await t.locators.stage.click(); await expect(page.getByRole('listbox', { name: 'Test stage' }).getByRole('option')).toContainText(['Smoke', 'Regression']); });
   test('cancel removes unsaved test case editor', async ({ page }) => { const t = new TestCasePage(page); await t.begin(); await t.locators.cancel.click(); await expect(t.locators.editorHeading).toHaveCount(0); });
 });
 

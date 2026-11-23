@@ -26,6 +26,29 @@
 .project-filter{flex:1 1 240px;min-width:220px;max-width:340px}
 .table-toolbar .project-filter select{width:100%;min-width:0;max-width:none;padding:4px 20px 4px 2px;appearance:none;background-color:transparent;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23536158' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center;text-overflow:ellipsis;white-space:nowrap}
 
+/* RFC capture and filter controls: keep long text inside the form grid. */
+.modal:has(.request-capture-form){width:min(680px,calc(100vw - 36px));max-height:min(92dvh,980px);padding:34px;}
+.request-capture-form{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;min-width:0}
+.request-capture-form>label,.request-capture-form>.form-row,.request-capture-form>.request-staged-files,.request-capture-form>.form-note,.request-capture-form>.primary{min-width:0;width:100%;box-sizing:border-box}
+.request-capture-form textarea{display:block;width:100%;max-width:100%;min-width:0;min-height:90px;box-sizing:border-box;margin-top:7px;padding:12px 13px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);font:inherit;font-size:12px;line-height:1.55;resize:vertical}
+.request-capture-form textarea:focus-visible{outline:3px solid color-mix(in srgb,var(--green) 30%,transparent);border-color:var(--green)}
+.request-capture-form .request-attachments-label input[type=file]{display:block;width:100%;box-sizing:border-box;border:1px dashed var(--line);border-radius:9px;background:var(--surface-soft);color:var(--muted)}
+.request-capture-form .form-note{margin:12px 0 8px!important}
+.request-capture-form>.primary{min-height:48px;justify-content:center}
+.request-classification{display:flex;flex-wrap:wrap;align-items:center;gap:5px;margin-top:5px}
+.request-classification .classification-chip{padding:3px 7px;font-size:9px}
+.request-classification .classification-chip>svg{width:11px;height:11px}
+.request-classification .segment-chip{--status-color:#536779;--status-bg:#edf3f8}
+.status-filter{min-width:175px;padding:4px 8px}
+.status-filter>.status-select{flex:1;min-width:0}
+.status-filter .status-select-trigger{min-height:34px;padding:4px 2px;border:0;background:transparent;font-size:11px}
+.status-filter .status-select-trigger:focus-visible{outline:2px solid color-mix(in srgb,var(--green) 40%,transparent);outline-offset:2px}
+.status-filter .status-select-menu{min-width:190px;right:0;left:auto}
+.test-case-editor .form-row>label{min-width:0}
+.test-case-editor .record-type-select{margin-top:7px}
+.test-case-editor .record-type-trigger{min-height:44px}
+@media(max-width:650px){.modal:has(.request-capture-form){width:100%;max-height:100dvh;padding:26px 20px;border-radius:16px}.request-capture-form .form-row{grid-template-columns:1fr;gap:2px}.status-filter{flex:1 1 100%;min-width:0}.status-filter .status-select-menu{left:0;right:0}}
+
 /* Assistant modal and command center geometry */
 .command-center-panel .command-center-head{position:sticky;top:-28px;z-index:4;height:auto;min-height:unset;flex-shrink:0;margin:-28px -28px 0;padding:23px 28px 18px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(14px)}
 .enterprise-command{scrollbar-gutter:stable;overscroll-behavior:contain}
