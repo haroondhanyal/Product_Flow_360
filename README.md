@@ -82,6 +82,14 @@ The screenshots below were freshly captured from a clean Chromium browser on 23 
 | --- | --- | --- | --- |
 | <img src="docs/images/screens/18-mobile-overview.png" alt="Responsive ProductFlow overview on a mobile screen" width="240"> | <img src="docs/images/screens/19-mobile-navigation.png" alt="Responsive mobile workspace navigation drawer" width="240"> | <img src="docs/images/screens/20-project-invitation.png" alt="Project team invitation with selected colleague email" width="240"> | <img src="docs/images/screens/21-ai-assistant.png" alt="ProductFlow local AI Assistant dialog" width="240"> |
 
+| Tablet header |
+| --- |
+| <img src="docs/images/screens/26-tablet-header.png" alt="Tablet header with workspace selector aligned between navigation and actions" width="480"> |
+
+| Lifecycle form |
+| --- |
+| <img src="docs/images/screens/27-billing-form.png" alt="Billing validation form with aligned fields and spaced save action" width="480"> |
+
 | Overview editor | Lifecycle status menu | New request form | Priority menu |
 | --- | --- | --- | --- |
 | <img src="docs/images/screens/22-overview-editor.png" alt="Overview editor with icon-based priority and status controls" width="240"> | <img src="docs/images/screens/23-lifecycle-status-options.png" alt="Modern lifecycle status options with related icons" width="240"> | <img src="docs/images/screens/24-new-request-form.png" alt="New delivery request form with workspace project selector" width="240"> | <img src="docs/images/screens/25-priority-options.png" alt="Priority options with severity icons" width="240"> |

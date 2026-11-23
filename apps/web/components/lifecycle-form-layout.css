@@ -1,0 +1,5 @@
+.lifecycle-board .test-editor.feature-form form > label{margin:12px 0}
+.lifecycle-board .test-editor.feature-form form .form-row{gap:16px}
+.lifecycle-board .test-editor.feature-form form .form-row label{margin:12px 0}
+.lifecycle-board .test-editor.feature-form form > .primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:172px;min-height:42px;margin-top:14px;padding:10px 16px;border-radius:9px}
+@media(max-width:650px){.lifecycle-board .test-editor.feature-form form > .primary{width:100%}}
