@@ -1,5 +1,5 @@
 /* One consistent, opaque workspace-list surface for the header and Workspace screen. */
-.global-workspace-picker{z-index:10000!important}.global-workspace-menu{z-index:10001!important;background:#fcfdfd!important}.workspace-switcher .workspace-dropdown{z-index:9000!important}.workspace-switcher .workspace-dropdown-menu{z-index:9001!important;background:#fcfdfd!important}
+.global-workspace-picker{z-index:40!important}.global-workspace-menu{z-index:10001!important;background:#fcfdfd!important}.workspace-switcher .workspace-dropdown{z-index:9000!important}.workspace-switcher .workspace-dropdown-menu{z-index:9001!important;background:#fcfdfd!important}
 .global-workspace-menu,.global-workspace-list,.workspace-switcher .workspace-dropdown-menu,.workspace-switcher .workspace-dropdown-list{background:#fcfdfd!important;color:#19342a!important}
 .global-workspace-list article{position:relative;z-index:1;display:flex!important;align-items:center!important;min-height:58px!important;padding:5px!important;background:#fcfdfd!important}
 .global-workspace-list .workspace-select{display:grid!important;grid-template-columns:32px minmax(0,1fr)!important;align-items:center!important;gap:10px!important;width:100%!important;min-height:46px!important;padding:5px!important}

@@ -1,0 +1,50 @@
+.main>header{display:grid;grid-template-columns:minmax(100px,1fr) minmax(190px,min(24vw,270px)) auto;gap:clamp(10px,1.35vw,20px);justify-content:initial;padding-inline:clamp(18px,2.25vw,36px)}
+.main>header .breadcrumb{min-width:0;gap:clamp(8px,1.1vw,17px);white-space:nowrap;overflow:hidden}
+.main>header .breadcrumb strong{overflow:hidden;text-overflow:ellipsis}
+.main>header .global-workspace-picker{z-index:40;width:auto;min-width:0;max-width:270px;margin:0;flex:initial}
+.main>header .global-workspace-trigger{min-width:0}
+.main>header .global-workspace-trigger>div{min-width:0}
+.main>header .header-actions{position:relative;z-index:60;min-width:0;gap:clamp(8px,.9vw,14px);flex-shrink:0}
+.main>header .copilot-launcher.inline{min-height:40px;padding:9px 12px;white-space:nowrap}
+.main>header .profile-trigger{min-width:0;max-width:205px;gap:7px}
+.main>header .profile{display:block;min-width:0;max-width:125px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.main>header .profile small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body .main .profile-menu .profile-dropdown{z-index:120;width:min(340px,calc(100vw - 24px));padding:18px;border-radius:13px}
+.profile-dropdown .profile-identity{display:flex;align-items:center;gap:11px;min-width:0;padding-bottom:15px;border-bottom:1px solid var(--line)}
+.profile-dropdown .profile-identity>img,.profile-dropdown .profile-identity>span{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;overflow:hidden;border-radius:50%;object-fit:cover;background:var(--accent-soft);color:var(--green);font-size:13px;font-weight:700}
+.profile-dropdown .profile-identity>div{flex:1;min-width:0}
+.profile-dropdown .profile-identity strong{overflow:hidden;color:var(--ink);font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.profile-dropdown .profile-identity small{display:block;margin-top:4px;color:var(--muted);font-size:11px;overflow-wrap:anywhere}
+.profile-dropdown .profile-identity em{flex:0 0 auto;padding:5px 8px;border-radius:20px;background:var(--accent-soft);color:var(--green);font-size:10px;font-style:normal;font-weight:650}
+.profile-dropdown .profile-detail{display:grid;gap:4px;padding:11px 0;border-bottom:1px solid var(--line)}
+.profile-dropdown .profile-detail b{color:var(--muted);font-size:9px;letter-spacing:.7px;text-transform:uppercase}
+.profile-dropdown .profile-detail span{margin:0;color:var(--ink);font-size:11px;line-height:1.45;overflow-wrap:anywhere}
+.profile-dropdown>button{margin-top:12px}
+@media(max-width:1150px){
+ .main>header{height:auto;min-height:104px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"crumb actions" "workspace workspace";gap:9px 16px;padding:10px 16px}
+ .main>header .breadcrumb{grid-area:crumb;gap:8px}
+ .main>header .global-workspace-picker{grid-area:workspace;justify-self:center;width:min(100%,420px);max-width:none}
+ .main>header .global-workspace-trigger{gap:7px;padding:7px 8px}
+ .main>header .global-workspace-trigger>img,.main>header .global-workspace-trigger>span{width:30px;height:30px;flex-basis:30px}
+ .main>header .global-workspace-trigger strong{font-size:11px}
+ .main>header .header-actions{grid-area:actions;gap:8px}
+ .main>header .profile-trigger{max-width:260px}
+ .main>header .profile{max-width:145px;font-size:10px}
+ .main>header .demo-pill{padding:5px 6px}
+}
+@media(max-width:900px){
+ .main>header{height:auto;min-height:84px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"crumb actions" "workspace workspace";gap:8px 12px;padding:10px 16px}
+ .main>header .breadcrumb{grid-area:crumb}
+ .main>header .global-workspace-picker{grid-area:workspace;width:100%;min-width:0;max-width:none}
+ .main>header .global-workspace-trigger{width:100%;min-height:38px}
+ .main>header .header-actions{grid-area:actions;margin:0}
+ .main>header .profile{display:none}
+ .main>header .demo-pill{display:none}
+}
+@media(max-width:650px){
+ .main>header{min-height:0;padding:9px 14px}
+ .main>header .breadcrumb{flex:initial;min-width:0}
+ .main>header .global-workspace-picker{align-self:stretch}
+ .main>header .header-actions{gap:9px}
+ .main>header .copilot-launcher.inline{width:36px;height:36px;min-height:36px;padding:0}
+}
