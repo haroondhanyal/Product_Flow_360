@@ -8,5 +8,6 @@ import './header-fixed.css';
 import './brand-refresh.css';
 import './ambient-background.css';
 import './header-layout.css';
+import './responsive-overflow.css';
 export const metadata: Metadata = { title: 'PF360 · ProductFlow workspace', description: 'PTCL ProductFlow 360 — from idea to impact.' };
 export default function RootLayout({children}:Readonly<{children:React.ReactNode}>){return <html lang="en"><body>{children}</body></html>}

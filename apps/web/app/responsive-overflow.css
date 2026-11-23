@@ -1,0 +1,33 @@
+/* Keep page-level actions and data boards inside the content column. */
+.main{min-width:0;overflow-x:clip}
+.main>main{width:100%;min-width:0}
+.main>main>*{min-width:0;max-width:100%}
+.page-heading{align-items:flex-start;flex-wrap:wrap}
+.page-heading>div:first-child{flex:1 1 320px;min-width:0}
+.page-heading-actions{flex:0 1 auto;max-width:100%;min-width:0;flex-wrap:wrap}
+.requests{width:100%;min-width:0;max-width:100%}
+.requests>.table-scroll{width:100%;min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table{width:100%;min-width:980px;table-layout:fixed}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(1){width:27%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(2){width:20%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(3){width:15%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(4){width:11%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(5){width:15%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(6){width:9%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th:nth-child(7){width:3%;min-width:38px}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th,.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table td{overflow:hidden;text-overflow:ellipsis}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table td:nth-child(1),.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table td:nth-child(2){white-space:normal}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table .request-title strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table .request-classification{max-width:100%}
+.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table .classification-chip{max-width:100%;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:1100px){
+  .page-heading{align-items:flex-start;gap:14px}
+  .page-heading-actions{flex:1 1 100%;justify-content:flex-start}
+  .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table{min-width:780px}
+  .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table th,.main>main>.requests:not(.rtm-dashboard)>.table-scroll>table td{padding-inline:10px}
+}
+@media(max-width:650px){
+  .page-heading-actions{width:100%;justify-content:stretch}
+  .page-heading-actions>*{flex:1 1 160px;min-width:0}
+  .main>main>.requests:not(.rtm-dashboard)>.table-scroll>table{min-width:760px}
+}
