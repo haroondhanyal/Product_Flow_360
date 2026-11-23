@@ -55,7 +55,7 @@ test.describe('@ui @component RTM', () => {
   test.beforeEach(async ({ page }) => { await new RtmPage(page).open(); await brandAllure('RTM'); });
   test('import and create actions are visible', async ({ page }) => { const l = new RtmPage(page).locators; await expect(l.import).toBeVisible(); await expect(l.create).toBeVisible(); });
   test('new RTM accepts project name', async ({ page }) => { const r = new RtmPage(page); await r.begin(); await expect(r.locators.name).toBeVisible(); await expect(r.locators.submit).toBeVisible(); });
-  test('all four initial case volumes are available', async ({ page }) => { const r = new RtmPage(page); await r.begin(); await expect(r.locators.volume.locator('option')).toHaveText(['100 test cases', '200 test cases', '300 test cases', '500 test cases']); });
+  test('all initial case volumes are available', async ({ page }) => { const r = new RtmPage(page); await r.begin(); await expect(r.locators.volume.locator('option')).toHaveText(['100 test cases', '200 test cases', '300 test cases', '500 test cases', '750 test cases', '1,000 test cases', '1,500 test cases']); });
   test('volume selection updates the draft', async ({ page }) => { const r = new RtmPage(page); await r.begin(); await r.locators.volume.selectOption('200'); await expect(r.locators.volume).toHaveValue('200'); });
   test('cancel closes unsaved RTM form', async ({ page }) => { const r = new RtmPage(page); await r.begin(); await r.locators.cancel.click(); await expect(r.locators.formHeading).toHaveCount(0); });
 });

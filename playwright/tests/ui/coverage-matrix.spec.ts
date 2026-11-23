@@ -28,7 +28,7 @@ test.describe('@ui @matrix Module form coverage', () => {
     await page.getByRole('button', { name: 'Create RTM', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Create project RTM' })).toBeVisible();
     await expect(page.getByLabel('Initial test cases').locator('option')).toHaveText([
-      '100 test cases', '200 test cases', '300 test cases', '500 test cases',
+      '100 test cases', '200 test cases', '300 test cases', '500 test cases', '750 test cases', '1,000 test cases', '1,500 test cases',
     ]);
     await page.getByRole('button', { name: 'Cancel', exact: true }).click();
     await expect(page.getByRole('heading', { name: 'Create project RTM' })).toHaveCount(0);

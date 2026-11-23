@@ -2,4 +2,17 @@
 .lifecycle-board .test-editor.feature-form form .form-row{gap:16px}
 .lifecycle-board .test-editor.feature-form form .form-row label{margin:12px 0}
 .lifecycle-board .test-editor.feature-form form > .primary{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:172px;min-height:42px;margin-top:14px;padding:10px 16px;border-radius:9px}
+.lifecycle-board .test-editor.feature-form form .owner-priority-row{align-items:end;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.lifecycle-board .test-editor.feature-form form .owner-priority-row label{display:flex;flex-direction:column;justify-content:flex-end;min-width:0}
+.lifecycle-board .test-editor.feature-form form .owner-priority-row input,.lifecycle-board .test-editor.feature-form form .owner-priority-row .status-select-trigger{height:44px;min-height:44px;margin-top:8px}
+.record-type-select{position:relative;min-width:0;margin-top:8px}
+.record-type-trigger{display:flex;align-items:center;justify-content:space-between;width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--ink);text-align:left;font:inherit;font-weight:400;font-size:13px}
+.record-type-trigger>span,.record-type-menu>button>span{display:inline-flex;align-items:center;gap:9px;min-width:0}
+.record-type-trigger>span svg,.record-type-menu>button>span svg{flex:none;color:var(--green)}
+.record-type-trigger>svg{color:var(--muted);flex:none}
+.record-type-trigger:hover{border-color:color-mix(in srgb,var(--green) 45%,var(--line))}
+.record-type-menu{position:absolute;z-index:120;top:calc(100% + 6px);left:0;right:0;display:grid;gap:3px;max-height:240px;overflow:auto;padding:6px;border:1px solid var(--line);border-radius:10px;background:var(--surface);box-shadow:0 16px 36px color-mix(in srgb,var(--ink) 16%,transparent)}
+.record-type-menu>button{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:38px;padding:7px 9px;border:0;border-radius:7px;background:transparent;color:var(--ink);text-align:left;font:inherit;font-size:13px}
+.record-type-menu>button:hover,.record-type-menu>button[aria-selected=true]{background:var(--surface-soft)}
+.record-type-menu>button>svg{color:var(--green);flex:none}
 @media(max-width:650px){.lifecycle-board .test-editor.feature-form form > .primary{width:100%}}

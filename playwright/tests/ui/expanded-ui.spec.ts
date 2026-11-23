@@ -78,7 +78,7 @@ for (let index = 0; index < 62; index++) {
       if (operation === 3) { await expect(l.import).toBeVisible(); await expect(l.create).toBeVisible(); return; }
       await l.create.click();
       await expect(l.name).toBeVisible();
-      await expect(l.volume.locator('option')).toHaveText(['100 test cases', '200 test cases', '300 test cases', '500 test cases']);
+      await expect(l.volume.locator('option')).toHaveText(['100 test cases', '200 test cases', '300 test cases', '500 test cases', '750 test cases', '1,000 test cases', '1,500 test cases']);
       if (operation === 2) { await l.cancel.click(); await expect(l.formHeading).toHaveCount(0); }
       return;
     }
