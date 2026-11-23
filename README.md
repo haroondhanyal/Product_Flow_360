@@ -12,8 +12,10 @@ ProductFlow 360 is a PTCL delivery workspace for connecting projects, change req
 
 | Area | What is available now |
 | --- | --- |
-| Delivery | Workspaces, products, projects, RFCs, requirements, RTM, test management, defects, approvals, billing, revenue assurance, releases, reports, and evidence. |
-| Access | Employee signup, administrator approval, login, profile, and administrator-reviewed employee password recovery in the browser prototype. |
+| Delivery | Workspace-scoped projects, RFCs, requirements, RTMs, tests, defects, approvals, billing, revenue assurance, releases, reports, and evidence. |
+| Collaboration | Project membership requests show the selected colleague address and open a prefilled email draft; demo acceptance remains browser-local. |
+| AI assistant | Product and customer-support modes, local Ollama status, workspace-aware prompts, document/image context, and voice notes. |
+| Access | Employee signup, administrator approval, login, profile, and administrator-reviewed employee password recovery in the browser prototype. Fresh demo browsers generate local-only credentials. |
 | Automation | **580 functional cases** in the branded Allure report: 260 UI, 120 API, 80 database persistence, and 120 BDD. |
 | Performance | **150 k6 workloads**, with a combined ProductFlow dashboard and native Grafana k6 HTML report. Latest saved run: 150/150 workloads passed and 1,500 requests recorded. |
 | Stack | Next.js 16 and React 19 web app; NestJS 12 API with a local JSON development store; TypeScript automation. |
@@ -43,16 +45,18 @@ The links between records let a delivery team follow a request from its owner an
 | Screen | Main work |
 | --- | --- |
 | Command Center | Portfolio overview, request pipeline, metrics, alerts, and saved project RTMs with a direct open action. |
-| Workspaces and products | Select a workspace, register projects, and browse the product portfolio. |
+| Workspaces and products | Select a workspace, register projects, and browse a workspace-scoped product portfolio. |
 | Change requests | Create and manage RFCs with status, owner, priority, documents, and linked delivery work. |
+| Project teams | Create a pending request for a selected colleague; confirm their address and send the prepared email from your mail app. |
 | Requirements and RTM | Capture requirements, create or import matrices, and connect requirements to test coverage. |
 | Test Management and Defects | Define cases, execute or retest, record outcomes, attach evidence, and triage issues. |
 | UAT, billing, revenue, and releases | Review approval and validation records, then check release readiness. |
+| AI Assistant | Ask the local Product Copilot about delivery work, attach supported files, or switch to customer-support mode. |
 | Admin Board | Review employee signups, roles, departments, and employee password reset requests. |
 
 ### Screen-by-screen screenshots
 
-The screenshots below were freshly captured from a clean Chromium browser on 6 October 2026. The Command Center lists saved RTMs with their workspace and case count; **Open RTM** selects that matrix in the existing editor so its rows and evidence flow continue there. A first-time browser gets a realistic demo portfolio with 30 change requests, 30 records in each lifecycle board, 30 test cases, a 30-row RTM, and 30 delivery projects. Existing browser data is preserved. The gallery includes every workspace screen plus login, signup, and password recovery.
+The screenshots below were freshly captured from a clean Chromium browser on 23 November 2026. The gallery reflects the current responsive header, sidebar, workspace-scoped flow, project invitation, and local AI assistant. The Command Center lists saved RTMs with their workspace and case count; **Open RTM** selects that matrix in the existing editor so its rows and evidence flow continue there. A first-time browser gets a demo portfolio with 30 change requests, 30 records in each lifecycle board, 30 test cases, a 30-row RTM, and 30 delivery projects. Existing browser data is preserved. The gallery includes every workspace screen plus mobile navigation, project invitation, local assistant, login, signup, and password recovery. Login screenshots mask the generated demo password.
 
 | Login | Sign up | Password recovery | Command Center |
 | --- | --- | --- | --- |
@@ -74,7 +78,11 @@ The screenshots below were freshly captured from a clean Chromium browser on 6 O
 | --- | --- | --- | --- |
 | <img src="docs/images/screens/14-workspace-tools.png" alt="Workspace tools screen" width="240"> | <img src="docs/images/screens/15-settings.png" alt="Settings screen" width="240"> | <img src="docs/images/screens/16-admin-board.png" alt="Admin board screen" width="240"> | <img src="docs/images/screens/17-help-resources.png" alt="Help and resources screen" width="240"> |
 
-To capture the gallery again, start the web app at `http://127.0.0.1:3100`, then run `npm run screenshots` from the repository root. The script uses Chromium and the local demo administrator credentials.
+| Mobile overview | Mobile navigation | Project invitation | AI Assistant |
+| --- | --- | --- | --- |
+| <img src="docs/images/screens/18-mobile-overview.png" alt="Responsive ProductFlow overview on a mobile screen" width="240"> | <img src="docs/images/screens/19-mobile-navigation.png" alt="Responsive mobile workspace navigation drawer" width="240"> | <img src="docs/images/screens/20-project-invitation.png" alt="Project team invitation with selected colleague email" width="240"> | <img src="docs/images/screens/21-ai-assistant.png" alt="ProductFlow local AI Assistant dialog" width="240"> |
+
+To capture the gallery again, start the web app at `http://127.0.0.1:3100`, then run `npm run screenshots` from the repository root. The script reads the generated password from its isolated local demo browser and masks it in the public login screenshot. Set `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` to use a separately provisioned local account.
 
 ### Employee access flow
 
@@ -139,7 +147,11 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). The local demo administrator is `admin@ptcl.com` with password `PTCLAdmin!2026` (also shown on the prototype login screen). Change or remove this bootstrap account before any shared deployment.
+Open [http://localhost:3000](http://localhost:3000). A fresh browser generates a random local demo administrator password for `admin@ptcl.com` and displays it on the local login form. The Admin Board can export the synthetic demo account directory. Credentials stay in that browser and are not shared across devices. Do not deploy this browser-local authentication flow as production identity management.
+
+### Local Product Copilot
+
+The Product Copilot can connect to a local Ollama installation. By default it checks `http://127.0.0.1:11434` and uses `lfm3-omni:latest`; set `OLLAMA_BASE_URL` and `OLLAMA_MODEL` to select another local endpoint or installed model. Start Ollama and pull the selected model before using chat, document extraction, image context, or voice transcription. The default local setup needs no hosted AI API key. Availability depends on the local machine and installed Ollama models.
 
 To run the separate development API, copy `.env.example` to `.env`, then provision a user and start the service:
 
@@ -239,7 +251,7 @@ Generated reports live under `playwright/reports/allure` and are ignored by Git;
 
 ## Current limits and next steps
 
-Browser storage is device-local and clearing site data removes local records. Authentication and password recovery in the web prototype are not server-backed. Production work includes connecting the UI to the API, managed database and file storage, organization identity, server-side access enforcement, backups, monitoring, and real billing integrations. The [implementation plan](docs/IMPLEMENTATION-PLAN.md) distinguishes current behavior from the target architecture.
+Browser storage is device-local and clearing site data removes local records. Workspace selection filters browser records but is not a server-side access boundary. Project invitations create a pending browser-local request and open a prefilled `mailto:` draft; the sender must send it, and other browsers cannot see or accept the request. Authentication and password recovery are also not server-backed. Production work includes connecting the UI to the API, managed database and file storage, organization identity, server-side access enforcement, shared invitations and email delivery, backups, monitoring, and real billing integrations. The [implementation plan](docs/IMPLEMENTATION-PLAN.md) distinguishes current behavior from the target architecture.
 
 ## Further reading
 
