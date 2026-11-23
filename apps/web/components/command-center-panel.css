@@ -15,3 +15,24 @@
 
 .copilot-launcher.inline{position:static;right:auto;bottom:auto;flex:0 0 auto;min-height:36px;padding:9px 13px;box-shadow:none}.copilot-launcher.inline:hover{transform:translateY(-1px)}
 @media(max-width:900px){.copilot-launcher.inline{width:36px;height:36px;padding:0;justify-content:center;border-radius:50%;font-size:0}.copilot-launcher.inline span{font-size:0}}
+
+/* Composer tools stay on one deliberate, responsive toolbar row. */
+.copilot-compose{display:flex;flex-direction:column;align-items:stretch;gap:8px}
+.copilot-compose textarea{width:100%;min-height:54px;resize:vertical}
+.copilot-compose-actions{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:8px;width:100%;padding-top:9px}
+.copilot-compose-actions .copilot-file-picker,.copilot-compose-actions .voice-note-button,.copilot-compose-actions .voice-language,.copilot-compose-actions .project-search-button{height:38px;min-height:38px;margin:0}
+.copilot-compose-actions .voice-language{padding:0 8px}
+.copilot-compose-actions .voice-language select{max-width:140px;padding:0 4px;font-size:10px}
+.project-search-button{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--muted);font-size:10px;font-weight:600;white-space:nowrap}
+.project-search-button svg{color:#1769aa}
+.project-search-button:hover:not(:disabled){border-color:#a8c9e0;background:#f4f9fc;color:#1769aa}
+.project-search-button:disabled{opacity:.5;cursor:not-allowed}
+.copilot-compose-actions .copilot-send{margin-left:auto}
+.copilot-compose:focus-within{border-color:#83ba94}
+.main>header .copilot-launcher.inline{position:relative;isolation:isolate;overflow:visible}
+.main>header .copilot-launcher.inline:after{content:"";position:absolute;z-index:-1;inset:-7px -10px -5px;border-radius:999px;background:radial-gradient(ellipse at 50% 100%,#5fe3a276,transparent 68%),radial-gradient(ellipse at 32% 100%,#a7eb8570,transparent 60%);filter:blur(7px);opacity:.5;transform:translateY(3px) scale(.94);animation:assistant-smoke 3.4s ease-in-out infinite;pointer-events:none}
+.main>header .copilot-launcher.inline svg{animation:assistant-sparkle 3.6s ease-in-out infinite}
+@keyframes assistant-smoke{0%,100%{opacity:.32;transform:translateY(4px) scale(.9)}50%{opacity:.72;transform:translateY(-5px) scale(1.08)}}
+@keyframes assistant-sparkle{0%,100%{transform:rotate(-5deg) scale(1)}50%{transform:rotate(5deg) scale(1.08)}}
+@media(max-width:650px){.copilot-compose-actions{gap:6px}.copilot-compose-actions .copilot-file-picker,.copilot-compose-actions .voice-note-button,.copilot-compose-actions .voice-language,.copilot-compose-actions .project-search-button{height:36px;min-height:36px;padding-inline:7px;font-size:9px}.copilot-compose-actions .voice-language select{max-width:86px}.project-search-button span{display:none}.copilot-compose-actions .copilot-send{margin-left:auto}}
+@media(prefers-reduced-motion:reduce){.main>header .copilot-launcher.inline:after,.main>header .copilot-launcher.inline svg{animation:none}}

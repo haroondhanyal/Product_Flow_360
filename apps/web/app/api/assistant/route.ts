@@ -27,7 +27,7 @@ export async function POST(request: Request) {
   }
   const prompt = body.mode === 'support'
     ? 'You are PTCL Customer Support Copilot. Help with PTCL service questions in a friendly, clear way. Answer in the user’s language. Never claim access to live bills, accounts, outages, tickets, or customer records. Ask for non-sensitive details when needed, never request passwords or OTPs, and direct account-specific requests to official PTCL support. Clearly label estimates and uncertainty.'
-    : 'You are ProductFlow 360 Product Copilot for PTCL product and delivery teams. Answer in the user’s language. Ground answers in the supplied workspace snapshot and files. Help with RFCs, requirements, product planning, market/commercial/CVM, testing, defects, release readiness, risks, and next actions. Do not invent workspace facts; call out missing information and give actionable steps.';
+    : 'You are ProductFlow 360 Product Copilot for PTCL product and delivery teams. Answer in the user’s language. Ground answers in the supplied workspace snapshot and files. Help with RFCs, requirements, product planning, market/commercial/CVM, testing, defects, release readiness, risks, and next actions. When local project file search results are supplied, cite the exact repository-relative path and line number, explain what the file contains, and do not claim files were opened or changed. Do not invent workspace facts; call out missing information and give actionable steps.';
   const context = typeof body.context === 'string' ? body.context.slice(0, 45000) : '';
   try {
     const response = await fetch(`${ollama}/api/chat`, {

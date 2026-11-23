@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { Bot, FileText, LoaderCircle, Mic, MicOff, Paperclip, Plus, Send, Sparkles, Trash2, UserRound, X } from 'lucide-react';
+import { Bot, FileText, FolderSearch, LoaderCircle, Mic, MicOff, Paperclip, Plus, Send, Sparkles, Trash2, UserRound, X } from 'lucide-react';
 import type { AuthUser } from '../lib/auth';
 import type { WorkRecord } from '../lib/lifecycle';
 import type { TestCase } from '../lib/test-cases';
@@ -81,12 +81,12 @@ export function ProductCopilot({ user, requests, tests, work, onClose }: { user:
   const [mode, setMode] = useState<'copilot' | 'support'>('copilot'); const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState(''); const [files, setFiles] = useState<File[]>([]); const [busy, setBusy] = useState(false); const [recording, setRecording] = useState(false); const [transcribing, setTranscribing] = useState(false); const [voiceLanguage, setVoiceLanguage] = useState('ur-PK');
   const [status, setStatus] = useState<{ available: boolean; installed: boolean; model: string } | null>(null); const [notice, setNotice] = useState('');
-  const thread = useRef<HTMLDivElement>(null); const recorder = useRef<MediaRecorder | null>(null); const stream = useRef<MediaStream | null>(null); const chunks = useRef<Blob[]>([]); const stopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const thread = useRef<HTMLDivElement>(null); const composer = useRef<HTMLTextAreaElement>(null); const recorder = useRef<MediaRecorder | null>(null); const stream = useRef<MediaStream | null>(null); const chunks = useRef<Blob[]>([]); const stopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   async function checkStatus() { try { setStatus(await fetch('/api/assistant', { cache: 'no-store' }).then(response => response.json())); } catch { setStatus({ available: false, installed: false, model: 'lfm3-omni:latest' }); } }
   useEffect(() => { void checkStatus(); return () => { if (stopTimer.current) clearTimeout(stopTimer.current); recorder.current?.stream.getTracks().forEach(track => track.stop()); stream.current?.getTracks().forEach(track => track.stop()); }; }, []);
   useEffect(() => { thread.current?.scrollTo({ top: thread.current.scrollHeight, behavior: 'smooth' }); }, [messages, busy]);
   function addFiles(selected: FileList | File[]) { const incoming = Array.from(selected); setFiles(current => [...current, ...incoming].slice(0, 5)); if (files.length + incoming.length > 5) setNotice('A chat can include up to five files at a time.'); }
-  async function send(event?: React.FormEvent) {
+  async function send(event?: React.FormEvent, forceProjectSearch = false) {
     event?.preventDefault(); const question = input.trim(); if ((!question && !files.length) || busy) return;
     setBusy(true); setNotice(''); setInput('');
     const nextMessages: Message[] = [...messages, { role: 'user', content: question || 'Please review the attached files.' }]; setMessages(nextMessages);
@@ -97,14 +97,27 @@ export function ProductCopilot({ user, requests, tests, work, onClose }: { user:
       if (files.length && !attachments.length) { setMessages(current => current.slice(0, -1)); setInput(question); return; }
       setFiles(failures.length ? files.filter(file => failures.some(failure => failure.startsWith(`${file.name}:`))) : []);
       const fileContext = attachments.map(file => `FILE: ${file.name}\n${file.content}`).join('\n\n');
+      let projectContext = '';
+      const wantsProjectSearch = mode === 'copilot' && (forceProjectSearch || (/(find|search|locate|where|path|file|folder|source|codebase|project)/i.test(question) && /(file|folder|path|source|code|project|component|module|assistant)/i.test(question)));
+      if (wantsProjectSearch) {
+        setNotice('Searching this ProductFlow project…');
+        try {
+          const result = await fetch('/api/assistant/search', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: question }) }).then(response => response.json());
+          if (result.results?.length) projectContext = `LOCAL PROJECT FILE SEARCH (paths are relative to the ProductFlow repository root):\n${result.results.map((item: {path:string;line:number;snippet:string}) => `${item.path}:${item.line} — ${item.snippet}`).join('\n')}`;
+          else if (result.error) projectContext = `Local project file search: ${result.error}`;
+          else projectContext = 'Local project file search found no matching source files.';
+        } catch { projectContext = 'Local project file search is unavailable in this environment.'; }
+      }
       const images = attachments.flatMap(file => file.images ?? []);
       const withImages = [...nextMessages]; withImages[withImages.length - 1] = { ...withImages.at(-1)!, images };
       const workspace = mode === 'copilot' ? `Signed-in user: ${user.fullName}, ${user.designation}, ${user.department}.\nRFCs: ${JSON.stringify(requests)}\nTests: ${JSON.stringify(tests)}\nDelivery records: ${JSON.stringify(work)}` : '';
-      const response = await fetch('/api/assistant', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: mode === 'support' ? 'support' : 'copilot', messages: withImages.slice(-8), context: [workspace, fileContext].filter(Boolean).join('\n\n') }) });
+      if (wantsProjectSearch) setNotice('');
+      const response = await fetch('/api/assistant', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ mode: mode === 'support' ? 'support' : 'copilot', messages: withImages.slice(-8), context: [workspace, fileContext, projectContext].filter(Boolean).join('\n\n') }) });
       const data = await response.json();
       if (!response.ok) {
         const fallback = mode === 'copilot' && !attachments.length ? answerProductQuestion({ question, user, requests, tests, work }) : '';
-        setMessages(current => [...current, { role: 'assistant', content: fallback ? `${data.error}\n\nOffline workspace insight:\n${fallback}` : data.error || 'The local assistant could not reply.' }]);
+        const localFiles = projectContext ? `\n\nProject file matches:\n${projectContext.replace('LOCAL PROJECT FILE SEARCH (paths are relative to the ProductFlow repository root):\n','')}` : '';
+        setMessages(current => [...current, { role: 'assistant', content: `${data.error || 'The local assistant could not reply.'}${fallback ? `\n\nOffline workspace insight:\n${fallback}` : ''}${localFiles}` }]);
       } else setMessages(current => [...current, { role: 'assistant', content: data.answer }]);
     } catch (error) { setNotice(error instanceof Error ? error.message : 'Could not read those files.'); }
     finally { setBusy(false); }
@@ -130,6 +143,17 @@ export function ProductCopilot({ user, requests, tests, work, onClose }: { user:
     } catch (error) { setNotice(error instanceof Error ? error.message : 'Local transcription failed.'); }
     finally { setTranscribing(false); }
   }
+  function startNewChat() {
+    if (recorder.current?.state === 'recording') {
+      recorder.current.onstop = null;
+      recorder.current.stop();
+      stream.current?.getTracks().forEach(track => track.stop());
+      setRecording(false);
+    }
+    if (stopTimer.current) clearTimeout(stopTimer.current);
+    setMessages([]); setInput(''); setFiles([]); setNotice('');
+    requestAnimationFrame(() => composer.current?.focus());
+  }
   const modelLabel = status?.model === 'lfm3-omni:latest' ? 'LFM3 Omni · local' : status?.model ?? 'Local AI';
   const suggestions = mode === 'copilot'
     ? [['Portfolio summary', 'Summarize my workspace and recommend the next three actions.'], ['Release risks', 'Which release blockers and high-priority risks need attention?'], ['Product brief', 'Help me draft a product brief for a new PTCL service idea.']]
@@ -137,7 +161,7 @@ export function ProductCopilot({ user, requests, tests, work, onClose }: { user:
   return <section className="flow-assistant copilot-chat" aria-label="AI assistant" onDragOver={event => event.preventDefault()} onDrop={event => { event.preventDefault(); addFiles(event.dataTransfer.files); }}>
     <header className="copilot-head">
       <div className="copilot-title"><span className="copilot-mark"><Sparkles size={19}/></span><div><span className="copilot-kicker">PTCL PRODUCTFLOW 360</span><h2>AI Assistant</h2></div></div>
-      <div className="copilot-controls"><button type="button" className={`ollama-status ${status?.available && status.installed ? 'online' : ''}`} onClick={() => void checkStatus()} title="Refresh local model connection" aria-live="polite"><i/>{status?.available && status.installed ? modelLabel : status?.available ? 'Model not found' : 'Connecting…'}</button><button type="button" className="icon-button" aria-label="Start new chat" title="Start new chat" onClick={() => { setMessages([]); setFiles([]); setNotice(''); }}><Plus size={16}/></button>{onClose && <button type="button" className="icon-button" aria-label="Close assistant" title="Close assistant" onClick={onClose}><X size={17}/></button>}</div>
+      <div className="copilot-controls"><button type="button" className={`ollama-status ${status?.available && status.installed ? 'online' : ''}`} onClick={() => void checkStatus()} title="Refresh local model connection" aria-live="polite"><i/>{status?.available && status.installed ? modelLabel : status?.available ? 'Model not found' : 'Connecting…'}</button><button type="button" className="icon-button" aria-label="Start new chat" title="Start a new chat and clear the current conversation" onClick={startNewChat}><Plus size={16}/></button>{onClose && <button type="button" className="icon-button" aria-label="Close assistant" title="Close assistant" onClick={onClose}><X size={17}/></button>}</div>
     </header>
     <div className="copilot-modes" role="tablist" aria-label="Assistant mode"><button role="tab" aria-selected={mode === 'copilot'} className={mode === 'copilot' ? 'active' : ''} onClick={() => setMode('copilot')}><Bot size={15}/>Product Copilot</button><button role="tab" aria-selected={mode === 'support'} className={mode === 'support' ? 'active' : ''} onClick={() => setMode('support')}><UserRound size={15}/>Customer Support</button><span className="assistant-user-chip">{user.fullName}</span></div>
     <div className="copilot-thread" ref={thread} aria-live="polite">
@@ -148,9 +172,8 @@ export function ProductCopilot({ user, requests, tests, work, onClose }: { user:
     {files.length > 0 && <div className="copilot-files" aria-label="Files ready to share">{files.map((file, index) => <span key={`${file.name}-${index}`}><FileText size={14}/>{file.name}<button type="button" aria-label={`Remove ${file.name}`} onClick={() => setFiles(current => current.filter((_, item) => item !== index))}><X size={14}/></button></span>)}</div>}
     {notice && <p role="status" className="copilot-notice">{notice}</p>}
     <form className="copilot-compose" onSubmit={send}>
-      <textarea value={input} onChange={event => setInput(event.target.value)} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void send(); } }} placeholder={mode === 'copilot' ? 'Ask about products, projects, releases…' : 'Ask a PTCL service question…'} rows={2}/>
-      <div className="copilot-compose-actions"><label className="copilot-file-picker" aria-label="Add files"><Paperclip size={16}/><span>Add files</span><input type="file" multiple disabled={busy} accept=".txt,.csv,.json,.log,.md,.xml,.html,.docx,.xlsx,.xls,.pdf,.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov" onChange={event => { addFiles(event.currentTarget.files ?? []); event.currentTarget.value = ''; }}/></label><label className="voice-language" title="Voice note language"><span>Voice</span><select aria-label="Voice input language" value={voiceLanguage} onChange={event => setVoiceLanguage(event.target.value)} disabled={recording}><option value="ur-PK">Urdu · experimental</option><option value="en-PK">English (Pakistan)</option><option value="en-US">English (US)</option><option value="hi-IN">Hindi</option></select></label><button type="button" className={`voice-note-button ${recording ? 'recording' : ''}`} onClick={toggleVoice} disabled={busy || transcribing} aria-label={recording ? 'Stop voice note' : 'Start voice note'} title={recording ? 'Stop voice note' : 'Start voice note'}>{recording ? <MicOff size={16}/> : transcribing ? <LoaderCircle size={16}/> : <Mic size={16}/>}<span>{recording ? 'Recording · max 15s' : transcribing ? 'Transcribing…' : 'Voice note'}</span></button><span className="copilot-file-hint">Drop files here or attach · up to 5</span><button className="primary copilot-send" type="submit" disabled={busy || transcribing || recording || (!input.trim() && !files.length)}><Send size={15}/><span>Send</span></button></div>
+      <textarea ref={composer} value={input} onChange={event => setInput(event.target.value)} onKeyDown={event => { if (event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); void send(); } }} placeholder={mode === 'copilot' ? 'Ask about products, projects, releases…' : 'Ask a PTCL service question…'} rows={2}/>
+      <div className="copilot-compose-actions"><label className="copilot-file-picker" aria-label="Add files" title="Attach files for the assistant to review"><Paperclip size={16}/><span>Add files</span><input type="file" multiple disabled={busy} accept=".txt,.csv,.json,.log,.md,.xml,.html,.docx,.xlsx,.xls,.pdf,.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov" onChange={event => { addFiles(event.currentTarget.files ?? []); event.currentTarget.value = ''; }}/></label><label className="voice-language" title="Voice note language"><select aria-label="Voice input language" value={voiceLanguage} onChange={event => setVoiceLanguage(event.target.value)} disabled={recording}><option value="ur-PK">Urdu</option><option value="en-PK">English (Pakistan)</option><option value="en-US">English (US)</option><option value="hi-IN">Hindi</option></select></label><button type="button" className={`voice-note-button ${recording ? 'recording' : ''}`} onClick={toggleVoice} disabled={busy || transcribing} aria-label={recording ? 'Stop voice note' : 'Start voice note'} title={recording ? 'Stop voice note' : 'Record a voice note'}>{recording ? <MicOff size={16}/> : transcribing ? <LoaderCircle size={16}/> : <Mic size={16}/>}<span>{recording ? 'Stop' : transcribing ? 'Transcribing…' : 'Voice note'}</span></button><button type="button" className="project-search-button" disabled={busy || !input.trim()} onClick={() => void send(undefined, true)} title="Search ProductFlow source files and ask the local model"><FolderSearch size={16}/><span>Search project</span></button><button className="primary copilot-send" type="submit" disabled={busy || transcribing || recording || (!input.trim() && !files.length)}><Send size={15}/><span>Send</span></button></div>
     </form>
-    <p className="copilot-footnote">{status?.available && status.installed ? `Connected to ${status.model}. Workspace context and files stay on this machine.` : 'Connecting to your local Ollama model…'} Voice notes are transcribed locally. Urdu voice is experimental. Customer Support cannot access customer accounts.</p>
   </section>;
 }
