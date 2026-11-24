@@ -40,6 +40,7 @@
 .modal .field-label{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:11px;font-weight:650;letter-spacing:.02em}
 .modal .field-label svg{color:var(--green)}
 .record-type-select{z-index:1}
+.record-type-select:has(.record-type-menu){z-index:150}
 .rtm-count-label>span{display:flex;align-items:center;gap:8px}
 .rtm-count-label>span svg{color:var(--green)}
 .rtm-count-label>small{margin-top:8px;color:var(--muted);font-size:11px;font-weight:400;line-height:1.6}

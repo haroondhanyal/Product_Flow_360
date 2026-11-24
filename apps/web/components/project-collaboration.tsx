@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Check, Copy, ExternalLink, MailPlus, UserRoundPlus, Users, X } from 'lucide-react';
+import { notifyUser } from '../lib/feedback';
 import { AUTH_USERS_KEY, type AuthUser } from '../lib/auth';
 import './project-collaboration.css';
 
@@ -17,6 +18,7 @@ function readAccess(projects:Project[],userId:string):AccessMap{let saved:Access
 
 export function ProjectCollaboration({projects,user}:{projects:Project[];user:AuthUser}){
  const [directory,setDirectory]=useState<AuthUser[]>([]),[access,setAccess]=useState<AccessMap>({}),[activeProject,setActiveProject]=useState<Project|null>(null),[targetId,setTargetId]=useState(''),[search,setSearch]=useState(''),[notice,setNotice]=useState(''),[error,setError]=useState(''),[inviteMode,setInviteMode]=useState<'directory'|'email'>('directory'),[externalEmail,setExternalEmail]=useState(''),[externalName,setExternalName]=useState(''),[serverInvites,setServerInvites]=useState<SharedInvite[]>([]),[inviteUrl,setInviteUrl]=useState(''),[mailDraft,setMailDraft]=useState(''),[busy,setBusy]=useState(false),[copied,setCopied]=useState(false);
+ useEffect(()=>{if(notice)notifyUser(notice)},[notice]);useEffect(()=>{if(error)notifyUser(error,'error')},[error]);
  const teamTriggerRef=useRef<HTMLButtonElement>(null), teamScrollPosition=useRef(0);
  const refresh=()=>{setDirectory(readUsers());setAccess(readAccess(projects,user.id))};
  function openTeam(project:Project,trigger:HTMLButtonElement){teamTriggerRef.current=trigger;teamScrollPosition.current=window.scrollY;setActiveProject(project);setTargetId('');setSearch('');setInviteMode('directory');setInviteUrl('');setMailDraft('');setError('')}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Download, FileSpreadsheet, Paperclip, Plus, Save, Search, Trash2, UploadCloud, X } from 'lucide-react';
+import { notifyUser } from '../lib/feedback';
 import { RfcDocuments } from './rfc-documents';
 import './rtm-workspace.css';
 import './rtm-action-layout.css';
@@ -20,6 +21,7 @@ function workspace(){try{const id=localStorage.getItem('pf360-active-workspace')
 
 export function RtmWorkspace({openRtmId='',workspaceId}:{openRtmId?:string;workspaceId?:string}){
  const [documents,setDocuments]=useState<Rtm[]>(load),[selectedId,setSelectedId]=useState(''),[creating,setCreating]=useState(false),[name,setName]=useState(''),[size,setSize]=useState('100'),[query,setQuery]=useState(''),[field,setField]=useState(''),[notice,setNotice]=useState(''),[evidenceRow,setEvidenceRow]=useState<Row|null>(null),[pendingDelete,setPendingDelete]=useState<Row|null>(null);const input=useRef<HTMLInputElement>(null);const workspaceDocuments=documents.filter(doc=>doc.workspaceId===workspaceId);const selected=workspaceDocuments.find(doc=>doc.id===selectedId);
+ useEffect(()=>{if(notice)notifyUser(notice,/could not|unable|failed|error|required|enter |already exists|must /i.test(notice)?'error':'success')},[notice]);
  useEffect(()=>{if(openRtmId&&workspaceDocuments.some(document=>document.id===openRtmId)){setSelectedId(openRtmId);setCreating(false);setEvidenceRow(null)}},[openRtmId,workspaceDocuments]);
  useEffect(()=>{const sync=(event:Event)=>{const detail=(event as CustomEvent<{requestId?:string;count?:number}>).detail;if(!detail?.requestId?.startsWith('rtm:'))return;const [,documentId,rowId]=detail.requestId.split(':');if(!documentId||!rowId)return;setDocuments(previous=>{const next=previous.map(document=>document.id!==documentId?document:{...document,rows:document.rows.map(row=>row.id===rowId?{...row,evidence:detail.count?`Attached (${detail.count})`:'Not attached'}:row)});localStorage.setItem(key,JSON.stringify(next));return next});setNotice(detail.count?`Evidence attached (${detail.count} file${detail.count===1?'':'s'}).`:'Evidence removed.');};window.addEventListener('pf360-evidence-changed',sync);return()=>window.removeEventListener('pf360-evidence-changed',sync)},[]);
  const save=(next:Rtm[],message:string)=>{localStorage.setItem(key,JSON.stringify(next));setDocuments(next);window.dispatchEvent(new Event('pf360-rtm-changed'));setNotice(message)};

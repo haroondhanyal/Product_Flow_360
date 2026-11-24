@@ -70,4 +70,7 @@
 .shell.sidebar-collapsed .sidebar .brand .brand-productflow-logo{width:37px;height:37px;flex-basis:37px}
 .shell.sidebar-collapsed .sidebar-foot img{width:50px}
 .toast.success{background:#145b3c}.toast.error{background:#9b3028}.toast.info{background:#244d72}
+.toast{min-width:min(340px,calc(100vw - 32px));max-width:min(620px,calc(100vw - 32px));justify-content:flex-start;padding:14px 18px;border:1px solid color-mix(in srgb,#fff 22%,transparent);border-radius:13px;box-shadow:0 16px 46px #102c2140;font-size:13px;line-height:1.45;animation:pf360-toast-in .22s ease-out}
+.toast>svg{flex:none}.toast>span{overflow-wrap:anywhere}
+@keyframes pf360-toast-in{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 @media(max-width:900px){.sidebar-foot{gap:7px;font-size:8px}.sidebar-foot img{width:50px}}

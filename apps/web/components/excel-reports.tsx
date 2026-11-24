@@ -6,6 +6,7 @@ import { allLocal, deleteLocal, putLocal } from '../lib/local-db';
 import { RfcDocuments } from './rfc-documents';
 import { findColumn, normalizeStatus, sheetTable, summarize, type ExcelReport, type SheetData } from '../lib/reporting';
 import { parseTestCases, TEST_STORAGE_KEY, type TestCase } from '../lib/test-cases';
+import { notifyUser } from '../lib/feedback';
 
 function saveDownload(data: BlobPart, name: string, type: string) {
   const url = URL.createObjectURL(new Blob([data], {type}));
@@ -19,6 +20,8 @@ export function ExcelReports({requests}: {requests: {id: string; title: string}[
   const [sheetIndex, setSheetIndex] = useState(0), [headerRow, setHeaderRow] = useState(0);
   const [statusOverride, setStatusOverride] = useState<number | null>(null);
   const [busy, setBusy] = useState(false), [error, setError] = useState(''), [message, setMessage] = useState('');
+  useEffect(() => { if (message) notifyUser(message); }, [message]);
+  useEffect(() => { if (error) notifyUser(error, 'error'); }, [error]);
   const [importRFC, setImportRFC] = useState('');
   const [page, setPage] = useState(0);
   const [dataQuery, setDataQuery] = useState(''), [dataStatus, setDataStatus] = useState('All statuses'), [dataOwner, setDataOwner] = useState('All owners'), [sortBy, setSortBy] = useState('original');

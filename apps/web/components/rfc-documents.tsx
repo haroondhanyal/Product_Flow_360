@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Download, FileText, Trash2, UploadCloud, Eye, Maximize2, Minimize2, Paperclip, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { notifyUser } from '../lib/feedback';
 import { attachDocument, DOCUMENT_ACCEPT, EVIDENCE_ACCEPT, evidenceMime, previewDocument, documentError, downloadDocument, listDocuments, removeDocument, type DocumentInfo } from '../lib/documents';
 import './evidence-preview.css';
 import './evidence-popup-flow.css';
@@ -21,6 +22,8 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
+  useEffect(() => { if (message) notifyUser(message, 'success'); }, [message]);
+  useEffect(() => { if (error) notifyUser(error, 'error'); }, [error]);
   const [dragging, setDragging] = useState(false);
   const [projects, setProjects] = useState<{id:string;name:string;code:string}[]>([]);
   const [projectId, setProjectId] = useState('');

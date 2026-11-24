@@ -1,10 +1,11 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Ban, Check, Clock3, Download, Filter, Plus, ShieldCheck, Trash2, Users, X } from 'lucide-react';
 import { formatDemoCredentials } from '../lib/demo-accounts';
 import { AUTH_DEMO_CREDENTIALS_KEY } from '../lib/auth';
 import { getDepartmentMapping, type AuthUser, type UserRole, loadDepartments, loadUsers, saveDepartments, saveUsers } from '../lib/auth';
+import { notifyUser } from '../lib/feedback';
 
 type StatusFilter = 'All statuses' | 'Approved' | 'Pending' | 'Rejected';
 
@@ -20,6 +21,7 @@ export function AdminBoard({ currentUser, onChange }: { currentUser: AuthUser; o
   const [departments, setDepartments] = useState(loadDepartments);
   const [department, setDepartment] = useState('');
   const [message, setMessage] = useState('');
+  useEffect(() => { if (message) notifyUser(message, /could not|unable|failed|error|cannot/i.test(message) ? 'error' : 'success'); }, [message]);
   const [userSearch, setUserSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('All statuses');
 
