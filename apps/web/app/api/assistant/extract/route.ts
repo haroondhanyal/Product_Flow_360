@@ -7,13 +7,13 @@ import { promisify } from 'node:util';
 
 export const runtime = 'nodejs';
 const run = promisify(execFile);
-const maxBytes = 50 * 1024 * 1024;
+const maxBytes = 25 * 1024 * 1024;
 
 export async function POST(request: Request) {
   const form = await request.formData();
   const file = form.get('file');
   if (!(file instanceof File) || !file.name.toLowerCase().endsWith('.pdf')) return NextResponse.json({ error: 'Upload a PDF document.' }, { status: 400 });
-  if (!file.size || file.size > maxBytes) return NextResponse.json({ error: 'PDF must be between 1 byte and 50 MB.' }, { status: 413 });
+  if (!file.size || file.size > maxBytes) return NextResponse.json({ error: 'PDF must be between 1 byte and 25 MB.' }, { status: 413 });
   const folder = await mkdtemp(join(tmpdir(), 'pf360-pdf-'));
   try {
     const input = join(folder, 'document.pdf'); const output = join(folder, 'document.txt');

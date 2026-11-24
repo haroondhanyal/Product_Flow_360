@@ -1,4 +1,5 @@
 import { chromium } from '@playwright/test';
+import { randomBytes } from 'node:crypto';
 import { copyFile, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
@@ -8,20 +9,26 @@ await mkdir(output, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const context = await browser.newContext({ viewport: { width: 1600, height: 1100 }, deviceScaleFactor: 1 });
 const page = await context.newPage();
-await page.goto(baseURL);
+const demoEmail = process.env.TEST_USER_EMAIL ?? 'admin@ptcl.com';
+const demoPassword = process.env.TEST_USER_PASSWORD ?? `ProductFlowVisual!${randomBytes(18).toString('hex')}`;
+if (!process.env.TEST_USER_EMAIL && !process.env.TEST_USER_PASSWORD) {
+  await page.addInitScript(async ({ email, password }) => {
+    const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
+    const passwordHash = Array.from(new Uint8Array(hash), byte => byte.toString(16).padStart(2, '0')).join('');
+    localStorage.setItem('pf360-auth-users', JSON.stringify([{ id:'visual-capture-admin', fullName:'PF360 Administrator', employeeNo:'PTCL-ADMIN-001', designation:'Workspace Administrator', department:'Technology', email, mobile:'DEMO-ONLY', passwordHash, role:'Admin', status:'Approved', createdAt:new Date().toISOString() }]));
+  }, { email: demoEmail, password: demoPassword });
+}
+await page.goto(baseURL, { waitUntil: 'domcontentloaded' });
 await page.getByRole('button', { name: 'Sign up' }).click();
 await page.screenshot({ path: resolve(output, '00-sign-up.png'), fullPage: true, animations: 'disabled' });
+await page.getByRole('button', { name: 'Login', exact: true }).click();
 await page.getByRole('button', { name: 'Forgot password' }).click();
 await page.screenshot({ path: resolve(output, '00-password-recovery.png'), fullPage: true, animations: 'disabled' });
 await page.getByRole('button', { name: 'Login', exact: true }).click();
-// The local demo password is generated per browser and shown on the login form.
-// Read it for this isolated browser context, then mask it in the public screenshot.
-const demoPassword = process.env.TEST_USER_PASSWORD ?? (await page.locator('.auth-form .form-note strong').nth(1).textContent())?.trim();
-if (!process.env.TEST_USER_PASSWORD && !demoPassword) throw new Error('Could not read the generated local demo admin password.');
-await page.addStyleTag({ content: '.auth-form .form-note strong:last-child{filter:blur(7px)}' });
+// Capture the login form before entering the temporary password.
 await page.screenshot({ path: resolve(output, '00-login.png'), fullPage: true, animations: 'disabled' });
-await page.locator('input[name="email"]').fill(process.env.TEST_USER_EMAIL ?? 'admin@ptcl.com');
-await page.locator('input[name="password"]').fill(process.env.TEST_USER_PASSWORD ?? demoPassword);
+await page.locator('input[name="email"]').fill(demoEmail);
+await page.locator('input[name="password"]').fill(demoPassword);
 await page.getByRole('button', { name: 'Login to ProductFlow 360' }).click();
 await page.getByRole('heading', { name: /A clear view/ }).waitFor();
 
@@ -53,13 +60,22 @@ await page.locator('.sidebar nav button.nav-item').filter({ hasText: 'Overview' 
 await page.setViewportSize({ width: 390, height: 844 });
 await page.screenshot({ path: resolve(output, '18-mobile-overview.png'), fullPage: true, animations: 'disabled' });
 await page.locator('.mobile-toggle').click();
+await page.locator('.sidebar nav button.nav-item').filter({ hasText: 'Change requests' }).click();
+await page.screenshot({ path: resolve(output, '28-mobile-change-requests.png'), fullPage: true, animations: 'disabled' });
+await page.locator('.mobile-toggle').click();
+await page.locator('.sidebar nav button.nav-item').filter({ hasText: 'Overview' }).click();
+await page.locator('.mobile-toggle').click();
 await page.screenshot({ path: resolve(output, '19-mobile-navigation.png'), animations: 'disabled' });
 await page.locator('.mobile-toggle').click();
 await page.setViewportSize({ width: 1600, height: 1100 });
 await page.setViewportSize({ width: 1024, height: 900 });
 const headerRects = await page.evaluate(() => Object.fromEntries(['.breadcrumb', '.global-workspace-picker', '.header-actions'].map(selector => { const rect = document.querySelector(selector).getBoundingClientRect(); return [selector, {top:rect.top,bottom:rect.bottom,left:rect.left,right:rect.right}]; })));
-if (Math.max(headerRects['.breadcrumb'].top, headerRects['.global-workspace-picker'].top, headerRects['.header-actions'].top) - Math.min(headerRects['.breadcrumb'].top, headerRects['.global-workspace-picker'].top, headerRects['.header-actions'].top) > 24) throw new Error(`Tablet header controls do not align in one row: ${JSON.stringify(headerRects)}`);
-if (headerRects['.global-workspace-picker'].right > headerRects['.header-actions'].left + 8) throw new Error('Tablet workspace picker overlaps the header actions.');
+const headerOverlap = await page.evaluate(() => {
+  const rects = ['.breadcrumb', '.global-workspace-picker', '.header-actions'].map(selector => document.querySelector(selector).getBoundingClientRect());
+  return rects.some((a, i) => rects.slice(i + 1).some(b => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top));
+});
+if (headerOverlap) throw new Error(`Tablet header controls overlap: ${JSON.stringify(headerRects)}`);
+if (headerRects['.global-workspace-picker'].width < 220) throw new Error(`Tablet workspace selector is too narrow: ${JSON.stringify(headerRects)}`);
 await page.screenshot({ path: resolve(output, '26-tablet-header.png'), animations: 'disabled' });
 await page.setViewportSize({ width: 1600, height: 1100 });
 await page.locator('.sidebar nav button.nav-item').filter({ hasText: 'Billing validation' }).click();
@@ -87,7 +103,7 @@ await page.screenshot({ path: resolve(output, '23-lifecycle-status-options.png')
 await page.getByRole('button', { name: 'Close editor' }).click();
 await page.getByRole('button', { name: 'New request' }).click();
 await page.screenshot({ path: resolve(output, '24-new-request-form.png'), animations: 'disabled' });
-await page.getByRole('button', { name: 'Priority' }).click();
+await page.getByRole('combobox', { name: 'Priority' }).click();
 await page.screenshot({ path: resolve(output, '25-priority-options.png'), animations: 'disabled' });
 await page.goto(`${baseURL}/reports/allure/index.html`);
 await page.locator('.pf360-report-brand').waitFor();

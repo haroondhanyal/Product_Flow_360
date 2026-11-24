@@ -81,6 +81,9 @@
 /* Keep quality and lifecycle boards inside their content column at wide and
    narrow viewports; allow deliberate horizontal scrolling on compact screens. */
 .test-management,.lifecycle-board{min-width:0;width:100%;max-width:100%}
+.main>main>section.requests:not(.allure-report-card) .table-scroll table{min-width:1120px;table-layout:fixed}
+.main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(1){width:26%}.main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(2){width:23%}.main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(3){width:15%}.main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(4){width:9%}.main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(5){width:15%}.main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(6){width:8%}.main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(7){width:48px}
+.main>main>section.requests:not(.allure-report-card) .request-classification{display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-width:0;margin-top:3px}
 .test-management .requests,.lifecycle-board .requests{min-width:0;max-width:100%}
 .test-management .table-scroll,.lifecycle-board .table-scroll{width:100%;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-gutter:stable}
 .test-management .table-scroll table{width:100%;min-width:1120px;table-layout:fixed;white-space:normal}

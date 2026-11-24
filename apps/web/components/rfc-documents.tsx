@@ -103,7 +103,7 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
       onDrop={event => { event.preventDefault(); setDragging(false); void upload(Array.from(event.dataTransfer.files)); }}>
       <UploadCloud size={26} />
       <strong>{busy ? 'Saving document…' : evidence ? 'Drop screenshots, videos or documents here' : 'Drop RFC documents, screenshots or videos here'}</strong>
-      <span>PNG, JPG, WebP, GIF · MP4, WebM, MOV · PDF, Word, Excel, CSV, JSON, TXT, LOG · Maximum 50 MB per file</span>
+      <span>PNG, JPG, WebP, GIF · MP4, WebM, MOV · PDF, Word, Excel, CSV, JSON, TXT, LOG · Maximum 25 MB per file</span>
       <button type="button" className="text-button" disabled={busy || loading} onClick={() => input.current?.click()}>Choose documents</button>
       <input ref={input} className="sr-only" tabIndex={-1} type="file" multiple accept={evidence ? EVIDENCE_ACCEPT : DOCUMENT_ACCEPT}
         aria-label={evidence ? `Upload ${title.toLowerCase()}` : 'Upload RFC documents'} disabled={busy || loading}

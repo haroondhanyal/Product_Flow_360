@@ -1,7 +1,7 @@
 const MAX_SOURCE_BYTES = 10 * 1024 * 1024;
 const MAX_OUTPUT_BYTES = 350 * 1024;
 
-/** Accepts images up to 10 MB, then resizes them so localStorage stays practical. */
+/** Accepts profile and workspace images up to 10 MB, then resizes them for local storage. */
 export async function prepareWorkspaceImage(file: File): Promise<string> {
   if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > MAX_SOURCE_BYTES) {
     throw new Error('Choose a PNG, JPG or WebP image up to 10 MB.');

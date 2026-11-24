@@ -26,7 +26,7 @@ async function wavBase64(blob: Blob): Promise<string> {
 
 async function readAttachment(file: File): Promise<Attachment> {
   const ext = file.name.split('.').pop()?.toLowerCase();
-  if (file.size > 50 * 1024 * 1024) throw new Error(`${file.name}: files must be under 50 MB.`);
+  if (file.size > 25 * 1024 * 1024) throw new Error(`${file.name}: files must be under 25 MB.`);
   if (file.type.startsWith('image/')) return { name: file.name, content: `Image attached: ${file.name}`, images: [await imageData(file)] };
   if (['txt', 'csv', 'json', 'log', 'md', 'xml', 'html'].includes(ext ?? '')) return { name: file.name, content: (await file.text()).slice(0, 15000) };
   if (ext === 'xlsx' || ext === 'xls') {

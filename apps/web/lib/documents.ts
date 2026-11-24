@@ -1,4 +1,4 @@
-export const MAX_DOCUMENT_BYTES = 50 * 1024 * 1024;
+export const MAX_DOCUMENT_BYTES = 25 * 1024 * 1024;
 export const EVIDENCE_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov,.pdf,.doc,.docx,.ppt,.pptx,.xlsx,.xls,.csv,.json,.txt,.log';
 export const DOCUMENT_ACCEPT = '.pdf,.doc,.docx,.ppt,.pptx,.xlsx,.xls,.csv,.png,.jpg,.jpeg,.webp,.gif,.mp4,.webm,.mov,.json,.txt,.log,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/png,image/jpeg,image/webp,image/gif,video/mp4,video/webm,video/quicktime';
 
@@ -18,7 +18,7 @@ export async function validateDocument(file: File): Promise<void> {
     throw new Error('Choose a supported project document: PDF, Word, PowerPoint, Excel, CSV, image, video, JSON, TXT or LOG.');
   }
   if (file.size === 0) throw new Error('Empty documents cannot be attached.');
-  if (file.size > MAX_DOCUMENT_BYTES) throw new Error('Each document must be 50 MB or smaller (52,428,800 bytes).');
+  if (file.size > MAX_DOCUMENT_BYTES) throw new Error('Each document must be 25 MB or smaller (26,214,400 bytes).');
   const bytes = new Uint8Array(await file.slice(0, 8).arrayBuffer());
   const startsWith = (signature: number[]) => signature.every((byte, index) => bytes[index] === byte);
   const valid = extension === 'pdf'
@@ -34,7 +34,7 @@ export async function validateEvidence(file: File): Promise<void> {
   if (['pdf', 'doc', 'docx', 'ppt', 'pptx'].includes(extension)) return validateDocument(file);
   if (!EVIDENCE_ACCEPT.split(',').includes('.' + extension)) throw new Error('Choose a supported screenshot, video, PDF, Word, PowerPoint or Excel document.');
   if (!file.size) throw new Error('Empty evidence cannot be attached.');
-  if (file.size > MAX_DOCUMENT_BYTES) throw new Error('Each evidence file must be 50 MB or smaller.');
+  if (file.size > MAX_DOCUMENT_BYTES) throw new Error('Each evidence file must be 25 MB or smaller.');
   const bytes = new Uint8Array(await file.slice(0, 16).arrayBuffer());
   const matches = (signature: number[], offset = 0) => signature.every((byte, i) => bytes[i + offset] === byte);
   const text = new TextDecoder().decode(bytes);

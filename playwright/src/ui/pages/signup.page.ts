@@ -8,7 +8,7 @@ export class SignupPage {
   async fill(data: { name: string; employeeNo: string; email: string; password: string; confirmation?: string }) {
     const l = this.locators;
     await l.fullName.fill(data.name); await l.employeeNo.fill(data.employeeNo); await l.mobile.fill('+92 300 1234567');
-    await l.designation.fill('QA Engineer'); await l.department.selectOption({ label: 'Technology' });
+    await l.designation.fill('QA Engineer'); await l.departmentGroup.selectOption({ label: 'Technology & Information' }); await l.departmentTeam.selectOption({ label: 'IT & Digital Platforms' });
     await l.email.fill(data.email); await l.password.fill(data.password); await l.confirmation.fill(data.confirmation ?? data.password);
   }
   async submit() { await this.locators.submit.click(); }

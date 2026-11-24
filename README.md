@@ -15,6 +15,7 @@ ProductFlow 360 is a PTCL delivery workspace for connecting projects, change req
 | Delivery | Workspace-scoped projects, RFCs, requirements, RTMs, tests, defects, approvals, billing, revenue assurance, releases, reports, and evidence. |
 | Collaboration | Invite a PTCL colleague or any email address to a delivery project with a unique, seven-day acceptance link and invitation status. |
 | AI assistant | Product and customer-support modes, local Ollama status, workspace-aware prompts, document/image context, and voice notes. |
+| Uploads | RFC and evidence files up to 25 MB each; profile and workspace photos accept images up to 10 MB and are optimized in the browser. |
 | Access | Employee signup, administrator approval, login, profile, and administrator-reviewed employee password recovery in the browser prototype. Fresh demo browsers generate local-only credentials. |
 | Automation | **580 functional cases** in the branded Allure report: 260 UI, 120 API, 80 database persistence, and 120 BDD. |
 | Performance | **150 k6 workloads**, with a combined ProductFlow dashboard and native Grafana k6 HTML report. Latest saved run: 150/150 workloads passed and 1,500 requests recorded. |
@@ -38,7 +39,7 @@ flowchart LR
   L --> P[Deployment and production verification]
 ```
 
-The links between records let a delivery team follow a request from its owner and requirements through testing, financial checks, and release. The UI also provides search, filtering, import or export where supported, attachments, and an audit-oriented activity view.
+The links between records let a delivery team follow a request from its owner and requirements through testing, financial checks, and release. When raising an RFC, select the PTCL product, department, customer segment, delivery project, owner, and due date as separate fields. Product options include Flash Fiber, Enterprise, Smart TV, Voice, CRM, CBS, BI, Maximo / Meximo, One Window, Prisma, E-Ocean, Website, UPTCL App, and EVAM. Department choices include CVM, PD Devices, Product Development, IPTV, Digital, CRM, CBS, IT Planning, Revenue Assurance, Contact Center, BI Data Analyst, and PTCL's other grouped teams. Attach up to 10 PDF, Word, PowerPoint, Excel, image, or supporting files at 25 MB each. Open an RFC to review or download its attachments and continue the linked delivery workflow. The UI also provides search, filtering, import or export where supported, and an audit-oriented activity view.
 
 ## Key screens
 
@@ -46,7 +47,7 @@ The links between records let a delivery team follow a request from its owner an
 | --- | --- |
 | Command Center | Portfolio overview, request pipeline, metrics, alerts, and saved project RTMs with a direct open action. |
 | Workspaces and products | Select a workspace, register projects, and browse a workspace-scoped product portfolio. |
-| Change requests | Create and manage RFCs with status, owner, priority, documents, and linked delivery work. |
+| Change requests | Create and manage RFCs with product, department, segment, delivery project, status, owner, priority, due date, documents, and linked delivery work. Open an RFC to review or download its attached files. |
 | Project teams | Invite a directory colleague or email address, copy a unique URL or review/send the email draft, then accept or decline from the invited account. |
 | Requirements and RTM | Capture requirements, create or import matrices, and connect requirements to test coverage. |
 | Test Management and Defects | Define cases, execute or retest, record outcomes, attach evidence, and triage issues. |
@@ -56,7 +57,7 @@ The links between records let a delivery team follow a request from its owner an
 
 ### Screen-by-screen screenshots
 
-The screenshots below were freshly captured from a clean Chromium browser on 23 November 2026. The gallery reflects the responsive header, sidebar, workspace-scoped flow, modern lifecycle status controls, project invitation UI, and local AI assistant. The Command Center lists saved RTMs with their workspace and case count; **Open RTM** selects that matrix in the existing editor so its rows and evidence flow continue there. A first-time browser gets a demo portfolio with 30 change requests, 30 records in each lifecycle board, 30 test cases, a 30-row RTM, and 30 delivery projects. Existing browser data is preserved. The gallery includes every workspace screen plus mobile navigation, project invitation, local assistant, login, signup, and password recovery. Login screenshots mask the generated demo password.
+The screenshots below are refreshed from the current UI in a clean Chromium browser. The gallery reflects the responsive header and request list, workspace-scoped flow, lifecycle status controls, project invitation UI, and local AI assistant. The Command Center lists saved RTMs with their workspace and case count; **Open RTM** selects that matrix in the existing editor so its rows and evidence flow continue there. A first-time browser gets a demo portfolio with 30 change requests, 30 records in each lifecycle board, 30 test cases, a 30-row RTM, and 30 delivery projects. Existing browser data is preserved. The gallery includes every workspace screen plus mobile navigation, mobile change-request cards, project invitation, local assistant, login, signup, and password recovery. Login screenshots contain no password.
 
 | Login | Sign up | Password recovery | Command Center |
 | --- | --- | --- | --- |
@@ -82,9 +83,13 @@ The screenshots below were freshly captured from a clean Chromium browser on 23 
 | --- | --- | --- | --- |
 | <img src="docs/images/screens/18-mobile-overview.png" alt="Responsive ProductFlow overview on a mobile screen" width="240"> | <img src="docs/images/screens/19-mobile-navigation.png" alt="Responsive mobile workspace navigation drawer" width="240"> | <img src="docs/images/screens/20-project-invitation.png" alt="Project team invitation with selected colleague email" width="240"> | <img src="docs/images/screens/21-ai-assistant.png" alt="ProductFlow local AI Assistant dialog" width="240"> |
 
+| Mobile change requests |
+| --- |
+| <img src="docs/images/screens/28-mobile-change-requests.png" alt="Mobile change request cards with separate status, priority, owner, and due date rows" width="240"> |
+
 | Tablet header |
 | --- |
-| <img src="docs/images/screens/26-tablet-header.png" alt="Tablet header with workspace selector aligned between navigation and actions" width="480"> |
+| <img src="docs/images/screens/26-tablet-header.png" alt="Tablet header with workspace selector on its own row without overlapping navigation or actions" width="480"> |
 
 | Lifecycle form |
 | --- |
@@ -94,7 +99,7 @@ The screenshots below were freshly captured from a clean Chromium browser on 23 
 | --- | --- | --- | --- |
 | <img src="docs/images/screens/22-overview-editor.png" alt="Overview editor with icon-based priority and status controls" width="240"> | <img src="docs/images/screens/23-lifecycle-status-options.png" alt="Modern lifecycle status options with related icons" width="240"> | <img src="docs/images/screens/24-new-request-form.png" alt="New delivery request form with workspace project selector" width="240"> | <img src="docs/images/screens/25-priority-options.png" alt="Priority options with severity icons" width="240"> |
 
-To capture the gallery again, start the web app at `http://127.0.0.1:3100`, then run `npm run screenshots` from the repository root. The script reads the generated password from its isolated local demo browser and masks it in the public login screenshot. Set `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` to use a separately provisioned local account.
+To capture the gallery again, start the web app at `http://127.0.0.1:3100`, then run `npm run screenshots` from the repository root. The screenshot runner signs in using a temporary account seeded only in its isolated browser; no capture password or account is written to the repository. Set `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` to use a separately provisioned local account.
 
 ### Employee access flow
 
