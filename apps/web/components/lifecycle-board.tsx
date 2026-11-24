@@ -32,6 +32,7 @@ export function LifecycleBoard({kind, requests, onOpenRequest, workspaceId}: {ki
   const workspaceRecords = Array.from(new Map(state.records.filter(record => record.workspaceId === workspaceId).map(record => [record.id, record])).values());
   const workspaceTests = Array.from(new Map(tests.filter(test => test.workspaceId === workspaceId).map(test => [test.id, test])).values());
   const selected = workspaceRecords.find(record => record.id === selectedId);
+  const dialogOpen = Boolean(editing || selected || versionTarget);
   useEffect(() => {
     try {
       setState(parseLifecycle(localStorage.getItem(LIFECYCLE_KEY) ?? JSON.stringify(EMPTY_LIFECYCLE)));
@@ -40,6 +41,24 @@ export function LifecycleBoard({kind, requests, onOpenRequest, workspaceId}: {ki
     setReady(true);
   }, []);
   useEffect(() => { if (!editing && !selected) return; const close = (event: KeyboardEvent) => { if (event.key === 'Escape') { setEditing(null); setSelectedId(''); } }; window.addEventListener('keydown', close); return () => window.removeEventListener('keydown', close); }, [Boolean(editing), Boolean(selectedId)]);
+  useEffect(() => {
+    if (!dialogOpen) return;
+    const body = document.body, root = document.documentElement, scrollY = window.scrollY;
+    const previous = { bodyOverflow: body.style.overflow, bodyPosition: body.style.position, bodyTop: body.style.top, bodyWidth: body.style.width, rootOverflow: root.style.overflow };
+    root.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.width = '100%';
+    return () => {
+      body.style.overflow = previous.bodyOverflow;
+      body.style.position = previous.bodyPosition;
+      body.style.top = previous.bodyTop;
+      body.style.width = previous.bodyWidth;
+      root.style.overflow = previous.rootOverflow;
+      window.scrollTo({top: scrollY, behavior: 'instant'});
+    };
+  }, [dialogOpen]);
   useEffect(() => { if (kind !== 'defects' || !editing) return; const id = requestAnimationFrame(() => editorRef.current?.querySelector('select[name="requestId"]')?.removeAttribute('required')); return () => cancelAnimationFrame(id); }, [kind, editing]);
   useEffect(() => { if (kind !== 'defects' || !editing) return; const frame = requestAnimationFrame(() => { const form = editorRef.current?.querySelector('form'); if (!form || form.querySelector('.defect-result-field')) return; const current = editing === 'new' ? null : editing; const label = document.createElement('label'); label.className = 'defect-result-field'; label.textContent = 'Actual result / observed behaviour'; const textarea = document.createElement('textarea'); textarea.name = 'actual'; textarea.rows = 3; textarea.maxLength = 5000; textarea.placeholder = 'What actually happened? Add error message, impact or observed behaviour.'; textarea.value = current?.actual ?? ''; label.append(textarea); form.querySelector('button[type="submit"]')?.insertAdjacentElement('beforebegin', label); }); return () => cancelAnimationFrame(frame); }, [kind, editing]);
 
@@ -100,7 +119,7 @@ export function LifecycleBoard({kind, requests, onOpenRequest, workspaceId}: {ki
     <div className="test-intro"><div><span className="eyebrow">CONNECTED DELIVERY</span><h2>{module.name}</h2><p>{module.description}</p></div><button className="primary" disabled={!ready || blocked || !requests.length} onClick={() => { setDraftId(`${kind.slice(0,3).toUpperCase()}-${crypto.randomUUID().slice(0,8).toUpperCase()}`); setEditing('new'); setSelectedId(''); setMessage(''); }}><Plus size={16}/>New {module.singular}</button></div>
     <div className="workflow-states">{module.statuses.map((status,index) => <span key={status}>{index > 0 && <small>→</small>}<StatusIndicator status={status}/></span>)}</div>
     {error && <div className="inline-error" role="alert">{error}</div>}{message && <p className="success-message" role="status">{message}</p>}
-    {editing && <section ref={editorRef} className="test-editor feature-form lifecycle-edit-dialog"><div className="section-title"><h2>{editRecord ? 'Edit' : 'Create'} {module.singular}</h2><button className="text-button" onClick={() => { setEditing(null); setDraftId(''); }}>Cancel</button></div><RfcDocuments key={editRecord?.id ?? draftId} requestId={`work:${editRecord?.id ?? draftId}`} evidence title={`Evidence for this ${module.singular} — screenshots, video & documents`}/><form key={editRecord?.id ?? draftId} onSubmit={submit}>
+    {editing && <section ref={editorRef} className="test-editor feature-form lifecycle-edit-dialog"><div className="section-title"><h2>{editRecord ? 'Edit' : 'Create'} {module.singular}</h2><button className="text-button" onClick={() => { setEditing(null); setDraftId(''); }}>Cancel</button></div><RfcDocuments key={`evidence:${editRecord?.id ?? draftId}`} requestId={`work:${editRecord?.id ?? draftId}`} evidence title={`Evidence for this ${module.singular} — screenshots, video & documents`}/><form key={`form:${editRecord?.id ?? draftId}`} onSubmit={submit}>
       <div className="form-row"><label>Linked RFC<select name="requestId" aria-label="Linked RFC" defaultValue={editRecord?.requestId ?? requestFilter ?? ''} required><option value="">Choose RFC</option>{requestOptions.map(request => <option key={request.id} value={request.id}>{request.id} · {request.title}</option>)}</select></label><label>Record type<RecordTypeSelect ariaLabel="Record type" value={editRecord?.type ?? module.types[0]} options={[...module.types]} onChange={()=>{}}/></label></div>
       <label>Title<input name="title" required maxLength={160} defaultValue={editRecord?.title}/></label><div className="form-row owner-priority-row"><label>Owner / reviewer<input name="owner" required maxLength={80} defaultValue={editRecord?.owner}/></label><label>Priority<StatusSelect name="priority" ariaLabel="Priority" value={editRecord?.priority ?? 'Medium'} options={['Critical','High','Medium','Low']} onChange={()=>{}}/></label></div>
       <label>{kind === 'releases' ? 'Rollout plan' : kind === 'configuration' ? 'Configuration definition' : 'Description / steps'}<textarea name="description" required rows={4} maxLength={10000} defaultValue={editRecord?.description}/></label>

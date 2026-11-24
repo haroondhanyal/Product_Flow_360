@@ -13,9 +13,12 @@ ProductFlow 360 is a PTCL delivery workspace for connecting projects, change req
 | Area | What is available now |
 | --- | --- |
 | Delivery | Workspace-scoped projects, RFCs, requirements, RTMs, tests, defects, approvals, billing, revenue assurance, releases, reports, and evidence. |
-| Collaboration | Invite a PTCL colleague or any email address to a delivery project with a unique, seven-day acceptance link and invitation status. |
+| Collaboration | Invite a PTCL colleague or any email address to a delivery project with a unique, seven-day acceptance link and invitation status. My Work includes role-aware review actions, a local approval audit, traceability gaps, saved RFC views, and notifications. |
+| RFC intake | Import an `.eml` file into a prefilled RFC draft; review its extracted subject/body and preserved source attachment before creating the RFC. |
 | AI assistant | Product and customer-support modes, local Ollama status, workspace-aware prompts, document/image context, and voice notes. |
 | Uploads | RFC and evidence files up to 25 MB each; profile and workspace photos accept images up to 10 MB and are optimized in the browser. |
+| Appearance | 20 workspace themes and 30 named primary-action color palettes, saved per browser. |
+| Versioning | Manually set major or major.minor record versions (for example `v2` or `v1.2`), with previous and saved snapshots in the record audit history. |
 | Access | Employee signup, administrator approval, login, profile, and administrator-reviewed employee password recovery in the browser prototype. Fresh demo browsers generate local-only credentials. |
 | Automation | **580 functional cases** in the branded Allure report: 260 UI, 120 API, 80 database persistence, and 120 BDD. |
 | Performance | **150 k6 workloads**, with a combined ProductFlow dashboard and native Grafana k6 HTML report. Latest saved run: 150/150 workloads passed and 1,500 requests recorded. |
@@ -41,23 +44,26 @@ flowchart LR
 
 The links between records let a delivery team follow a request from its owner and requirements through testing, financial checks, and release. When raising an RFC, select the PTCL product, department, customer segment, delivery project, owner, and due date as separate fields. Product options include Flash Fiber, Enterprise, Smart TV, Voice, CRM, CBS, BI, Maximo / Meximo, One Window, Prisma, E-Ocean, Website, UPTCL App, and EVAM. Department choices include CVM, PD Devices, Product Development, IPTV, Digital, CRM, CBS, IT Planning, Revenue Assurance, Contact Center, BI Data Analyst, and PTCL's other grouped teams. Attach up to 10 PDF, Word, PowerPoint, Excel, image, or supporting files at 25 MB each. Open an RFC to review or download its attachments and continue the linked delivery workflow. The UI also provides search, filtering, import or export where supported, and an audit-oriented activity view.
 
+Lifecycle records can be assigned a manual version using a whole number or major.minor value from 1 through 100 per part (for example `v2`, `v1.2`, or `v2.3`). Every saved change keeps a before/after snapshot in that record's history. Evidence opens in a centered viewer with its own scroll area; the underlying workspace stays fixed until the viewer closes.
+
 ## Key screens
 
 | Screen | Main work |
 | --- | --- |
 | Command Center | Portfolio overview, request pipeline, metrics, alerts, and saved project RTMs with a direct open action. |
 | Workspaces and products | Select a workspace, register projects, and browse a workspace-scoped product portfolio. |
-| Change requests | Create and manage RFCs with product, department, segment, delivery project, status, owner, priority, due date, documents, and linked delivery work. Open an RFC to review or download its attached files. |
+| Change requests | Create and manage RFCs with product, department, segment, delivery project, status, owner, priority, due date, documents, and linked delivery work. Import `.eml` files into drafts, save named filters, and open an RFC to review or download its attached files. |
+| My Work | Workspace-scoped assigned items, employee review inbox, manager/admin review queue, decisions, local audit trail, and RFC requirement/test coverage gaps. |
 | Project teams | Invite a directory colleague or email address, copy a unique URL or review/send the email draft, then accept or decline from the invited account. |
 | Requirements and RTM | Capture requirements, create or import matrices, and connect requirements to test coverage. |
-| Test Management and Defects | Define cases, execute or retest, record outcomes, attach evidence, and triage issues. |
+| Test Management and Defects | Define cases, execute or retest, record outcomes, view or download evidence, and triage issues. |
 | UAT, billing, revenue, and releases | Review approval and validation records, then check release readiness. |
 | AI Assistant | Ask the local Product Copilot about delivery work, attach supported files, or switch to customer-support mode. |
 | Admin Board | Review employee signups, roles, departments, and employee password reset requests. |
 
 ### Screen-by-screen screenshots
 
-The screenshots below are refreshed from the current UI in a clean Chromium browser. The gallery reflects the responsive header and request list, workspace-scoped flow, lifecycle status controls, project invitation UI, and local AI assistant. The Command Center lists saved RTMs with their workspace and case count; **Open RTM** selects that matrix in the existing editor so its rows and evidence flow continue there. A first-time browser gets a demo portfolio with 30 change requests, 30 records in each lifecycle board, 30 test cases, a 30-row RTM, and 30 delivery projects. Existing browser data is preserved. The gallery includes every workspace screen plus mobile navigation, mobile change-request cards, project invitation, local assistant, login, signup, and password recovery. Login screenshots contain no password.
+The screenshots below were recaptured from the current production build in a clean Chromium browser on 24 November 2026. The gallery reflects the current responsive header and request list, workspace-scoped flow, lifecycle status controls, project invitation UI, My Work review inbox, and local AI assistant. The Command Center lists saved RTMs with their workspace and case count; **Open RTM** selects that matrix in the existing editor so its rows and evidence flow continue there. A first-time browser gets a demo portfolio with 30 change requests, 30 records in each lifecycle board, 30 test cases, a 30-row RTM, and 30 delivery projects. Existing browser data is preserved. The gallery includes every workspace screen plus mobile navigation, mobile change-request cards, project invitation, local assistant, login, signup, and password recovery. Login screenshots contain no password.
 
 | Login | Sign up | Password recovery | Command Center |
 | --- | --- | --- | --- |
@@ -86,6 +92,10 @@ The screenshots below are refreshed from the current UI in a clean Chromium brow
 | Mobile change requests |
 | --- |
 | <img src="docs/images/screens/28-mobile-change-requests.png" alt="Mobile change request cards with separate status, priority, owner, and due date rows" width="240"> |
+
+| My Work |
+| --- |
+| <img src="docs/images/screens/29-my-work.png" alt="My Work page with assigned delivery records and review actions" width="640"> |
 
 | Tablet header |
 | --- |
@@ -138,7 +148,7 @@ flowchart TB
   UI -. future integration .-> API
 ```
 
-The API provides JWT login, workspace-scoped entities, dashboard endpoints, and audit writes. The web UI currently uses browser persistence; starting the API does not make web data shared across browsers. The API's active store is `apps/api/.data/pf360.json`. Prisma and PostgreSQL packages are present for future work, but the current API reads and writes the local JSON store.
+The API provides JWT login, workspace-scoped entities, dashboard endpoints, and audit writes. The web UI currently uses browser persistence; starting the API does not make web data shared across browsers. The API's active store is `apps/api/.data/pf360.json`. Prisma and PostgreSQL packages are present for future work, but the current API reads and writes the local JSON store. RFC `.eml` intake is a user-uploaded file flow; automatic mailbox ingestion and shared server persistence still require a provisioned data service and mailbox/provider credentials.
 
 ### Repository map
 

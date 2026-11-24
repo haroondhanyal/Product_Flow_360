@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Download, FileText, Trash2, UploadCloud, Eye, Maximize2, Minimize2, Paperclip, X, ZoomIn, ZoomOut } from 'lucide-react';
 import { notifyUser } from '../lib/feedback';
 import { attachDocument, DOCUMENT_ACCEPT, EVIDENCE_ACCEPT, evidenceMime, previewDocument, documentError, downloadDocument, listDocuments, removeDocument, type DocumentInfo } from '../lib/documents';
@@ -32,6 +33,32 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
   const [readOnlyView, setReadOnlyView] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const lock = useRef(false);
+  const pageLocked = (evidencePopup && panelOpen) || Boolean(preview) || Boolean(pendingDelete);
+
+  useEffect(() => {
+    if (!pageLocked) return;
+    const scrollY = window.scrollY;
+    const body = document.body;
+    const html = document.documentElement;
+    const previous = { position: body.style.position, top: body.style.top, left: body.style.left, right: body.style.right, width: body.style.width, overflow: body.style.overflow, htmlOverflow: html.style.overflow };
+    body.style.position = 'fixed';
+    body.style.top = `-${scrollY}px`;
+    body.style.left = '0';
+    body.style.right = '0';
+    body.style.width = '100%';
+    body.style.overflow = 'hidden';
+    html.style.overflow = 'hidden';
+    return () => {
+      body.style.position = previous.position;
+      body.style.top = previous.top;
+      body.style.left = previous.left;
+      body.style.right = previous.right;
+      body.style.width = previous.width;
+      body.style.overflow = previous.overflow;
+      html.style.overflow = previous.htmlOverflow;
+      window.scrollTo(0, scrollY);
+    };
+  }, [pageLocked]);
 
   useEffect(() => {
     let current = true;
@@ -123,8 +150,8 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
         onClick={() => { setError(''); void downloadDocument(info.id).catch(error => setError(documentError(error))); }}><Download size={17} /></button>
       {!readOnlyView && <button type="button" className="icon-button" aria-label={`Remove ${info.name}`} disabled={busy} onClick={() => setPendingDelete(info)}><Trash2 size={17} /></button>}
     </li>)}</ul>
-    {preview && <div className="evidence-modal-backdrop" role="presentation" onClick={() => { setPreview(null); setPreviewExpanded(false); }}><section className={`evidence-preview ${previewExpanded ? 'evidence-preview-expanded' : ''}`} role="dialog" aria-modal="true" aria-label={`Evidence preview: ${preview.name}`} onClick={event => event.stopPropagation()}><header><strong>{preview.name}</strong><span className="evidence-preview-actions">{(preview.type.startsWith('image/') || preview.type === 'application/pdf') && <button className="icon-button" aria-label={previewExpanded ? 'Restore preview size' : 'Expand preview'} title={previewExpanded ? 'Restore original size' : 'Expand preview'} onClick={() => setPreviewExpanded(value => !value)}>{previewExpanded ? <Minimize2 size={18}/> : <Maximize2 size={18}/>}</button>}{preview.type.startsWith('image/') && <><button className="icon-button" aria-label="Zoom out" onClick={() => setZoom(value => Math.max(.5, value - .25))}><ZoomOut size={18}/></button><button className="icon-button" aria-label="Zoom in" onClick={() => setZoom(value => Math.min(3, value + .25))}><ZoomIn size={18}/></button><button className="icon-button" aria-label="Reset image zoom" onClick={() => setZoom(1)}><Maximize2 size={18}/></button></>}<button type="button" className="preview-cancel" aria-label="Close preview" onClick={() => { setPreview(null); setPreviewExpanded(false); }}>Cancel <X size={18}/></button></span></header>{preview.type.startsWith('image/') ? <div className="evidence-image-stage"><img style={{transform:`scale(${zoom})`}} src={preview.url} alt={preview.name}/></div> : preview.type === 'application/pdf' || preview.type.startsWith('text/') || preview.type === 'application/json' ? <iframe title={preview.name} src={preview.url}/> : preview.type.startsWith('video/') ? <><video src={preview.url} controls preload="metadata" onError={() => setError('This browser cannot play this video format. Download the file to view it.')}/><small>Playback depends on the video codec. Download the original if it cannot play here.</small></> : <div className="unsupported-evidence"><FileText size={40}/><h3>{preview.name}</h3><p>This Office document opens through your device’s installed app. Download it to open the original file.</p><button type="button" className="primary" onClick={() => { const item = documents.find(document => document.name === preview.name); if (item) void downloadDocument(item.id); }}>Download file</button></div>}</section></div>}
-    {pendingDelete && <div className="evidence-modal-backdrop" role="presentation" onClick={() => setPendingDelete(null)}><section className="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-evidence-title" onClick={event => event.stopPropagation()}><div className="section-title"><div><span className="eyebrow">CONFIRM DELETION</span><h3 id="delete-evidence-title">Delete evidence?</h3></div><button className="icon-button" aria-label="Close delete confirmation" onClick={() => setPendingDelete(null)}><X size={18}/></button></div><p>Are you sure you want to delete <strong>{pendingDelete.name}</strong>? This evidence will no longer be available for this test execution.</p><div className="modal-actions"><button type="button" className="text-button" onClick={() => setPendingDelete(null)}>Cancel</button><button type="button" className="danger-button" onClick={() => { const item = pendingDelete; setPendingDelete(null); void remove(item); }}>Delete evidence</button></div></section></div>}
+    {preview && createPortal(<div className="evidence-modal-backdrop" role="presentation" onClick={() => { setPreview(null); setPreviewExpanded(false); }}><section className={`evidence-preview ${previewExpanded ? 'evidence-preview-expanded' : ''}`} role="dialog" aria-modal="true" aria-label={`Evidence preview: ${preview.name}`} onClick={event => event.stopPropagation()}><header><strong>{preview.name}</strong><span className="evidence-preview-actions">{(preview.type.startsWith('image/') || preview.type === 'application/pdf') && <button className="icon-button" aria-label={previewExpanded ? 'Restore preview size' : 'Expand preview'} title={previewExpanded ? 'Restore original size' : 'Expand preview'} onClick={() => setPreviewExpanded(value => !value)}>{previewExpanded ? <Minimize2 size={18}/> : <Maximize2 size={18}/>}</button>}{preview.type.startsWith('image/') && <><button className="icon-button" aria-label="Zoom out" onClick={() => setZoom(value => Math.max(.5, value - .25))}><ZoomOut size={18}/></button><button className="icon-button" aria-label="Zoom in" onClick={() => setZoom(value => Math.min(3, value + .25))}><ZoomIn size={18}/></button><button className="icon-button" aria-label="Reset image zoom" onClick={() => setZoom(1)}><Maximize2 size={18}/></button></>}<button type="button" className="preview-cancel" aria-label="Close preview" onClick={() => { setPreview(null); setPreviewExpanded(false); }}>Cancel <X size={18}/></button></span></header>{preview.type.startsWith('image/') ? <div className="evidence-image-stage"><img style={{transform:`scale(${zoom})`}} src={preview.url} alt={preview.name}/></div> : preview.type === 'application/pdf' || preview.type.startsWith('text/') || preview.type === 'application/json' ? <iframe title={preview.name} src={preview.url}/> : preview.type.startsWith('video/') ? <><video src={preview.url} controls preload="metadata" onError={() => setError('This browser cannot play this video format. Download the file to view it.')}/><small>Playback depends on the video codec. Download the original if it cannot play here.</small></> : <div className="unsupported-evidence"><FileText size={40}/><h3>{preview.name}</h3><p>This Office document opens through your device’s installed app. Download it to open the original file.</p><button type="button" className="primary" onClick={() => { const item = documents.find(document => document.name === preview.name); if (item) void downloadDocument(item.id); }}>Download file</button></div>}</section></div>, document.body)}
+    {pendingDelete && createPortal(<div className="evidence-modal-backdrop" role="presentation" onClick={() => setPendingDelete(null)}><section className="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-evidence-title" onClick={event => event.stopPropagation()}><div className="section-title"><div><span className="eyebrow">CONFIRM DELETION</span><h3 id="delete-evidence-title">Delete evidence?</h3></div><button className="icon-button" aria-label="Close delete confirmation" onClick={() => setPendingDelete(null)}><X size={18}/></button></div><p>Are you sure you want to delete <strong>{pendingDelete.name}</strong>? This evidence will no longer be available for this test execution.</p><div className="modal-actions"><button type="button" className="text-button" onClick={() => setPendingDelete(null)}>Cancel</button><button type="button" className="danger-button" onClick={() => { const item = pendingDelete; setPendingDelete(null); void remove(item); }}>Delete evidence</button></div></section></div>, document.body)}
     <p className="form-note">Documents are saved on this device, in this browser. They are not shared with other users.</p>
   </section>;
 }

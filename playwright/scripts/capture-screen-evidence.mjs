@@ -54,6 +54,11 @@ for (const [file, name] of screens) {
     await page.getByRole('heading', { name: 'Flash Fiber Portfolio RTM', exact: true }).waitFor();
     await page.locator('.rtm-table tbody tr').first().waitFor();
     await page.locator('.sidebar nav button.nav-item').filter({ hasText: 'Overview' }).click();
+    await page.locator('.sidebar nav button.nav-item').filter({ hasText: 'My work' }).click();
+    await page.locator('.shell .main > main').waitFor();
+    await page.waitForTimeout(450);
+    await captureScreenshot({ path: resolve(output, '29-my-work.png'), fullPage: true, animations: 'disabled' });
+    await page.locator('.sidebar nav button.nav-item').filter({ hasText: 'Overview' }).click();
   }
   console.log(`Captured ${name}`);
 }

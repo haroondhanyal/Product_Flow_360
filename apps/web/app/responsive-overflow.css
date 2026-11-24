@@ -75,3 +75,96 @@
 @keyframes pf360-toast-in{from{opacity:0;translate:0 8px}to{opacity:1;translate:0 0}}
 html:has(.modal-overlay),body:has(.modal-overlay),html:has(.test-case-editor),body:has(.test-case-editor),html:has(.test-case-details),body:has(.test-case-details),html:has(.evidence-popup-panel),body:has(.evidence-popup-panel),html:has(.evidence-modal-backdrop),body:has(.evidence-modal-backdrop),html:has(.project-team-overlay),body:has(.project-team-overlay),html:has(.rtm-evidence-panel),body:has(.rtm-evidence-panel),html:has(.lifecycle-edit-dialog),body:has(.lifecycle-edit-dialog),html:has(.lifecycle-detail-dialog),body:has(.lifecycle-detail-dialog){overflow:hidden!important;overscroll-behavior:none;scrollbar-gutter:stable}
 @media(max-width:900px){.sidebar-foot{gap:7px;font-size:8px}.sidebar-foot img{width:50px}}
+
+/* Compact PTCL + ProductFlow identity; keep the brand clear at every rail width. */
+.sidebar .brand{display:grid;justify-items:start;gap:10px;width:100%;max-width:100%;margin:28px 0 30px;padding:0;letter-spacing:-.55px;font-size:17px;line-height:1.05}
+.sidebar .brand-logos{display:flex;align-items:center;gap:12px;min-height:48px}
+.sidebar .brand .brand-ptcl-logo{display:block;width:58px;height:auto;max-height:26px;flex:0 0 auto;object-fit:contain}
+.sidebar .brand .brand-mark-button{display:grid;place-items:center;flex:0 0 46px;width:46px;height:46px;padding:0;border:0;border-radius:14px;color:#fff;box-shadow:0 7px 18px color-mix(in srgb,var(--green) 20%,transparent);transition:transform .18s,box-shadow .18s}
+.sidebar .brand .brand-mark-button:hover{transform:translateY(-2px);box-shadow:0 10px 24px color-mix(in srgb,var(--green) 32%,transparent)}
+.sidebar .brand .brand-mark-button:focus-visible{outline:3px solid var(--green);outline-offset:3px}
+.sidebar .brand .brand-productflow-logo{display:block;width:46px;height:46px;flex:0 0 46px}
+.sidebar .brand>div:last-child{min-width:0;line-height:1.05;white-space:nowrap;font-size:17px}
+.sidebar .brand>div:last-child b{font-size:inherit}
+@media(max-width:900px){.sidebar .brand{gap:9px;font-size:15px}.sidebar .brand-logos{gap:10px}.sidebar .brand .brand-ptcl-logo{width:52px;max-height:24px}.sidebar .brand .brand-mark-button,.sidebar .brand .brand-productflow-logo{width:42px;height:42px;flex-basis:42px}.sidebar .brand>div:last-child{font-size:15px}}
+.shell.sidebar-collapsed .sidebar .brand{justify-items:center;margin:0 0 17px}
+.shell.sidebar-collapsed .sidebar .brand>.brand-logos{display:flex;justify-content:center}
+.shell.sidebar-collapsed .sidebar .brand .brand-ptcl-logo,.shell.sidebar-collapsed .sidebar .brand>div:last-child{display:none}
+.shell.sidebar-collapsed .sidebar .brand .brand-mark-button,.shell.sidebar-collapsed .sidebar .brand .brand-productflow-logo{width:42px;height:42px;flex-basis:42px}
+@media(max-width:650px){.shell.sidebar-collapsed .sidebar .brand{justify-items:start;margin:0 0 26px}.shell.sidebar-collapsed .sidebar .brand>.brand-logos{display:flex;justify-content:flex-start}.shell.sidebar-collapsed .sidebar .brand .brand-ptcl-logo,.shell.sidebar-collapsed .sidebar .brand>div:last-child{display:initial}}
+
+/* Dialogs own their scroll; opening one must leave the workspace underneath still. */
+.modal-overlay,.project-team-overlay,.project-overview-overlay,.workspace-edit-overlay,.evidence-modal-backdrop{position:fixed;inset:0;overflow:hidden;overscroll-behavior:none}
+.modal,.project-team-dialog,.project-overview-dialog,.workspace-edit-panel,.evidence-preview,.confirm-dialog,.test-case-editor,.test-case-details,.lifecycle-edit-dialog,.lifecycle-detail-dialog{overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:thin;max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior-y:contain}
+.modal-overlay{padding:16px;align-items:center;justify-items:center}
+.modal{max-height:calc(100dvh - 32px);scrollbar-color:#a7bdb0 #eef3ef}
+.test-case-editor,.test-case-details{max-height:calc(100dvh - 32px)!important;scrollbar-color:#a7bdb0 #eef3ef}
+.project-team-dialog,.project-overview-dialog,.workspace-edit-panel{scrollbar-color:#a7bdb0 #eef3ef}
+.evidence-modal-backdrop{touch-action:auto}
+.evidence-preview,.confirm-dialog{max-height:calc(100dvh - 32px);scrollbar-color:#a7bdb0 #eef3ef}
+@media(max-width:650px){.modal-overlay{padding:10px}.modal,.test-case-editor,.test-case-details,.project-team-dialog,.project-overview-dialog,.workspace-edit-panel,.evidence-preview,.confirm-dialog{max-height:calc(100dvh - 20px)}}
+html:has(.project-overview-overlay),body:has(.project-overview-overlay),html:has(.workspace-edit-overlay),body:has(.workspace-edit-overlay){overflow:hidden!important;overscroll-behavior:none;scrollbar-gutter:stable}
+html:has(.command-center-overlay),body:has(.command-center-overlay),html:has(.assistant-chat-overlay),body:has(.assistant-chat-overlay){overflow:hidden!important;overscroll-behavior:none;scrollbar-gutter:stable}
+.command-center-overlay,.assistant-chat-overlay{overflow:hidden;overscroll-behavior:none}
+.command-center-panel,.assistant-chat-modal{max-height:calc(100dvh - 32px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:thin;scrollbar-color:#a7bdb0 #eef3ef}
+
+/* The create/edit dialog stays anchored; its own panel takes the scroll. */
+.lifecycle-board .lifecycle-edit-dialog,.lifecycle-board .lifecycle-detail-dialog{position:fixed!important;top:16px!important;bottom:auto!important;left:50%!important;transform:translateX(-50%)!important;width:min(900px,calc(100vw - 32px))!important;max-height:calc(100dvh - 32px)!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-gutter:stable!important;isolation:isolate;background:linear-gradient(150deg,var(--surface),var(--surface-soft))!important;box-shadow:0 0 0 100vmax color-mix(in srgb,var(--ink) 48%,transparent),0 28px 90px color-mix(in srgb,var(--ink) 30%,transparent)!important}
+.lifecycle-board .lifecycle-edit-dialog>.section-title,.lifecycle-board .lifecycle-detail-dialog>.section-title{position:sticky!important;top:-24px!important;z-index:4!important;background:var(--surface)!important}
+.lifecycle-board .lifecycle-edit-dialog:before,.lifecycle-board .lifecycle-detail-dialog:before{content:none!important;display:none!important}
+@media(max-width:700px){.lifecycle-board .lifecycle-edit-dialog,.lifecycle-board .lifecycle-detail-dialog{top:10px!important;width:calc(100vw - 20px)!important;max-height:calc(100dvh - 20px)!important}.lifecycle-board .lifecycle-edit-dialog>.section-title,.lifecycle-board .lifecycle-detail-dialog>.section-title{top:-15px!important}}
+
+/* Select one of 30 named brand colours from a compact floating palette. */
+.sidebar:has(.brand-color-menu){z-index:1300;overflow:visible}
+.sidebar .brand-color-menu{position:fixed;left:260px;top:92px;z-index:1301;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;width:min(300px,calc(100vw - 280px));max-height:min(440px,calc(100dvh - 112px));overflow:auto;padding:10px;border:1px solid var(--line);border-radius:14px;background:var(--surface);box-shadow:0 18px 48px color-mix(in srgb,var(--ink) 24%,transparent);scrollbar-width:thin;overscroll-behavior:contain}
+.sidebar .brand-color-menu>button{display:flex;align-items:center;justify-content:flex-start;gap:8px;min-width:0;min-height:36px;padding:6px 8px;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--ink);text-align:left;font-size:11px}
+.sidebar .brand-color-menu>button:hover,.sidebar .brand-color-menu>button[aria-selected=true]{border-color:var(--line);background:var(--surface-soft)}
+.sidebar .brand-color-menu>button i{width:19px;height:19px;flex:0 0 19px;border:2px solid color-mix(in srgb,var(--ink) 12%,transparent);border-radius:50%}
+.sidebar .brand-color-menu>button span{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sidebar .brand-color-menu>button svg{flex:0 0 auto;color:var(--green)}
+.shell.sidebar-collapsed .sidebar .brand-color-menu{left:90px}
+@media(max-width:1200px){.sidebar .brand-color-menu{left:234px;width:min(290px,calc(100vw - 254px))}}
+@media(max-width:900px){.sidebar .brand-color-menu{left:204px;width:min(280px,calc(100vw - 224px))}}
+@media(max-width:650px){.sidebar .brand-color-menu{left:238px;top:78px;width:min(270px,calc(100vw - 248px));max-height:calc(100dvh - 92px)}.shell.sidebar-collapsed .sidebar .brand-color-menu{left:238px}}
+
+/* Keep test-case dialogs readable above the dimmer and scroll inside the panel. */
+.test-case-editor,.test-case-details{
+  position:fixed!important;top:16px!important;bottom:auto!important;left:50%!important;
+  transform:translateX(-50%)!important;width:min(820px,calc(100vw - 32px))!important;
+  max-height:calc(100dvh - 32px)!important;overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;scrollbar-gutter:stable!important;scrollbar-width:thin;
+  isolation:isolate;background:var(--surface)!important;
+  box-shadow:0 0 0 100vmax color-mix(in srgb,var(--ink) 48%,transparent),0 28px 90px color-mix(in srgb,var(--ink) 30%,transparent)!important;
+}
+.test-case-editor:before,.test-case-details:before{content:none!important;display:none!important}
+.test-case-editor>.section-title,.test-case-details>.section-title{position:sticky!important;top:-22px!important;z-index:4!important;background:var(--surface)!important}
+@media(max-width:700px){.test-case-editor,.test-case-details{top:10px!important;width:calc(100vw - 20px)!important;max-height:calc(100dvh - 20px)!important}.test-case-editor>.section-title,.test-case-details>.section-title{top:-15px!important}}
+
+/* Other lifecycle-backed screens use the same legacy pseudo-element dimmer. */
+.lifecycle-edit-dialog:before,.lifecycle-detail-dialog:before,
+.lifecycle-requirements section[aria-label="Lifecycle record details"]:before,
+.lifecycle-requirements .test-editor.feature-form:not([aria-label]):before{content:none!important;display:none!important}
+.lifecycle-requirements section[aria-label="Lifecycle record details"],
+.lifecycle-requirements .test-editor.feature-form:not([aria-label]){
+  top:16px!important;bottom:auto!important;transform:translateX(-50%)!important;
+  max-height:calc(100dvh - 32px)!important;overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;scrollbar-gutter:stable!important;isolation:isolate;
+  background:var(--surface)!important;
+  box-shadow:0 0 0 100vmax color-mix(in srgb,var(--ink) 48%,transparent),0 28px 90px color-mix(in srgb,var(--ink) 30%,transparent)!important
+}
+.lifecycle-requirements section[aria-label="Lifecycle record details"]>.section-title,
+.lifecycle-requirements .test-editor.feature-form:not([aria-label])>.section-title{position:sticky!important;top:-22px!important;z-index:4!important;background:var(--surface)!important}
+.modal,.project-team-dialog,.project-overview-dialog,.workspace-edit-panel,.evidence-preview,.confirm-dialog,.command-center-panel,.assistant-chat-modal{overscroll-behavior:contain!important;scrollbar-gutter:stable;scrollbar-width:thin}
+@media(max-width:700px){.lifecycle-requirements section[aria-label="Lifecycle record details"],.lifecycle-requirements .test-editor.feature-form:not([aria-label]){top:10px!important;max-height:calc(100dvh - 20px)!important}.lifecycle-requirements section[aria-label="Lifecycle record details"]>.section-title,.lifecycle-requirements .test-editor.feature-form:not([aria-label])>.section-title{top:-15px!important}}
+.saved-view-bar{display:flex;align-items:end;gap:10px;padding:0 18px 14px}.saved-view-bar label{display:grid;gap:5px;min-width:0;flex:1}.saved-view-bar label span{color:var(--muted);font-size:10px;font-weight:700}.saved-view-bar select,.saved-view-bar input{width:100%;min-width:0;height:40px;padding:0 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--text);font:inherit;font-size:12px}.saved-view-bar .text-button{min-height:40px;white-space:nowrap}
+@media(max-width:700px){.saved-view-bar{align-items:stretch;flex-direction:column}.saved-view-bar .text-button{align-self:flex-start}.page-heading-actions{flex-wrap:wrap}}
+
+/* Evidence viewer: one scroll container, a fixed page position and a reliable modal stack. */
+.evidence-modal-backdrop{position:fixed!important;inset:0!important;z-index:12100!important;display:grid!important;place-items:center!important;overflow:hidden!important;padding:clamp(10px,3vh,28px)!important;background:color-mix(in srgb,var(--ink) 62%,transparent)!important;overscroll-behavior:contain!important;touch-action:none!important}
+.evidence-preview{position:relative!important;inset:auto!important;transform:none!important;width:min(1040px,calc(100vw - 36px))!important;height:auto!important;max-height:calc(100dvh - 36px)!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-gutter:stable!important;scrollbar-width:thin!important;padding:18px!important;border:1px solid var(--line)!important;border-radius:18px!important;background:var(--surface)!important;color:var(--ink)!important;box-shadow:0 30px 90px color-mix(in srgb,var(--ink) 38%,transparent)!important}
+.evidence-preview>header{position:sticky!important;inset:auto!important;top:-18px!important;z-index:5!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin:-18px -18px 14px!important;padding:13px 18px!important;border-bottom:1px solid var(--line)!important;background:var(--surface)!important;color:var(--ink)!important}
+.evidence-preview>header>strong{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.evidence-preview .evidence-preview-actions{display:flex!important;flex:0 0 auto;flex-wrap:wrap;justify-content:flex-end;gap:6px!important}.evidence-preview iframe{height:min(64dvh,680px)!important;max-height:64dvh!important}.evidence-preview video{width:100%!important;height:auto!important;max-height:64dvh!important}.evidence-preview .evidence-image-stage{min-height:min(300px,38dvh)!important;max-height:64dvh!important;overflow:auto!important;overscroll-behavior:contain!important;padding:14px!important;border:1px solid var(--line)!important;border-radius:12px!important;background:var(--surface-soft)!important;box-shadow:none!important}.evidence-preview .evidence-image-stage img{max-width:100%!important;max-height:60dvh!important;padding:0!important;border:0!important;border-radius:6px!important;background:transparent!important;box-shadow:none!important;object-fit:contain!important}.evidence-preview .preview-cancel{min-width:84px!important;height:36px!important;padding:0 10px!important;font-size:11px!important}.evidence-preview .preview-cancel:before{content:none!important}.evidence-preview-expanded{width:min(1400px,calc(100vw - 24px))!important;max-height:calc(100dvh - 24px)!important}.evidence-preview-expanded .evidence-image-stage img{max-height:75dvh!important}.confirm-dialog{position:relative!important;max-height:calc(100dvh - 36px)!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;background:var(--surface)!important;color:var(--ink)!important}
+.evidence-popup-panel{top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;width:min(900px,calc(100vw - 36px))!important;min-height:0!important;max-height:calc(100dvh - 36px)!important;height:auto!important;overflow-x:hidden!important;overflow-y:auto!important;overscroll-behavior:contain!important;scrollbar-gutter:stable!important;padding:18px!important;background:var(--surface)!important;color:var(--ink)!important}.evidence-popup-panel>.section-title{top:-18px!important;margin:-18px -18px 14px!important;padding:13px 18px!important;background:var(--surface)!important}
+html:has(.evidence-popup-panel),body:has(.evidence-popup-panel),html:has(.evidence-modal-backdrop),body:has(.evidence-modal-backdrop){overflow:hidden!important;overscroll-behavior:none!important;scrollbar-gutter:stable}
+.colour-options{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px!important;width:min(100%,820px);max-height:320px;overflow-y:auto;overscroll-behavior:contain;padding:3px 5px 8px 2px;scrollbar-width:thin}.colour-option{position:relative;display:flex!important;align-items:center;justify-content:flex-start!important;gap:8px;width:auto!important;min-width:0;min-height:38px;padding:5px 8px!important;border:1px solid var(--line)!important;border-radius:10px!important;background:var(--surface)!important;color:var(--ink)!important}.colour-option i{display:block;width:23px!important;height:23px!important;flex:0 0 23px;border:2px solid color-mix(in srgb,var(--ink) 10%,transparent)}.colour-option span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:650}.colour-option.chosen{border-color:var(--button)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--button) 20%,transparent)}.colour-option svg{position:static!important;flex:none;color:white!important;filter:drop-shadow(0 1px 1px #0008)}
+@media(max-width:650px){.evidence-modal-backdrop{padding:8px!important}.evidence-preview,.evidence-preview-expanded{width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;padding:12px!important;border-radius:14px!important}.evidence-preview>header{top:-12px!important;margin:-12px -12px 11px!important;padding:10px 12px!important}.evidence-preview>header>strong{max-width:36vw;font-size:11px}.evidence-preview .evidence-preview-actions{gap:3px!important}.evidence-preview .evidence-preview-actions .icon-button{padding:5px!important}.evidence-preview .preview-cancel{min-width:72px!important;padding:0 7px!important}.evidence-preview iframe{height:65dvh!important;max-height:65dvh!important}.evidence-preview .evidence-image-stage{min-height:34dvh!important;max-height:66dvh!important;padding:7px!important}.evidence-preview .evidence-image-stage img{max-height:62dvh!important}.evidence-popup-panel{width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;padding:12px!important}.evidence-popup-panel>.section-title{top:-12px!important;margin:-12px -12px 11px!important;padding:10px 12px!important}.colour-options{grid-template-columns:repeat(2,minmax(0,1fr));max-height:300px}}
