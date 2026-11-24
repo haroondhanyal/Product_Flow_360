@@ -4,6 +4,8 @@ export const AUTH_USERS_KEY = 'pf360-auth-users';
 export const AUTH_DEPARTMENTS_KEY = 'pf360-auth-departments';
 export const AUTH_SESSION_KEY = 'pf360-auth-session';
 export const AUTH_DEMO_CREDENTIALS_KEY = 'pf360-demo-credentials';
+const AUTH_DEMO_ACCOUNT_VERSION_KEY = 'pf360-demo-account-migration';
+const AUTH_DEMO_ACCOUNT_VERSION = 'department-email-active-v2';
 
 export type UserRole = 'Admin' | 'Department Manager' | 'Employee';
 export type UserStatus = 'Approved' | 'Pending' | 'Rejected';
@@ -32,6 +34,7 @@ let demoAccountSeed: Promise<void> | null = null;
 export function ensureDemoAccounts(): Promise<void> {
   if (demoAccountSeed) return demoAccountSeed;
   demoAccountSeed = (async () => {
+    if(localStorage.getItem(AUTH_DEMO_ACCOUNT_VERSION_KEY)===AUTH_DEMO_ACCOUNT_VERSION)return;
     const initial=loadUsers(),credentials=readDemoCredentials(),definitions=createDemoAccountDefinitions();
     const seedIds=new Set(definitions.map(account=>`demo-${account.employeeNo.toLowerCase()}`));
     const users=initial.filter(user=>seedIds.has(user.id)||/^DEMO-PTCL-\d{4}$/.test(user.employeeNo));
@@ -48,6 +51,7 @@ export function ensureDemoAccounts(): Promise<void> {
     }
     saveUsers(next);
     writeDemoCredentials(credentials);
+    localStorage.setItem(AUTH_DEMO_ACCOUNT_VERSION_KEY,AUTH_DEMO_ACCOUNT_VERSION);
   })().catch(error=>{demoAccountSeed=null;throw error;});
   return demoAccountSeed;
 }

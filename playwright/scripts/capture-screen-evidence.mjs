@@ -1,5 +1,4 @@
 import { chromium } from '@playwright/test';
-import { randomBytes } from 'node:crypto';
 import { copyFile, mkdir } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
@@ -12,7 +11,7 @@ const page = await context.newPage();
 // Some workspace pages contain tall tables, so allow enough time for full-page captures.
 const captureScreenshot = options => page.screenshot({ timeout: 120_000, ...options });
 const demoEmail = process.env.TEST_USER_EMAIL ?? 'admin@ptcl.com';
-const demoPassword = process.env.TEST_USER_PASSWORD ?? `ProductFlowVisual!${randomBytes(18).toString('hex')}`;
+const demoPassword = process.env.TEST_USER_PASSWORD ?? 'Admin@12345';
 if (!process.env.TEST_USER_EMAIL && !process.env.TEST_USER_PASSWORD) {
   await page.addInitScript(async ({ email, password }) => {
     const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(password));
@@ -27,7 +26,7 @@ await page.getByRole('button', { name: 'Login', exact: true }).click();
 await page.getByRole('button', { name: 'Forgot password' }).click();
 await captureScreenshot({ path: resolve(output, '00-password-recovery.png'), fullPage: true, animations: 'disabled' });
 await page.getByRole('button', { name: 'Login', exact: true }).click();
-// Capture the login form before entering the temporary password.
+// Capture the login form before entering the local demo password.
 await captureScreenshot({ path: resolve(output, '00-login.png'), fullPage: true, animations: 'disabled' });
 await page.locator('input[name="email"]').fill(demoEmail);
 await page.locator('input[name="password"]').fill(demoPassword);

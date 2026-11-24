@@ -99,7 +99,7 @@ The screenshots below are refreshed from the current UI in a clean Chromium brow
 | --- | --- | --- | --- |
 | <img src="docs/images/screens/22-overview-editor.png" alt="Overview editor with icon-based priority and status controls" width="240"> | <img src="docs/images/screens/23-lifecycle-status-options.png" alt="Modern lifecycle status options with related icons" width="240"> | <img src="docs/images/screens/24-new-request-form.png" alt="New delivery request form with workspace project selector" width="240"> | <img src="docs/images/screens/25-priority-options.png" alt="Priority options with severity icons" width="240"> |
 
-To capture the gallery again, start the web app at `http://127.0.0.1:3100`, then run `npm run screenshots` from the repository root. The screenshot runner signs in using a temporary account seeded only in its isolated browser; no capture password or account is written to the repository. Set `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` to use a separately provisioned local account.
+To capture the gallery again, start the web app at `http://127.0.0.1:3100`, then run `npm run screenshots` from the repository root. The screenshot runner seeds an isolated browser with the local demo administrator and writes no browser account data to the repository. Set `TEST_USER_EMAIL` and `TEST_USER_PASSWORD` to use a separately provisioned local account.
 
 ### Employee access flow
 
