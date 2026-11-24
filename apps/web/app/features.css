@@ -153,12 +153,12 @@
 .main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(7){width:88px;min-width:88px}
 .main>main>section.requests:not(.allure-report-card) .table-scroll td:last-child{padding-right:28px!important}
 .main>main .table-scroll td:last-child{padding-right:28px!important}
-.lifecycle-defects .table-scroll table{width:1610px;min-width:1610px;table-layout:fixed}
-.lifecycle-defects .table-scroll th:nth-child(1){width:240px}.lifecycle-defects .table-scroll th:nth-child(2){width:105px}.lifecycle-defects .table-scroll th:nth-child(3){width:150px}.lifecycle-defects .table-scroll th:nth-child(4){width:155px}.lifecycle-defects .table-scroll th:nth-child(5){width:170px}.lifecycle-defects .table-scroll th:nth-child(6){width:110px}.lifecycle-defects .table-scroll th:nth-child(7){width:275px}.lifecycle-defects .table-scroll th:nth-child(8){width:225px}.lifecycle-defects .table-scroll th:nth-child(9){width:180px}
-.lifecycle-defects .table-scroll td:nth-child(6){white-space:nowrap;overflow:hidden}
+.lifecycle-defects .table-scroll table{width:1650px;min-width:1650px;table-layout:fixed}
+.lifecycle-defects .table-scroll th:nth-child(1){width:240px}.lifecycle-defects .table-scroll th:nth-child(2){width:105px}.lifecycle-defects .table-scroll th:nth-child(3){width:150px}.lifecycle-defects .table-scroll th:nth-child(4){width:155px}.lifecycle-defects .table-scroll th:nth-child(5){width:170px}.lifecycle-defects .table-scroll th:nth-child(6){width:150px}.lifecycle-defects .table-scroll th:nth-child(7){width:275px}.lifecycle-defects .table-scroll th:nth-child(8){width:225px}.lifecycle-defects .table-scroll th:nth-child(9){width:180px}
+.lifecycle-defects .table-scroll td:nth-child(6){white-space:nowrap;overflow:visible;padding-inline:14px!important}
 .lifecycle-defects .table-scroll td:nth-child(7),.lifecycle-defects .table-scroll td:nth-child(8){white-space:normal;overflow-wrap:anywhere}
 .lifecycle-defects .table-scroll td:last-child{padding-right:28px!important}
-.lifecycle-defects .version-advance{width:76px;min-width:76px}
+.lifecycle-defects .version-advance{width:auto;min-width:118px;padding:7px 10px;gap:6px}
 .version-snapshot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
 .version-snapshot-grid>section{min-width:0;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--surface)}
 .version-snapshot-grid h4{margin:0 0 8px;color:var(--ink);font-size:11px}

@@ -29,7 +29,7 @@ export function createDemoSeed(now = new Date()) {
       notes: `Demo portfolio record ${index + 1} of 30.`, linkedId: '', priority: ['High', 'Medium', 'Low'][index % 3],
       expected: kind === 'billing' || kind === 'revenue' ? `${(1250 + index * 125).toFixed(2)}` : kind === 'releases' ? 'Rollback to the previous approved service profile and verify customer impact.' : '',
       actual: kind === 'billing' || kind === 'revenue' ? `${(1250 + index * 125 + (index % 5 === 0 ? 10 : 0)).toFixed(2)}` : '',
-      date: date(index % 18 - 9), version: 1, updatedAt: now.toISOString(), workspaceId: 'ptcl-qa', workspaceName: 'PTCL QA Workspace',
+      date: date(index % 18 - 9), version: '1', updatedAt: now.toISOString(), workspaceId: 'ptcl-qa', workspaceName: 'PTCL QA Workspace',
     };
   }));
   const stages: TestStage[] = ['Smoke', 'Regression', 'SIT', 'QA', 'UAT'];

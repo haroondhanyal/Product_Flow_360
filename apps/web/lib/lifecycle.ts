@@ -1,4 +1,5 @@
 import type { TestCase } from './test-cases';
+import { normalizeVersion, parseVersionInput } from './versions';
 
 export const LIFECYCLE_KEY = 'pf360-lifecycle-v1';
 export const REQUIREMENT_TYPES = ['Idea', 'Business requirement', 'Functional requirement', 'User story', 'Acceptance criteria', 'Zero Hour', 'Development task'] as const;
@@ -6,7 +7,7 @@ export type WorkKind = 'requirements' | 'defects' | 'uat' | 'configuration' | 'b
 export type WorkRecord = {
   id: string; kind: WorkKind; requestId: string; title: string; owner: string; status: string;
   type: string; description: string; notes: string; linkedId: string; priority: string;
-  expected: string; actual: string; date: string; version: number; updatedAt: string; workspaceId?: string; workspaceName?: string;
+  expected: string; actual: string; date: string; version: string; updatedAt: string; workspaceId?: string; workspaceName?: string;
 };
 export type AuditEntry = {id: string; recordId: string; action: string; at: string; owner: string; before: WorkRecord | null; after: WorkRecord};
 export type LifecycleState = {version: 1; records: WorkRecord[]; audit: AuditEntry[]};
@@ -24,23 +25,22 @@ export const MODULES: Record<WorkKind, {name: string; singular: string; descript
 const keys = ['id','requestId','title','owner','status','type','description','notes','linkedId','priority','expected','actual','date','updatedAt'];
 export function parseLifecycle(raw: string): LifecycleState {
   const state = JSON.parse(raw) as LifecycleState;
-  if (state?.version !== 1 || !Array.isArray(state.records) || !Array.isArray(state.audit) || !state.records.every(record => record && record.kind in MODULES && keys.every(key => typeof record[key as keyof WorkRecord] === 'string') && Number.isInteger(record.version) && record.version > 0 && MODULES[record.kind].statuses.includes(record.status)) || !state.audit.every(entry => entry && typeof entry.id === 'string' && typeof entry.at === 'string' && typeof entry.action === 'string' && typeof entry.recordId === 'string' && typeof entry.owner === 'string' && entry.after && typeof entry.after.id === 'string')) {
+  if (state?.version !== 1 || !Array.isArray(state.records) || !Array.isArray(state.audit) || !state.records.every(record => record && record.kind in MODULES && keys.every(key => typeof record[key as keyof WorkRecord] === 'string') && parseVersionInput(normalizeVersion(record.version)) !== null && MODULES[record.kind].statuses.includes(record.status)) || !state.audit.every(entry => entry && typeof entry.id === 'string' && typeof entry.at === 'string' && typeof entry.action === 'string' && typeof entry.recordId === 'string' && typeof entry.owner === 'string' && entry.after && typeof entry.after.id === 'string')) {
     throw new Error('Saved lifecycle data is invalid. Existing data has been left untouched.');
   }
-  const bounded = (version: number) => Math.min(100, Math.max(1, Math.trunc(version)));
   return {
     ...state,
-    records: state.records.map(record => ({...record, version: bounded(record.version)})),
+    records: state.records.map(record => ({...record, version: normalizeVersion(record.version)})),
     audit: state.audit.map(entry => ({
       ...entry,
-      before: entry.before ? {...entry.before, version: bounded(entry.before.version)} : null,
-      after: {...entry.after, version: bounded(entry.after.version)},
+      before: entry.before ? {...entry.before, version: normalizeVersion(entry.before.version)} : null,
+      after: {...entry.after, version: normalizeVersion(entry.after.version)},
     })),
   };
 }
 export function commitRecord(state: LifecycleState, record: WorkRecord, action: string): LifecycleState {
   const before = state.records.find(item => item.id === record.id) ?? null;
-  const next = {...record, version: Math.min(100, Math.max(1, Math.trunc(record.version))), updatedAt: new Date().toISOString()};
+  const next = {...record, version: normalizeVersion(record.version), updatedAt: new Date().toISOString()};
   const event: AuditEntry = {id: crypto.randomUUID(), recordId: next.id, action, at: next.updatedAt, owner: next.owner, before, after: next};
   return {...state, records: [next, ...state.records.filter(item => item.id !== next.id)], audit: [event, ...state.audit].slice(0,1000)};
 }
