@@ -78,6 +78,35 @@
 .request-department-cell{margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4;white-space:normal}
 @media(max-width:650px){.modal .request-department-segment,.modal .request-owner-date{grid-template-columns:1fr;gap:2px}.request-detail-heading{flex-direction:column}}
 
+/* RFC edit form: keep notes in a full-width field and reserve room for the
+   native date picker affordance across browsers. */
+.request-editor-form{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;min-width:0}
+.request-editor-form>label,.request-editor-form>.form-row{width:100%;min-width:0;box-sizing:border-box}
+.request-editor-form>label:has(textarea){display:grid;grid-template-columns:minmax(0,1fr);gap:7px}
+.request-editor-form textarea{display:block;width:100%;min-width:0;max-width:100%;min-height:96px;box-sizing:border-box;margin:0;padding:12px 13px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink);font:inherit;font-size:12px;line-height:1.55;resize:vertical}
+.request-editor-form input[type=date],.request-capture-form input[type=date],.lifecycle-board input[type=date]{box-sizing:border-box;min-width:0;width:100%;padding-right:42px;appearance:auto}
+.request-editor-form .form-row{min-width:0}
+.request-editor-form .form-row>label{min-width:0}
+.request-detail-heading .text-button{min-height:42px;padding:10px 14px;border:1px solid var(--line-strong,var(--line));border-radius:10px;background:var(--surface);color:var(--ink);font-weight:650;box-shadow:0 3px 10px #18344b0a}
+.request-detail-heading .text-button:hover{border-color:var(--green);color:var(--green);background:var(--surface-soft)}
+.request-detail-actions{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:7px;flex:none}
+.request-detail-actions .text-button{min-height:40px;padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);white-space:nowrap}
+.request-detail-actions .request-edit-button{border-color:color-mix(in srgb,var(--green) 40%,var(--line));color:var(--green);font-weight:650}
+.request-detail-actions .request-version-button{color:var(--muted)}
+.main>main>section.requests:not(.allure-report-card) .table-scroll td:nth-child(2){white-space:normal;min-width:190px}
+.main>main>section.requests:not(.allure-report-card) .product-tag{display:inline-flex;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.main>main>section.requests:not(.allure-report-card) .request-classification{gap:5px 6px}
+.version-advance{display:inline-flex;align-items:center;gap:3px;padding:5px 7px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--green);font-family:inherit;font-size:11px;font-weight:650;line-height:1.2;cursor:pointer;white-space:nowrap}
+.version-advance:hover,.version-advance-detail:hover{border-color:var(--green);background:var(--surface-soft)}
+.lifecycle-detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.version-advance-detail{color:var(--green)!important;font-weight:650!important}
+.lifecycle-defects .table-scroll table{min-width:1450px;table-layout:fixed}
+.lifecycle-defects .table-scroll th:nth-child(1){width:15%}.lifecycle-defects .table-scroll th:nth-child(2){width:8%}.lifecycle-defects .table-scroll th:nth-child(3){width:10%}.lifecycle-defects .table-scroll th:nth-child(4){width:11%}.lifecycle-defects .table-scroll th:nth-child(5){width:10%}.lifecycle-defects .table-scroll th:nth-child(6){width:8%}.lifecycle-defects .table-scroll th:nth-child(7){width:19%}.lifecycle-defects .table-scroll th:nth-child(8){width:12%}.lifecycle-defects .table-scroll th:nth-child(9){width:7%}
+.lifecycle-defects .table-scroll td:nth-child(3),.lifecycle-defects .table-scroll td:nth-child(4){white-space:normal}
+.lifecycle-defects .table-scroll td:nth-child(3) .status-indicator,.lifecycle-defects .table-scroll td:nth-child(4) .status-indicator{max-width:none;white-space:nowrap;line-height:1.25;overflow-wrap:normal}
+.lifecycle-defects .lifecycle-board-copy{max-width:none;width:auto;overflow-wrap:anywhere;word-break:normal}
+@media(max-width:650px){.request-editor-form .request-product-priority,.request-editor-form .request-department-segment,.request-editor-form .request-owner-date{grid-template-columns:minmax(0,1fr);gap:2px}.request-detail-heading .text-button{align-self:flex-start}.request-detail-actions{justify-content:flex-start}}
+
 /* Keep quality and lifecycle boards inside their content column at wide and
    narrow viewports; allow deliberate horizontal scrolling on compact screens. */
 .test-management,.lifecycle-board{min-width:0;width:100%;max-width:100%}
