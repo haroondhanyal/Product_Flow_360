@@ -31,9 +31,12 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
   const evidencePopup = evidence && /^(work|test|run|report-evidence):/.test(requestId);
   const [panelOpen, setPanelOpen] = useState(!evidencePopup);
   const [readOnlyView, setReadOnlyView] = useState(false);
+  const [portalReady, setPortalReady] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const lock = useRef(false);
   const pageLocked = (evidencePopup && panelOpen) || Boolean(preview) || Boolean(pendingDelete);
+
+  useEffect(() => setPortalReady(true), []);
 
   useEffect(() => {
     if (!pageLocked) return;
@@ -124,7 +127,7 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
 
   if (evidencePopup && !panelOpen) return <button type="button" className="evidence-open-button" onClick={() => { setReadOnlyView(false); setPanelOpen(true); }}><Paperclip size={16}/>Add evidence {documents.length ? `(${documents.length})` : ''}</button>;
 
-  return <section className={`rfc-documents ${evidencePopup ? 'evidence-popup-panel' : ''}`} aria-label={title}>
+  const content = <section className={`rfc-documents ${evidencePopup ? 'evidence-popup-panel' : ''}`} aria-label={title} onClick={event => event.stopPropagation()}>
     <div className="section-title"><h3>{readOnlyView ? 'View evidence' : title} <span className="count">{documents.length}</span></h3>{evidencePopup && <button type="button" className="evidence-popup-close" aria-label="Close evidence popup" onClick={() => { setPanelOpen(false); setReadOnlyView(false); }}>Close <X size={17}/></button>}</div>
     {!evidence && <label className="rfc-project-picker">Workspace project<select aria-label="RFC workspace project" value={projectId} onChange={event => assignProject(event.target.value)}><option value="">All Projects / unassigned</option>{projects.map(project => <option value={project.id} key={project.id}>{project.code} · {project.name}</option>)}</select><small>{projects.length ? 'This RFC and its documents are grouped under the selected project in this browser.' : 'Create a project in Workspace tools, then return here to assign this RFC.'}</small></label>}
     {!readOnlyView && <div className={`document-dropzone ${dragging ? 'dragging' : ''}`}
@@ -154,4 +157,6 @@ export function RfcDocuments({ requestId, evidence = false, title = 'RFC documen
     {pendingDelete && createPortal(<div className="evidence-modal-backdrop" role="presentation" onClick={() => setPendingDelete(null)}><section className="confirm-dialog" role="dialog" aria-modal="true" aria-labelledby="delete-evidence-title" onClick={event => event.stopPropagation()}><div className="section-title"><div><span className="eyebrow">CONFIRM DELETION</span><h3 id="delete-evidence-title">Delete evidence?</h3></div><button className="icon-button" aria-label="Close delete confirmation" onClick={() => setPendingDelete(null)}><X size={18}/></button></div><p>Are you sure you want to delete <strong>{pendingDelete.name}</strong>? This evidence will no longer be available for this test execution.</p><div className="modal-actions"><button type="button" className="text-button" onClick={() => setPendingDelete(null)}>Cancel</button><button type="button" className="danger-button" onClick={() => { const item = pendingDelete; setPendingDelete(null); void remove(item); }}>Delete evidence</button></div></section></div>, document.body)}
     <p className="form-note">Documents are saved on this device, in this browser. They are not shared with other users.</p>
   </section>;
+  if (evidencePopup && portalReady) return createPortal(<div className="evidence-panel-backdrop" role="presentation" onClick={() => { setPanelOpen(false); setReadOnlyView(false); }}><div className="evidence-panel-frame" role="presentation">{content}</div></div>, document.body);
+  return content;
 }

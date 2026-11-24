@@ -1,5 +1,5 @@
 import { chromium } from '@playwright/test';
-import { copyFile, mkdir } from 'node:fs/promises';
+import { copyFile, mkdir, readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const baseURL = process.env.BASE_URL ?? 'http://127.0.0.1:3100';
@@ -49,6 +49,21 @@ for (const [file, name] of screens) {
   await page.locator('.shell .main > main').waitFor();
   await page.waitForTimeout(450);
   await captureScreenshot({ path: resolve(output, `${file}.png`), fullPage: true, animations: 'disabled' });
+  if (name === 'Test management') {
+    await page.locator('.test-management .test-row-actions .test-actions-open').first().click();
+    await page.getByRole('button', { name: /Add evidence/ }).last().click();
+    await page.locator('.evidence-panel-backdrop').waitFor();
+    await captureScreenshot({ path: resolve(output, '30-evidence-upload.png'), animations: 'disabled' });
+    const evidenceImage = await readFile(resolve(output, '05-test-management.png'));
+    await page.locator('input[aria-label="Upload test-case evidence"]').setInputFiles({ name: 'test-management-evidence.png', mimeType: 'image/png', buffer: evidenceImage });
+    await page.locator('.evidence-view-file').waitFor();
+    await page.locator('.evidence-view-file').click();
+    await page.getByRole('dialog', { name: /Evidence preview/ }).waitFor();
+    await captureScreenshot({ path: resolve(output, '31-evidence-preview.png'), animations: 'disabled' });
+    await page.getByRole('button', { name: 'Close preview' }).click();
+    await page.getByRole('button', { name: 'Close evidence popup' }).click();
+    await page.getByRole('button', { name: 'Close details' }).click();
+  }
   if (name === 'Overview') {
     await page.getByRole('button', { name: 'Open RTM', exact: true }).click();
     await page.getByRole('heading', { name: 'Flash Fiber Portfolio RTM', exact: true }).waitFor();
