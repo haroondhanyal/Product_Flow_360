@@ -31,7 +31,7 @@ export function parseLifecycle(raw: string): LifecycleState {
 }
 export function commitRecord(state: LifecycleState, record: WorkRecord, action: string): LifecycleState {
   const before = state.records.find(item => item.id === record.id) ?? null;
-  const next = {...record, version: (before?.version ?? 0) + 1, updatedAt: new Date().toISOString()};
+  const next = {...record, version: Math.max(record.version, 1), updatedAt: new Date().toISOString()};
   const event: AuditEntry = {id: crypto.randomUUID(), recordId: next.id, action, at: next.updatedAt, owner: next.owner, before, after: next};
   return {...state, records: [next, ...state.records.filter(item => item.id !== next.id)], audit: [event, ...state.audit].slice(0,1000)};
 }

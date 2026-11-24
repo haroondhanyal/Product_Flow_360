@@ -54,3 +54,13 @@ body .main .profile-menu .profile-dropdown{z-index:120;width:min(340px,calc(100v
  .main>header .header-actions{gap:9px}
  .main>header .copilot-launcher.inline{width:36px;height:36px;min-height:36px;padding:0}
 }
+
+/* Keep the profile photo distinct from the identity text, and allow the
+   header action group to shrink before it can push past the viewport edge. */
+.main>header .header-actions{justify-self:end;max-width:100%;flex-shrink:1}
+.main>header .profile-trigger{gap:11px;max-width:250px;padding:4px 7px;flex:0 1 250px}
+.main>header .profile-trigger>.header-photo,.main>header .profile-trigger>.avatar{width:38px;height:38px;flex:0 0 38px}
+.main>header .profile{max-width:185px;flex:1 1 auto;line-height:1.35}
+.main>header .profile small{margin-top:2px;max-width:100%}
+@media(max-width:1350px){.main>header .profile-trigger{max-width:240px;flex-basis:240px}.main>header .profile{max-width:170px}}
+@media(max-width:650px){.main>header .profile-trigger{width:40px;max-width:40px;flex:0 0 40px;padding:0}.main>header .profile-trigger>.header-photo,.main>header .profile-trigger>.avatar{width:36px;height:36px;flex-basis:36px}}
