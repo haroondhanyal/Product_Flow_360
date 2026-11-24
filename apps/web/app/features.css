@@ -100,7 +100,7 @@
 .version-advance:hover,.version-advance-detail:hover{border-color:var(--green);background:var(--surface-soft)}
 .lifecycle-detail-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
 .version-advance-detail{color:var(--green)!important;font-weight:650!important}
-.lifecycle-defects .table-scroll table{min-width:1450px;table-layout:fixed}
+.lifecycle-defects .table-scroll table{width:1450px;min-width:1450px;table-layout:fixed}
 .lifecycle-defects .table-scroll th:nth-child(1){width:15%}.lifecycle-defects .table-scroll th:nth-child(2){width:8%}.lifecycle-defects .table-scroll th:nth-child(3){width:10%}.lifecycle-defects .table-scroll th:nth-child(4){width:11%}.lifecycle-defects .table-scroll th:nth-child(5){width:10%}.lifecycle-defects .table-scroll th:nth-child(6){width:8%}.lifecycle-defects .table-scroll th:nth-child(7){width:19%}.lifecycle-defects .table-scroll th:nth-child(8){width:12%}.lifecycle-defects .table-scroll th:nth-child(9){width:7%}
 .lifecycle-defects .table-scroll td:nth-child(3),.lifecycle-defects .table-scroll td:nth-child(4){white-space:normal}
 .lifecycle-defects .table-scroll td:nth-child(3) .status-indicator,.lifecycle-defects .table-scroll td:nth-child(4) .status-indicator{max-width:none;white-space:nowrap;line-height:1.25;overflow-wrap:normal}
@@ -142,6 +142,23 @@
 .version-error{display:block;margin-top:7px;color:var(--danger-ink);font-size:11px}
 .main>main>section.requests:not(.allure-report-card) .table-scroll td:last-child{padding-right:30px!important}
 .main>main>section.requests:not(.allure-report-card) .table-scroll td:last-child .icon-button{width:36px;height:36px;flex:none;margin-right:2px}
+.main>main .table-scroll td:last-child{padding-right:30px!important}
+.main>main .table-scroll td:last-child .icon-button{flex:0 0 36px;width:36px;height:36px;margin-right:2px}
+.lifecycle-board .table-scroll td:nth-child(6){width:104px;min-width:104px;white-space:nowrap}
+.lifecycle-board .version-advance{min-width:66px;max-width:100%;justify-content:center;white-space:nowrap;flex-wrap:nowrap}
+.version-number-field{display:flex;align-items:center;gap:7px;min-height:44px;padding:4px 12px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--ink)}
+.version-number-field:focus-within{outline:3px solid #85bb9a;outline-offset:2px;border-color:var(--green)}
+.version-editor-modal .version-number-field>b{color:var(--muted);font-size:14px}
+.version-editor-modal .version-number-field input{width:100%;min-height:32px;padding:3px 0;border:0;border-radius:0;background:transparent;font-variant-numeric:tabular-nums;outline:0}
+.main>main>section.requests:not(.allure-report-card) .table-scroll th:nth-child(7){width:88px;min-width:88px}
+.main>main>section.requests:not(.allure-report-card) .table-scroll td:last-child{padding-right:28px!important}
+.main>main .table-scroll td:last-child{padding-right:28px!important}
+.lifecycle-defects .table-scroll table{width:1610px;min-width:1610px;table-layout:fixed}
+.lifecycle-defects .table-scroll th:nth-child(1){width:240px}.lifecycle-defects .table-scroll th:nth-child(2){width:105px}.lifecycle-defects .table-scroll th:nth-child(3){width:150px}.lifecycle-defects .table-scroll th:nth-child(4){width:155px}.lifecycle-defects .table-scroll th:nth-child(5){width:170px}.lifecycle-defects .table-scroll th:nth-child(6){width:110px}.lifecycle-defects .table-scroll th:nth-child(7){width:275px}.lifecycle-defects .table-scroll th:nth-child(8){width:225px}.lifecycle-defects .table-scroll th:nth-child(9){width:180px}
+.lifecycle-defects .table-scroll td:nth-child(6){white-space:nowrap;overflow:hidden}
+.lifecycle-defects .table-scroll td:nth-child(7),.lifecycle-defects .table-scroll td:nth-child(8){white-space:normal;overflow-wrap:anywhere}
+.lifecycle-defects .table-scroll td:last-child{padding-right:28px!important}
+.lifecycle-defects .version-advance{width:76px;min-width:76px}
 .version-snapshot-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
 .version-snapshot-grid>section{min-width:0;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--surface)}
 .version-snapshot-grid h4{margin:0 0 8px;color:var(--ink);font-size:11px}

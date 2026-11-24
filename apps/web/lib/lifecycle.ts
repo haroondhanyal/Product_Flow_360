@@ -27,11 +27,20 @@ export function parseLifecycle(raw: string): LifecycleState {
   if (state?.version !== 1 || !Array.isArray(state.records) || !Array.isArray(state.audit) || !state.records.every(record => record && record.kind in MODULES && keys.every(key => typeof record[key as keyof WorkRecord] === 'string') && Number.isInteger(record.version) && record.version > 0 && MODULES[record.kind].statuses.includes(record.status)) || !state.audit.every(entry => entry && typeof entry.id === 'string' && typeof entry.at === 'string' && typeof entry.action === 'string' && typeof entry.recordId === 'string' && typeof entry.owner === 'string' && entry.after && typeof entry.after.id === 'string')) {
     throw new Error('Saved lifecycle data is invalid. Existing data has been left untouched.');
   }
-  return state;
+  const bounded = (version: number) => Math.min(100, Math.max(1, Math.trunc(version)));
+  return {
+    ...state,
+    records: state.records.map(record => ({...record, version: bounded(record.version)})),
+    audit: state.audit.map(entry => ({
+      ...entry,
+      before: entry.before ? {...entry.before, version: bounded(entry.before.version)} : null,
+      after: {...entry.after, version: bounded(entry.after.version)},
+    })),
+  };
 }
 export function commitRecord(state: LifecycleState, record: WorkRecord, action: string): LifecycleState {
   const before = state.records.find(item => item.id === record.id) ?? null;
-  const next = {...record, version: Math.max(record.version, 1), updatedAt: new Date().toISOString()};
+  const next = {...record, version: Math.min(100, Math.max(1, Math.trunc(record.version))), updatedAt: new Date().toISOString()};
   const event: AuditEntry = {id: crypto.randomUUID(), recordId: next.id, action, at: next.updatedAt, owner: next.owner, before, after: next};
   return {...state, records: [next, ...state.records.filter(item => item.id !== next.id)], audit: [event, ...state.audit].slice(0,1000)};
 }
