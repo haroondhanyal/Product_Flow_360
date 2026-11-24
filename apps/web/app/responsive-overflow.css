@@ -59,14 +59,15 @@
 .sidebar-foot{min-height:68px;gap:10px;padding:14px 5px;color:var(--muted);font-size:9px;font-weight:600}
 .sidebar-foot img{width:58px;height:auto;flex:0 0 auto;opacity:1}
 .sidebar-foot>span{min-width:0;line-height:1.4}
-.sidebar .brand{gap:7px;max-width:calc(100% - 36px);padding:0;letter-spacing:-.45px;font-size:13px}
-.sidebar .brand .brand-productflow-logo{width:38px;height:38px;flex:0 0 38px}
-.sidebar .brand .brand-ptcl-logo{width:48px;height:auto;max-height:28px;flex:0 0 48px;object-fit:contain}
+.sidebar .brand{gap:5px;max-width:100%;margin-top:31px;padding:0;letter-spacing:-.45px;font-size:12px}
+.sidebar .brand .brand-productflow-logo{width:34px;height:34px;flex:0 0 34px}
+.sidebar .brand .brand-ptcl-logo{width:43px;height:auto;max-height:27px;flex:0 0 43px;object-fit:contain}
 .sidebar .brand>div{min-width:0;line-height:1.15}
 .sidebar .brand small{font-size:7px;letter-spacing:1px;margin-top:4px}
 .sidebar-foot img{width:82px;height:auto}
-@media(max-width:900px){.sidebar .brand{gap:5px;max-width:calc(100% - 32px);font-size:11px}.sidebar .brand .brand-productflow-logo{width:31px;height:31px;flex-basis:31px}.sidebar .brand .brand-ptcl-logo{width:40px;max-height:24px;flex-basis:40px}.sidebar .brand small{font-size:6px;letter-spacing:.7px}.sidebar-foot img{width:68px}}
+@media(max-width:900px){.sidebar .brand{gap:4px;max-width:100%;margin-top:31px;font-size:10px}.sidebar .brand .brand-productflow-logo{width:29px;height:29px;flex-basis:29px}.sidebar .brand .brand-ptcl-logo{width:35px;max-height:22px;flex-basis:35px}.sidebar .brand small{font-size:6px;letter-spacing:.7px}.sidebar-foot img{width:68px}}
 .shell.sidebar-collapsed .sidebar .brand .brand-ptcl-logo{display:none}
 .shell.sidebar-collapsed .sidebar .brand .brand-productflow-logo{width:37px;height:37px;flex-basis:37px}
 .shell.sidebar-collapsed .sidebar-foot img{width:50px}
+.toast.success{background:#145b3c}.toast.error{background:#9b3028}.toast.info{background:#244d72}
 @media(max-width:900px){.sidebar-foot{gap:7px;font-size:8px}.sidebar-foot img{width:50px}}

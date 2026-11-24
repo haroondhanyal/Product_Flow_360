@@ -6,6 +6,7 @@ import { activeWorkspaceLink, commitRecord, EMPTY_LIFECYCLE, LIFECYCLE_KEY, MODU
 import { parseTestCases, TEST_STORAGE_KEY, type TestCase } from '../lib/test-cases';
 import { RfcDocuments } from './rfc-documents';
 import { VersionEditor } from './version-editor';
+import { notifyUser } from '../lib/feedback';
 import { RecordTypeSelect, StatusIndicator, StatusSelect } from './status-indicator';
 import './lifecycle-form-layout.css';
 import './defect-issue-ui.css';
@@ -50,8 +51,8 @@ export function LifecycleBoard({kind, requests, onOpenRequest, workspaceId}: {ki
       if (existing && existing.version !== expectedVersion) throw new Error('This record changed in another tab. Reopen this module before saving.');
       const next = commitRecord(latest, record, action);
       localStorage.setItem(LIFECYCLE_KEY, JSON.stringify(next));
-      setState(next); setError(''); setMessage(`${module.singular} saved.`); return true;
-    } catch (error) { setError(error instanceof Error ? error.message : 'Unable to save. Browser storage may be full.'); return false; }
+      setState(next); setError(''); setMessage(`${module.singular} saved successfully.`); notifyUser(`${module.singular[0].toUpperCase()}${module.singular.slice(1)} saved successfully.`); return true;
+    } catch (error) { const message=error instanceof Error ? error.message : 'Unable to save. Browser storage may be full.'; setError(message); notifyUser(message,'error'); return false; }
   }
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -90,7 +91,7 @@ export function LifecycleBoard({kind, requests, onOpenRequest, workspaceId}: {ki
     if (!selected || !['defects','requirements'].includes(kind)) return;
     const label = kind === 'defects' ? 'defect' : 'requirement';
     if (!window.confirm(`Delete ${label} “${selected.title}”? Linked evidence remains in this browser until removed.`)) return;
-    try { const latest = parseLifecycle(localStorage.getItem(LIFECYCLE_KEY) ?? JSON.stringify(EMPTY_LIFECYCLE)); const next = {...latest, records: latest.records.filter(record => record.id !== selected.id)}; localStorage.setItem(LIFECYCLE_KEY, JSON.stringify(next)); setState(next); setSelectedId(''); setMessage(`${label[0].toUpperCase()}${label.slice(1)} deleted.`); } catch { setError(`Unable to delete this ${label}.`); }
+    try { const latest = parseLifecycle(localStorage.getItem(LIFECYCLE_KEY) ?? JSON.stringify(EMPTY_LIFECYCLE)); const next = {...latest, records: latest.records.filter(record => record.id !== selected.id)}; localStorage.setItem(LIFECYCLE_KEY, JSON.stringify(next)); setState(next); setSelectedId(''); setMessage(`${label[0].toUpperCase()}${label.slice(1)} deleted successfully.`); notifyUser(`${label[0].toUpperCase()}${label.slice(1)} deleted successfully.`); } catch { setError(`Unable to delete this ${label}.`); notifyUser(`Unable to delete this ${label}. Try again.`,'error'); }
   }
   const filtered = workspaceRecords.filter(record => record.kind === kind && (!requestFilter || record.requestId === requestFilter) && (!statusFilter || record.status === statusFilter) && `${record.id} ${record.title} ${record.owner} ${record.type} ${record.status}`.toLowerCase().includes(query.toLowerCase()));
   const editRecord = editing && editing !== 'new' ? editing : undefined;
