@@ -15,13 +15,14 @@ const demoNames = ['Hamza Khan', 'Ayesha Noor', 'Bilal Ahmed', 'Sara Ali'];
 const teamTitles = ['Team Lead', 'Product Manager', 'Business Analyst', 'Project Coordinator'];
 const departmentTitles = ['Department Lead', 'Department Manager', 'Principal Business Analyst', 'Portfolio Coordinator'];
 const slug = (value: string) => value.toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+// Shared credentials are for fictional local demo users only; never provision these in production.
+export const LOCAL_DEMO_PASSWORD = 'Admin@12345';
 
 export function createDemoAccountDefinitions(): DemoAccountDefinition[] {
   const definitions: DemoAccountDefinition[] = [];
   for (const group of PTCL_DEPARTMENT_CATALOG) {
     const units = [{name:'Department Office',titles:departmentTitles}, ...group.teams.map(name=>({name,titles:teamTitles}))];
     for (const unit of units) for (let index=0;index<4;index++) {
-      const key=`${slug(group.name)}-${slug(unit.name)}`;
       const accountNumber=definitions.length+1;
       definitions.push({
         fullName:`${demoNames[index]} · Demo ${String(accountNumber).padStart(3,'0')}`,
@@ -30,7 +31,7 @@ export function createDemoAccountDefinitions(): DemoAccountDefinition[] {
         department:unit.name==='Department Office'?`${group.name} / Department Office`:`${group.name} / ${unit.name}`,
         departmentCategory:group.name,
         departmentTeam:unit.name,
-        email:`demo.${key}.${String(index+1).padStart(2,'0')}@example.com`,
+        email:`${demoNames[index].split(' ')[0].toLowerCase()}+${String(accountNumber).padStart(3,'0')}@${slug(unit.name==='Department Office'?group.name:unit.name)}.example`,
         mobile:`DEMO-ONLY-${String(definitions.length+1).padStart(4,'0')}`,
       });
     }
@@ -44,14 +45,14 @@ export function formatDemoCredentials(credentials: Record<string,string> = {}): 
   const lines=[
     'PRODUCTFLOW 360 — SYNTHETIC DEMO ACCOUNTS',
     'Generated for local demonstration only. These are fictional identities, not PTCL employee accounts.',
-    'All email addresses use the reserved example.com domain. Do not use these credentials in production.',
+    'All email addresses use reserved .example domains. Accounts are active only in the local demo workspace; never use these credentials in production.',
     `Account count: ${definitions.length}`,
     '',
   ];
   for(const account of definitions){
     if(account.departmentCategory!==lastCategory){lastCategory=account.departmentCategory;lines.push('',`=== ${lastCategory} ===`)}
-    lines.push(`Team: ${account.departmentTeam}`,`Name: ${account.fullName}`,`Designation: ${account.designation}`,`Employee ID: ${account.employeeNo}`,`Email: ${account.email}`,`Password: ${credentials[account.email.toLowerCase()] ?? 'Not available for an account provisioned before credential export was enabled.'}`,`Phone: ${account.mobile}`,'');
+    lines.push(`Team: ${account.departmentTeam}`,`Name: ${account.fullName}`,`Designation: ${account.designation}`,`Employee ID: ${account.employeeNo}`,`Email: ${account.email}`,`Password: ${credentials[account.email.toLowerCase()] ?? LOCAL_DEMO_PASSWORD}`, 'Status: Active (Approved)', `Phone: ${account.mobile}`,'');
   }
-  lines.push('','=== Demo Administrator ===','Email: admin@ptcl.com',`Password: ${credentials['admin@ptcl.com'] ?? 'Use the existing local admin password; new installations generate one on first run.'}`);
+  lines.push('','=== Demo Administrator ===','Email: admin@ptcl.com',`Password: ${credentials['admin@ptcl.com'] ?? LOCAL_DEMO_PASSWORD}`,'Status: Active (Approved)');
   return lines.join('\n');
 }

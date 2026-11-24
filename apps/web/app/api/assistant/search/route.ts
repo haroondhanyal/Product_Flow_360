@@ -66,7 +66,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    for (const searchRoot of searchRoots) await walk(resolve(root, searchRoot), 0);
+    for (const searchRoot of searchRoots) await walk(resolve(/*turbopackIgnore: true*/ root, searchRoot), 0);
     matches.sort((a, b) => b.score - a.score || a.path.localeCompare(b.path));
     return NextResponse.json({ results: matches.slice(0, 12).map(({ path, line, snippet }) => ({ path, line, snippet })), searchedFiles: visited, scope: 'ProductFlow repository source' });
   } catch { return NextResponse.json({ error: 'Could not search the ProductFlow project files.' }, { status: 500 }); }

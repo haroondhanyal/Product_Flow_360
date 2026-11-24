@@ -164,7 +164,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). A fresh browser generates a random local demo administrator password for `admin@ptcl.com` and displays it on the local login form. The Admin Board can export the synthetic demo account directory. Credentials stay in that browser and are not shared across devices. Do not deploy this browser-local authentication flow as production identity management.
+Open [http://localhost:3000](http://localhost:3000). A fresh browser seeds the local-only demo administrator and synthetic department accounts. The Admin Board exports the account list to the ignored `PF360-demo-accounts.txt` file, including short department-based `.example` emails and active status. Demo credentials are shared only by these fictional local accounts; they must never be used for production identity management. Credentials stay in that browser and are not shared across devices.
 
 ### Local Product Copilot
 
