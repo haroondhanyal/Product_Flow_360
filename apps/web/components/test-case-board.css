@@ -8,3 +8,9 @@
 .test-stage-field{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:9px;margin-top:8px}
 .test-stage-field .status-indicator{font-size:10px}
 .test-case-editor form .test-stage-field select{margin-top:0}
+.test-case-details,.test-case-editor{overscroll-behavior:contain;scrollbar-gutter:stable;background:var(--surface)!important;color:var(--ink)!important;scrollbar-width:thin;scrollbar-color:#9ab6a3 #eef3ef}
+.test-case-details:before,.test-case-editor:before{background:color-mix(in srgb,var(--ink) 40%,transparent)!important}
+.test-case-details::-webkit-scrollbar,.test-case-editor::-webkit-scrollbar{width:10px}
+.test-case-details::-webkit-scrollbar-track,.test-case-editor::-webkit-scrollbar-track{margin:12px;border-radius:9px;background:#eef3ef}
+.test-case-details::-webkit-scrollbar-thumb,.test-case-editor::-webkit-scrollbar-thumb{border:2px solid #eef3ef;border-radius:9px;background:#9ab6a3}
+.test-case-details::-webkit-scrollbar-thumb:hover,.test-case-editor::-webkit-scrollbar-thumb:hover{background:#6e9a7b}
